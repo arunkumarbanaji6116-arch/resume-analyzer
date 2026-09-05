@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Resume AI · CareerForge</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav><a class="brand" href="/dashboard">CareerForge<span>AI</span></a><div><a href="/dashboard">Dashboard</a></div></nav>
+  <main class="container">
+    <h1>Resume review</h1>
+    <p class="muted">Upload a clear photo or screenshot of your resume. Our OCR extracts the text securely in-memory for instant review and scoring.</p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}<p class="flash" role="alert">{{ message }}</p>{% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post" enctype="multipart/form-data" class="panel">
+      <label>Target role (optional)
+        <input name="target_role" value="{{ request.form.get('target_role', '') }}" placeholder="e.g., Senior Full-Stack Engineer, Junior Data Analyst">
+      </label>
+      
+      <div class="upload-dropzone" id="resume-dropzone">
+        <div class="dropzone-icon">📄</div>
+        <p class="dropzone-title">Click to upload or drag & drop your resume image</p>
+        <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (up to 8 MB)</p>
+        <input id="resume-file-input" name="resume_image" type="file" accept="image/png,image/jpeg,image/webp" required>
+        <div id="image-preview-container" class="image-preview-container" style="display:none;">
+          <img id="image-preview" src="" alt="Resume preview">
+          <span id="preview-filename" class="preview-filename"></span>
+        </div>
+      </div>
+
+      <button type="submit" id="analyze-btn">Analyze my resume</button>
+    </form>
+    {% if analysis %}
+      <section class="results">
+        <div class="score">{{ analysis.score }}<small>/100</small></div>
+        <div>
+          <h2>Your resume snapshot</h2>
+          <p>Analyzed from {{ analysis.source }}: {{ analysis.word_count }} words · {{ analysis.metrics }} measurable outcomes found</p>
+          <ul>{% for note in analysis.notes %}<li>{{ note }}</li>{% endfor %}</ul>
+        </div>
+      </section>
+    {% endif %}
+  </main>
+  <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
+</body>
+</html>

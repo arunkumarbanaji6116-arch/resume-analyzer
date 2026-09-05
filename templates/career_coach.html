@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Career Coach · CareerForge AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div><a href="/dashboard">Dashboard</a></div>
+  </nav>
+
+  <main class="container">
+    <p class="eyebrow">STRATEGIC CAREER ARCHITECTURE</p>
+    <h1>Career Coach</h1>
+    <p class="muted">Transform your ambitions into an executive 4-phase execution blueprint with milestone sprints, targeted certifications, and high-conversion networking templates.</p>
+
+    <form method="post" class="panel">
+      <label>What career goal or target role are you working toward?
+        <input name="goal" required value="{{ goal }}" placeholder="e.g., Senior Full-Stack Engineer, Product Manager, Lead Cloud Architect">
+      </label>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px;">
+        <label>Your Current Level
+          <select name="level">
+            <option {% if selected_level == 'Career Switcher' %}selected{% endif %}>Career Switcher (Transitioning)</option>
+            <option {% if selected_level == 'Junior (0-2 yrs)' %}selected{% endif %}>Junior (0-2 yrs)</option>
+            <option {% if selected_level == 'Mid-Level (2-5 yrs)' or not selected_level %}selected{% endif %}>Mid-Level (2-5 yrs)</option>
+            <option {% if selected_level == 'Senior / Staff (5+ yrs)' %}selected{% endif %}>Senior / Staff (5+ yrs)</option>
+          </select>
+        </label>
+
+        <label>Target Timeline
+          <select name="timeline">
+            <option {% if selected_timeline == '30 Days' %}selected{% endif %}>30-Day Intensive Sprint</option>
+            <option {% if selected_timeline == '90 Days' or not selected_timeline %}selected{% endif %}>90-Day Structured Plan (Recommended)</option>
+            <option {% if selected_timeline == '6 Months' %}selected{% endif %}>6-Month Strategic Move</option>
+            <option {% if selected_timeline == '1 Year' %}selected{% endif %}>1-Year Mastery Transition</option>
+          </select>
+        </label>
+      </div>
+
+      <label style="margin-top: 12px;">Tell us about your background, tools, and constraints
+        <textarea name="background" rows="5" placeholder="Current role, key technical/business skills, years of experience, accomplishments, or any constraints...">{{ background }}</textarea>
+      </label>
+
+      <button type="submit" style="margin-top: 16px; width: 100%;">Generate My Strategic Career Roadmap</button>
+    </form>
+
+    {% if advice %}
+      <section class="panel roadmap-container" id="printable-roadmap">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
+          <div>
+            <span class="eyebrow">ROADMAP SUMMARY · {{ advice.timeline }}</span>
+            <h2 style="margin: 6px 0 4px;">{{ advice.summary }}</h2>
+            <p class="muted" style="margin: 0;">Targeting: <strong>{{ advice.level }}</strong> position</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="score" style="width: 90px; height: 90px; font-size: 1.8rem;">
+              {{ advice.readiness_score }}<small style="font-size: 0.65rem;">Readiness</small>
+            </div>
+            <button type="button" class="secondary" onclick="window.print()" style="margin-top: 0; padding: 10px 14px; font-size: 0.9rem;">
+              🖨️ Print / Save Plan
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Phase Milestone Cards -->
+        <h3 style="margin-top: 28px; margin-bottom: 14px;">Milestone Execution Roadmap</h3>
+        <div class="phases-grid">
+          {% for phase in advice.phases %}
+            <article class="phase-card">
+              <div class="phase-header">
+                <span class="phase-badge">Phase {{ phase.number }}</span>
+                <span class="phase-timeframe">{{ phase.timeframe }}</span>
+              </div>
+              <h4>{{ phase.title }}</h4>
+              <p class="phase-focus">{{ phase.focus }}</p>
+              <ul class="phase-tasks">
+                {% for task in phase.tasks %}
+                  <li>{{ task }}</li>
+                {% endfor %}
+              </ul>
+            </article>
+          {% endfor %}
+        </div>
+
+        <!-- Weekly Action Sprints Checklist -->
+        <h3 style="margin-top: 36px; margin-bottom: 12px;">Weekly Action Sprints</h3>
+        <p class="muted" style="margin-top: 0;">Check off each sprint as you progress:</p>
+        <div class="sprints-list">
+          {% for sprint in advice.sprints %}
+            <label class="sprint-item">
+              <input type="checkbox">
+              <div>
+                <strong>{{ sprint.week }}:</strong>
+                <span>{{ sprint.task }}</span>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+
+        <!-- Certifications & Learning Tracks -->
+        <div style="margin-top: 32px; background: #f8fafc; border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
+          <h3 style="margin: 0 0 10px;">Recommended Credentials & Learning Tracks</h3>
+          <p class="muted" style="margin: 0 0 14px; font-size: 0.92rem;">These verified credentials carry high brand recognition in hiring evaluations for {{ advice.goal }}:</p>
+          <div class="skill-tags">
+            {% for cert in advice.certifications %}
+              <span class="tag tag-matched">🎓 {{ cert }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Cold Outreach LinkedIn Template -->
+        <div style="margin-top: 28px; background: #f0edff; border: 1px solid #d4ceff; border-radius: 14px; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h3 style="margin: 0; color: var(--accent);">High-Conversion Informational Outreach Script</h3>
+            <button type="button" id="copy-template-btn" style="margin: 0; padding: 8px 14px; font-size: 0.85rem;" onclick="copyTemplate()">
+              Copy Script
+            </button>
+          </div>
+          <p class="muted" style="margin: 6px 0 12px; font-size: 0.9rem;">Send this on LinkedIn to peers or alumni at companies you are targeting:</p>
+          <pre id="outreach-text" style="background: white; border: 1px solid #dcd7ff; border-radius: 10px; padding: 14px; font-family: inherit; font-size: 0.92rem; white-space: pre-wrap; line-height: 1.5; color: var(--ink);">{{ advice.outreach_template }}</pre>
+        </div>
+
+        <!-- Tactical Insights -->
+        <div style="margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="background: #fff8eb; border: 1px solid #ffe0a6; border-radius: 12px; padding: 18px;">
+            <strong style="color: #d97706; display: block; margin-bottom: 6px;">⚠️ Common Pitfall to Avoid</strong>
+            <p style="margin: 0; font-size: 0.92rem; color: #92400e;">{{ advice.top_pitfall }}</p>
+          </div>
+          <div style="background: #e6fcf5; border: 1px solid #b2f2bb; border-radius: 12px; padding: 18px;">
+            <strong style="color: #0ca678; display: block; margin-bottom: 6px;">💡 Your Strategic Advantage</strong>
+            <p style="margin: 0; font-size: 0.92rem; color: #2b8a3e;">{{ advice.unfair_advantage }}</p>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+  </main>
+
+  <script>
+    function copyTemplate() {
+      const text = document.getElementById('outreach-text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-template-btn');
+        const orig = btn.innerText;
+        btn.innerText = '✓ Copied!';
+        btn.style.background = '#087f5b';
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.style.background = '';
+        }, 2500);
+      });
+    }
+  </script>
+</body>
+</html>

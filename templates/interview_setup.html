@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Interview Lab · CareerForge AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div><a href="/dashboard">Dashboard</a></div>
+  </nav>
+
+  <main class="auth-card" style="max-width: 540px;">
+    <p class="eyebrow">MOCK INTERVIEW SIMULATOR</p>
+    <h1>Set up your interview</h1>
+    <p class="muted" style="margin: -6px 0 20px;">Experience a realistic question drill. Practice your STAR framework, receive AI feedback on every question, and track your running score progress.</p>
+
+    <form method="post">
+      <label>Target Role
+        <select name="role">
+          <option>Software Engineer</option>
+          <option>Frontend Developer</option>
+          <option>Backend Developer</option>
+          <option>Data Analyst</option>
+          <option>Product Manager</option>
+          <option>DevOps / Cloud Engineer</option>
+          <option>General</option>
+        </select>
+      </label>
+
+      <label style="margin-top: 10px;">Session Length
+        <select name="question_count">
+          <option value="5" selected>Full Mock Interview (5 Questions: Tech, Behavioral, Leadership)</option>
+          <option value="3">Focused Sprint (3 Questions)</option>
+        </select>
+      </label>
+
+      <div style="background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 14px; font-size: 0.88rem; color: var(--muted);">
+        <strong style="color: var(--ink); display: block; margin-bottom: 4px;">💡 AI Rubric Highlights</strong>
+        • Answers are graded on Situation, Task, Action, and Result (STAR)<br>
+        • Score progression tracks your running average as you advance<br>
+        • Actionable tips highlight metrics and concrete outcomes
+      </div>
+
+      <button type="submit" style="margin-top: 18px; width: 100%;">Enter Mock Interview Room</button>
+    </form>
+  </main>
+</body>
+</html>

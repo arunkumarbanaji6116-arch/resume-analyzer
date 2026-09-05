@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Job Analyzer · CareerForge AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div><a href="/dashboard">Dashboard</a></div>
+  </nav>
+
+  <main class="container">
+    <p class="eyebrow">FIT & KEYWORD INTELLIGENCE</p>
+    <h1>Job Analyzer</h1>
+    <p class="muted">Compare your resume against any job posting. Upload screenshots/images or paste text to uncover keyword alignment, missing competencies, and tailoring strategies.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}<p class="flash" role="alert">{{ message }}</p>{% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" enctype="multipart/form-data" class="panel">
+      <!-- 1. Job Description Section -->
+      <fieldset class="form-section">
+        <legend><h3>1. Job Description</h3></legend>
+        
+        <div class="upload-dropzone compact-dropzone">
+          <div class="dropzone-icon">📸</div>
+          <p class="dropzone-title">Upload Job Posting Screenshot / Image</p>
+          <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
+          <input name="job_image" type="file" accept="image/png,image/jpeg,image/webp">
+        </div>
+
+        <label style="margin-top: 12px;">Or paste job description text
+          <textarea name="job_description" rows="5" placeholder="Paste requirements, qualifications, and role description...">{{ job_description }}</textarea>
+        </label>
+      </fieldset>
+
+      <hr>
+
+      <!-- 2. Candidate Resume Section -->
+      <fieldset class="form-section">
+        <legend><h3>2. Your Resume</h3></legend>
+        
+        <div class="upload-dropzone compact-dropzone">
+          <div class="dropzone-icon">📄</div>
+          <p class="dropzone-title">Upload Resume Screenshot / Image</p>
+          <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
+          <input name="resume_image" type="file" accept="image/png,image/jpeg,image/webp">
+        </div>
+
+        <label style="margin-top: 12px;">Or paste resume text
+          <textarea name="resume_text" rows="5" placeholder="Paste your resume experience, skills, and projects...">{{ resume_text }}</textarea>
+        </label>
+      </fieldset>
+
+      <button type="submit" style="margin-top: 18px; width: 100%;">Analyze Match & Skill Alignment</button>
+    </form>
+
+    {% if analysis %}
+      <section class="results job-results-panel">
+        <div class="score" style="border-color: {{ analysis.fit_color }}; color: {{ analysis.fit_color }};">
+          {{ analysis.match_score }}<small>%</small>
+        </div>
+
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <h2 style="margin: 0;">Match Analysis</h2>
+            <span class="badge" style="background: {{ analysis.fit_color }}15; color: {{ analysis.fit_color }}; border: 1px solid {{ analysis.fit_color }}40;">
+              {{ analysis.fit_level }}
+            </span>
+          </div>
+          <p class="muted" style="margin: 8px 0 16px;">{{ analysis.summary }}</p>
+
+          <!-- Matched Skills -->
+          <div class="skills-block">
+            <strong>Matched Competencies ({{ analysis.matched_count }}):</strong>
+            <div class="skill-tags">
+              {% for skill in analysis.matched %}
+                <span class="tag tag-matched">✓ {{ skill }}</span>
+              {% else %}
+                <span class="muted">No direct keywords detected yet. Add relevant project experience.</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Missing Skills -->
+          <div class="skills-block" style="margin-top: 16px;">
+            <strong>Missing or Recommended Keywords ({{ analysis.missing|length }}):</strong>
+            <div class="skill-tags">
+              {% for skill in analysis.missing %}
+                <span class="tag tag-missing">+ {{ skill }}</span>
+              {% else %}
+                <span class="muted">Great job! No major keyword gaps detected.</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Recommendations -->
+          {% if analysis.recommendations %}
+            <div style="margin-top: 20px;">
+              <strong>Strategic Tailoring Tips:</strong>
+              <ul>
+                {% for tip in analysis.recommendations %}
+                  <li>{{ tip }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

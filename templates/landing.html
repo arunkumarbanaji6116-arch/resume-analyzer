@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CareerForge AI</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body><nav><a class="brand" href="/">CareerForge<span>AI</span></a><div>{% if current_user %}<a href="/dashboard">Dashboard</a><a href="/logout">Log out</a>{% else %}<a href="/login">Sign in</a>{% endif %}</div></nav>
+<main class="hero"><p class="eyebrow">YOUR PERSONAL CAREER COPILOT</p><h1>Build a career you’re proud to talk about.</h1><p>Improve your resume, rehearse interviews, find your next skill, and match jobs with confidence.</p><a class="button" href="{{ '/dashboard' if current_user else '/login' }}">Start forging your path</a></main>
+<section class="features"><article><h2>Resume AI</h2><p>Get clear, practical feedback on content and impact.</p></article><article><h2>Interview Lab</h2><p>Practice tailored questions and improve every answer.</p></article><article><h2>Career Coach</h2><p>Turn a goal into a focused, realistic action plan.</p></article></section></body></html>
