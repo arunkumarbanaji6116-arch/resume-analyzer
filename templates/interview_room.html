@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Mock Interview Room · CareerForge AI</title>
+  <title>Mock Interview Room Â· CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -55,7 +55,7 @@
       <div class="answer-wrapper">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <label for="answer" style="margin: 0; font-weight: 700;">Your Response</label>
-          <span class="muted form-hint" id="word-counter" style="margin: 0;">0 words (aim for 90–180)</span>
+          <span class="muted form-hint" id="word-counter" style="margin: 0;">0 words (aim for 90â€“180)</span>
         </div>
         <textarea id="answer" rows="7" placeholder="Structure your response using STAR: What was the Situation, what was your Task, what specific Actions did you take, and what was the quantifiable Result?"></textarea>
       </div>
@@ -63,9 +63,9 @@
       <!-- STAR Assistant Guidance Box -->
       <div class="star-guidance-box">
         <span style="font-weight: 700; color: var(--accent);">STAR Rubric:</span>
-        <span><strong>S</strong>ituation (Context)</span> ·
-        <span><strong>T</strong>ask (Goal)</span> ·
-        <span><strong>A</strong>ction (Your exact work)</span> ·
+        <span><strong>S</strong>ituation (Context)</span> Â·
+        <span><strong>T</strong>ask (Goal)</span> Â·
+        <span><strong>A</strong>ction (Your exact work)</span> Â·
         <span><strong>R</strong>esult (Impact & metrics)</span>
       </div>
 
@@ -103,11 +103,11 @@
       <!-- Strengths & Improvements Grid -->
       <div class="feedback-grid" style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
         <div class="feedback-box strengths-box">
-          <strong style="color: #087f5b;">✓ Strengths</strong>
+          <strong style="color: #087f5b;">âœ“ Strengths</strong>
           <ul id="feedback-strengths-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
         </div>
         <div class="feedback-box improvements-box">
-          <strong style="color: #f76707;">⚡ High-Impact Tip</strong>
+          <strong style="color: #f76707;">âš¡ High-Impact Tip</strong>
           <ul id="feedback-improvements-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
         </div>
       </div>
@@ -115,7 +115,7 @@
       <!-- Advance Navigation Button -->
       <div style="margin-top: 24px; text-align: right;">
         <button id="next-question-btn" type="button" style="margin: 0; padding: 13px 24px;">
-          Next Question →
+          Next Question â†’
         </button>
       </div>
     </section>
@@ -123,7 +123,7 @@
     <!-- Final Comprehensive Mock Interview Scorecard Modal / Panel -->
     <section class="panel interview-summary-panel" id="summary-section" style="display: none;">
       <div style="text-align: center; max-width: 620px; margin: 0 auto; padding: 20px 0;">
-        <div class="summary-trophy">🎯</div>
+        <div class="summary-trophy">ðŸŽ¯</div>
         <span class="eyebrow">MOCK INTERVIEW COMPLETE</span>
         <h1 style="margin: 8px 0 12px;">Performance Scorecard</h1>
         <p class="muted">You've successfully completed the {{ role }} practice simulation. Here is how your answers progressed across questions:</p>
@@ -156,5 +156,6 @@
   </main>
 
   <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
-</body>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>`n</body>
 </html>
+

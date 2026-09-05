@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Dashboard · CareerForge AI</title>
+  <title>Dashboard Â· CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -13,10 +13,10 @@
     <h1>Your career workspace</h1>
     <p class="workspace-intro">Choose a focus area to step into your next career move.</p>
     <div class="tool-grid" aria-label="Career tools">
-      <button class="workspace-card card-resume" type="button" data-tool="Resume Review" data-description="Get practical, role-focused feedback that makes your experience clear and memorable." data-action="Review my resume" data-href="/resume"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">↗</span><strong>Resume Review</strong><span>Improve your story</span><em>Open space</em></button>
-      <button class="workspace-card card-interview" type="button" data-tool="Interview Lab" data-description="Practice tailored questions, refine your answers, and walk into interviews with more confidence." data-action="Start practice" data-href="/interview"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">◌</span><strong>Interview Lab</strong><span>Practice with structure</span><em>Open space</em></button>
-      <button class="workspace-card card-career" type="button" data-tool="Career Coach" data-description="Turn your career goal into a thoughtful, focused plan with clear next steps." data-action="Plan my path" data-href="/career"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">✦</span><strong>Career Coach</strong><span>Make a targeted plan</span><em>Open space</em></button>
-      <button class="workspace-card card-jobs" type="button" data-tool="Job Analyzer" data-description="Compare a job opportunity with your strengths and see where to focus before applying." data-action="Analyze a job" data-href="/jobs"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">⌁</span><strong>Job Analyzer</strong><span>Check your fit</span><em>Open space</em></button>
+      <button class="workspace-card card-resume" type="button" data-tool="Resume Review" data-description="Get practical, role-focused feedback that makes your experience clear and memorable." data-action="Review my resume" data-href="/resume"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">â†—</span><strong>Resume Review</strong><span>Improve your story</span><em>Open space</em></button>
+      <button class="workspace-card card-interview" type="button" data-tool="Interview Lab" data-description="Practice tailored questions, refine your answers, and walk into interviews with more confidence." data-action="Start practice" data-href="/interview"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">â—Œ</span><strong>Interview Lab</strong><span>Practice with structure</span><em>Open space</em></button>
+      <button class="workspace-card card-career" type="button" data-tool="Career Coach" data-description="Turn your career goal into a thoughtful, focused plan with clear next steps." data-action="Plan my path" data-href="/career"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">âœ¦</span><strong>Career Coach</strong><span>Make a targeted plan</span><em>Open space</em></button>
+      <button class="workspace-card card-jobs" type="button" data-tool="Job Analyzer" data-description="Compare a job opportunity with your strengths and see where to focus before applying." data-action="Analyze a job" data-href="/jobs"><span class="card-orbit" aria-hidden="true"></span><span class="card-icon" aria-hidden="true">âŒ</span><strong>Job Analyzer</strong><span>Check your fit</span><em>Open space</em></button>
     </div>
     <h2>Recent activity</h2>
     {% if activities %}<ul class="activity">{% for item in activities %}<li><span>{{ item.title }}</span><strong>{% if item.score is not none %}{{ item.score }}/100{% else %}Saved{% endif %}</strong></li>{% endfor %}</ul>{% else %}<p class="muted">Your progress will appear here after your first review or interview practice.</p>{% endif %}
@@ -25,12 +25,13 @@
     <div class="drawer-backdrop" data-close-drawer></div>
     <section class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-describedby="drawer-description" tabindex="-1">
       <div class="drawer-handle" aria-hidden="true"></div>
-      <button class="drawer-close" type="button" aria-label="Close" data-close-drawer>×</button>
+      <button class="drawer-close" type="button" aria-label="Close" data-close-drawer>Ã—</button>
       <p class="eyebrow">YOUR NEXT STEP</p><div class="drawer-icon" id="drawer-icon" aria-hidden="true"></div>
       <h2 id="drawer-title"></h2><p id="drawer-description"></p>
       <a class="drawer-action" id="drawer-action" href="#">Continue</a><button class="drawer-cancel" type="button" data-close-drawer>Maybe later</button>
     </section>
   </div>
-  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>`n  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
 </body>
 </html>
+

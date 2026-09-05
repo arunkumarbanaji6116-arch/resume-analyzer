@@ -1,5 +1,56 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CareerForge AI</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
-<body><nav><a class="brand" href="/">CareerForge<span>AI</span></a><div>{% if current_user %}<a href="/dashboard">Dashboard</a><a href="/logout">Log out</a>{% else %}<a href="/login">Sign in</a>{% endif %}</div></nav>
-<main class="hero"><p class="eyebrow">YOUR PERSONAL CAREER COPILOT</p><h1>Build a career you’re proud to talk about.</h1><p>Improve your resume, rehearse interviews, find your next skill, and match jobs with confidence.</p><a class="button" href="{{ '/dashboard' if current_user else '/login' }}">Start forging your path</a></main>
-<section class="features"><article><h2>Resume AI</h2><p>Get clear, practical feedback on content and impact.</p></article><article><h2>Interview Lab</h2><p>Practice tailored questions and improve every answer.</p></article><article><h2>Career Coach</h2><p>Turn a goal into a focused, realistic action plan.</p></article></section></body></html>
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CareerForge AI · Spatial Career Copilot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/">CareerForge<span>AI</span></a>
+    <div>
+      {% if current_user %}
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Log out</a>
+      {% else %}
+        <a href="/login">Sign in</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="hero">
+    <div>
+      <span class="eyebrow">NEXT-GEN CAREER INTELLIGENCE</span>
+      <h1>Build a career you’re proud to talk about.</h1>
+      <p>Harness Google Gemini AI and in-memory OCR to review resumes, simulate realistic interviews, and design targeted career milestone roadmaps.</p>
+      <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
+        <a class="button" href="{{ '/dashboard' if current_user else '/login' }}">Launch Your Workspace →</a>
+        {% if not current_user %}
+          <a class="button secondary" href="/login">Sign In</a>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  <section class="features">
+    <article>
+      <div class="card-icon" style="background: rgba(240, 237, 255, 0.9); color: var(--accent); width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px;">📄</div>
+      <h2>Resume AI</h2>
+      <p>Secure image OCR and senior hiring manager-grade critique on impact, metrics, and ATS readiness.</p>
+    </article>
+    <article>
+      <div class="card-icon" style="background: rgba(230, 252, 245, 0.9); color: #087f5b; width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px;">🎙️</div>
+      <h2>Interview Lab</h2>
+      <p>Interactive mock interviews with real-time STAR rubric grading, progress bars, and running scores.</p>
+    </article>
+    <article>
+      <div class="card-icon" style="background: rgba(255, 244, 230, 0.9); color: #ea580c; width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px;">🧭</div>
+      <h2>Career Coach</h2>
+      <p>Dynamic 4-phase milestone roadmaps, weekly sprints, and high-converting LinkedIn networking templates.</p>
+    </article>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
+</body>
+</html>

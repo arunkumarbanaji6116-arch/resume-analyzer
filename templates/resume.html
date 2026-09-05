@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Resume AI · CareerForge</title>
+  <title>Resume AI Â· CareerForge</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -22,7 +22,7 @@
       </label>
       
       <div class="upload-dropzone" id="resume-dropzone">
-        <div class="dropzone-icon">📄</div>
+        <div class="dropzone-icon">ðŸ“„</div>
         <p class="dropzone-title">Click to upload or drag & drop your resume image</p>
         <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (up to 8 MB)</p>
         <input id="resume-file-input" name="resume_image" type="file" accept="image/png,image/jpeg,image/webp" required>
@@ -39,12 +39,13 @@
         <div class="score">{{ analysis.score }}<small>/100</small></div>
         <div>
           <h2>Your resume snapshot</h2>
-          <p>Analyzed from {{ analysis.source }}: {{ analysis.word_count }} words · {{ analysis.metrics }} measurable outcomes found</p>
+          <p>Analyzed from {{ analysis.source }}: {{ analysis.word_count }} words Â· {{ analysis.metrics }} measurable outcomes found</p>
           <ul>{% for note in analysis.notes %}<li>{{ note }}</li>{% endfor %}</ul>
         </div>
       </section>
     {% endif %}
   </main>
   <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
-</body>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>`n</body>
 </html>
+

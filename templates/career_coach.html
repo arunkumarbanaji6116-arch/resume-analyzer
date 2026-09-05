@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Career Coach · CareerForge AI</title>
+  <title>Career Coach Â· CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -53,7 +53,7 @@
       <section class="panel roadmap-container" id="printable-roadmap">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
           <div>
-            <span class="eyebrow">ROADMAP SUMMARY · {{ advice.timeline }}</span>
+            <span class="eyebrow">ROADMAP SUMMARY Â· {{ advice.timeline }}</span>
             <h2 style="margin: 6px 0 4px;">{{ advice.summary }}</h2>
             <p class="muted" style="margin: 0;">Targeting: <strong>{{ advice.level }}</strong> position</p>
           </div>
@@ -62,7 +62,7 @@
               {{ advice.readiness_score }}<small style="font-size: 0.65rem;">Readiness</small>
             </div>
             <button type="button" class="secondary" onclick="window.print()" style="margin-top: 0; padding: 10px 14px; font-size: 0.9rem;">
-              🖨️ Print / Save Plan
+              ðŸ–¨ï¸ Print / Save Plan
             </button>
           </div>
         </div>
@@ -108,7 +108,7 @@
           <p class="muted" style="margin: 0 0 14px; font-size: 0.92rem;">These verified credentials carry high brand recognition in hiring evaluations for {{ advice.goal }}:</p>
           <div class="skill-tags">
             {% for cert in advice.certifications %}
-              <span class="tag tag-matched">🎓 {{ cert }}</span>
+              <span class="tag tag-matched">ðŸŽ“ {{ cert }}</span>
             {% endfor %}
           </div>
         </div>
@@ -128,11 +128,11 @@
         <!-- Tactical Insights -->
         <div style="margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div style="background: #fff8eb; border: 1px solid #ffe0a6; border-radius: 12px; padding: 18px;">
-            <strong style="color: #d97706; display: block; margin-bottom: 6px;">⚠️ Common Pitfall to Avoid</strong>
+            <strong style="color: #d97706; display: block; margin-bottom: 6px;">âš ï¸ Common Pitfall to Avoid</strong>
             <p style="margin: 0; font-size: 0.92rem; color: #92400e;">{{ advice.top_pitfall }}</p>
           </div>
           <div style="background: #e6fcf5; border: 1px solid #b2f2bb; border-radius: 12px; padding: 18px;">
-            <strong style="color: #0ca678; display: block; margin-bottom: 6px;">💡 Your Strategic Advantage</strong>
+            <strong style="color: #0ca678; display: block; margin-bottom: 6px;">ðŸ’¡ Your Strategic Advantage</strong>
             <p style="margin: 0; font-size: 0.92rem; color: #2b8a3e;">{{ advice.unfair_advantage }}</p>
           </div>
         </div>
@@ -146,7 +146,7 @@
       navigator.clipboard.writeText(text).then(() => {
         const btn = document.getElementById('copy-template-btn');
         const orig = btn.innerText;
-        btn.innerText = '✓ Copied!';
+        btn.innerText = 'âœ“ Copied!';
         btn.style.background = '#087f5b';
         setTimeout(() => {
           btn.innerText = orig;
@@ -155,5 +155,6 @@
       });
     }
   </script>
-</body>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>`n</body>
 </html>
+

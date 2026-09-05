@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Job Analyzer · CareerForge AI</title>
+  <title>Job Analyzer Â· CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -29,7 +29,7 @@
         <legend><h3>1. Job Description</h3></legend>
         
         <div class="upload-dropzone compact-dropzone">
-          <div class="dropzone-icon">📸</div>
+          <div class="dropzone-icon">ðŸ“¸</div>
           <p class="dropzone-title">Upload Job Posting Screenshot / Image</p>
           <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
           <input name="job_image" type="file" accept="image/png,image/jpeg,image/webp">
@@ -47,7 +47,7 @@
         <legend><h3>2. Your Resume</h3></legend>
         
         <div class="upload-dropzone compact-dropzone">
-          <div class="dropzone-icon">📄</div>
+          <div class="dropzone-icon">ðŸ“„</div>
           <p class="dropzone-title">Upload Resume Screenshot / Image</p>
           <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
           <input name="resume_image" type="file" accept="image/png,image/jpeg,image/webp">
@@ -81,7 +81,7 @@
             <strong>Matched Competencies ({{ analysis.matched_count }}):</strong>
             <div class="skill-tags">
               {% for skill in analysis.matched %}
-                <span class="tag tag-matched">✓ {{ skill }}</span>
+                <span class="tag tag-matched">âœ“ {{ skill }}</span>
               {% else %}
                 <span class="muted">No direct keywords detected yet. Add relevant project experience.</span>
               {% endfor %}
@@ -115,5 +115,6 @@
       </section>
     {% endif %}
   </main>
-</body>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>`n</body>
 </html>
+
