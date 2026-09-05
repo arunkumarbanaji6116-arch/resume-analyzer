@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const action = card.dataset.action || "Continue";
     const href = card.dataset.href || "#";
     const iconSpan = card.querySelector(".card-icon");
-    const iconText = iconSpan ? iconSpan.textContent.trim() : "?";
 
     if (drawerTitle) drawerTitle.textContent = tool;
     if (drawerDescription) drawerDescription.textContent = description;
@@ -26,7 +25,22 @@ document.addEventListener("DOMContentLoaded", () => {
       drawerAction.textContent = action;
       drawerAction.setAttribute("href", href);
     }
-    if (drawerIcon) drawerIcon.textContent = iconText;
+    if (drawerIcon) {
+      drawerIcon.innerHTML = iconSpan ? iconSpan.innerHTML : "";
+      if (card.classList.contains("card-interview")) {
+        drawerIcon.style.background = "rgba(230, 252, 245, 0.95)";
+        drawerIcon.style.color = "#0ca678";
+      } else if (card.classList.contains("card-career")) {
+        drawerIcon.style.background = "rgba(255, 244, 230, 0.95)";
+        drawerIcon.style.color = "#f76707";
+      } else if (card.classList.contains("card-jobs")) {
+        drawerIcon.style.background = "rgba(231, 245, 255, 0.95)";
+        drawerIcon.style.color = "#1c7ed6";
+      } else {
+        drawerIcon.style.background = "rgba(240, 237, 255, 0.95)";
+        drawerIcon.style.color = "#6d5dfc";
+      }
+    }
 
     drawer.classList.add("open");
     drawer.setAttribute("aria-hidden", "false");
