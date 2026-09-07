@@ -1414,3 +1414,58 @@ hr {
     grid-column: span 1;
   }
 }
+
+/* ==========================================================================
+   Spatial Upload Badges & Dropzones
+   ========================================================================== */
+
+.dropzone-icon-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.compact-dropzone .dropzone-icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  margin-bottom: 8px;
+}
+
+.dropzone-badge-resume {
+  background: linear-gradient(135deg, rgba(240, 237, 255, 0.95), rgba(224, 219, 255, 0.85));
+  color: #6d5dfc;
+  border-color: rgba(196, 181, 253, 0.8);
+  box-shadow: 0 8px 24px -4px rgba(109, 93, 252, 0.25), inset 0 1.5px 1.5px #fff;
+}
+
+.dropzone-badge-job {
+  background: linear-gradient(135deg, rgba(231, 245, 255, 0.95), rgba(206, 234, 254, 0.85));
+  color: #0284c7;
+  border-color: rgba(186, 230, 253, 0.8);
+  box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.25), inset 0 1.5px 1.5px #fff;
+}
+
+.upload-dropzone:hover .dropzone-icon-badge {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.upload-dropzone:hover .dropzone-badge-resume {
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: #ffffff;
+  box-shadow: 0 12px 30px rgba(109, 93, 252, 0.45), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.6);
+}
+
+.upload-dropzone:hover .dropzone-badge-job {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.45), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.6);
+}

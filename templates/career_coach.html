@@ -3,41 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Career Coach Â· CareerForge AI</title>
+  <title>Career Coach · CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <nav>
-    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
-    <div><a href="/dashboard">Dashboard</a></div>
-  </nav>
-
+  <nav><a class="brand" href="/dashboard">CareerForge<span>AI</span></a><div><a href="/dashboard">Dashboard</a></div></nav>
+  
   <main class="container">
-    <p class="eyebrow">STRATEGIC CAREER ARCHITECTURE</p>
-    <h1>Career Coach</h1>
-    <p class="muted">Transform your ambitions into an executive 4-phase execution blueprint with milestone sprints, targeted certifications, and high-conversion networking templates.</p>
+    <p class="eyebrow">STRATEGIC CAREER ROADMAP</p>
+    <h1>AI Career Coach</h1>
+    <p class="muted">Enter your target role, background, and timeline. Gemini AI builds an executive 4-phase execution plan, weekly action sprints, high-value credentials, and a personalized LinkedIn outreach script.</p>
 
     <form method="post" class="panel">
-      <label>What career goal or target role are you working toward?
-        <input name="goal" required value="{{ goal }}" placeholder="e.g., Senior Full-Stack Engineer, Product Manager, Lead Cloud Architect">
-      </label>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px;">
-        <label>Your Current Level
-          <select name="level">
-            <option {% if selected_level == 'Career Switcher' %}selected{% endif %}>Career Switcher (Transitioning)</option>
-            <option {% if selected_level == 'Junior (0-2 yrs)' %}selected{% endif %}>Junior (0-2 yrs)</option>
-            <option {% if selected_level == 'Mid-Level (2-5 yrs)' or not selected_level %}selected{% endif %}>Mid-Level (2-5 yrs)</option>
-            <option {% if selected_level == 'Senior / Staff (5+ yrs)' %}selected{% endif %}>Senior / Staff (5+ yrs)</option>
-          </select>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <label>Target Role / Goal
+          <input name="goal" value="{{ goal }}" placeholder="e.g., Staff DevOps Engineer, Principal Product Manager" required>
         </label>
-
         <label>Target Timeline
           <select name="timeline">
-            <option {% if selected_timeline == '30 Days' %}selected{% endif %}>30-Day Intensive Sprint</option>
-            <option {% if selected_timeline == '90 Days' or not selected_timeline %}selected{% endif %}>90-Day Structured Plan (Recommended)</option>
-            <option {% if selected_timeline == '6 Months' %}selected{% endif %}>6-Month Strategic Move</option>
-            <option {% if selected_timeline == '1 Year' %}selected{% endif %}>1-Year Mastery Transition</option>
+            <option {% if selected_timeline == '30 Days' %}selected{% endif %}>30 Days (Accelerated Sprint)</option>
+            <option {% if selected_timeline == '90 Days' or not selected_timeline %}selected{% endif %}>90 Days (Recommended)</option>
+            <option {% if selected_timeline == '6 Months' %}selected{% endif %}>6 Months (Comprehensive)</option>
+            <option {% if selected_timeline == '1 Year' %}selected{% endif %}>1 Year (Long-term Mastery)</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <label>Current Experience Level
+          <select name="level">
+            <option {% if selected_level == 'Career Switcher' %}selected{% endif %}>Career Switcher (Transitioning from other domain)</option>
+            <option {% if selected_level == 'Entry / Junior (0-2 yrs)' %}selected{% endif %}>Entry / Junior (0-2 yrs)</option>
+            <option {% if selected_level == 'Mid-Level (2-5 yrs)' or not selected_level %}selected{% endif %}>Mid-Level (2-5 yrs)</option>
+            <option {% if selected_level == 'Senior (5-8 yrs)' %}selected{% endif %}>Senior (5-8 yrs)</option>
+            <option {% if selected_level == 'Staff / Principal (8+ yrs)' %}selected{% endif %}>Staff / Principal (8+ yrs)</option>
           </select>
         </label>
       </div>
@@ -53,7 +52,7 @@
       <section class="panel roadmap-container" id="printable-roadmap">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
           <div>
-            <span class="eyebrow">ROADMAP SUMMARY Â· {{ advice.timeline }}</span>
+            <span class="eyebrow">ROADMAP SUMMARY · {{ advice.timeline }}</span>
             <h2 style="margin: 6px 0 4px;">{{ advice.summary }}</h2>
             <p class="muted" style="margin: 0;">Targeting: <strong>{{ advice.level }}</strong> position</p>
           </div>
@@ -62,7 +61,7 @@
               {{ advice.readiness_score }}<small style="font-size: 0.65rem;">Readiness</small>
             </div>
             <button type="button" class="secondary" onclick="window.print()" style="margin-top: 0; padding: 10px 14px; font-size: 0.9rem;">
-              ðŸ–¨ï¸ Print / Save Plan
+              Print / Save Plan
             </button>
           </div>
         </div>
@@ -108,7 +107,7 @@
           <p class="muted" style="margin: 0 0 14px; font-size: 0.92rem;">These verified credentials carry high brand recognition in hiring evaluations for {{ advice.goal }}:</p>
           <div class="skill-tags">
             {% for cert in advice.certifications %}
-              <span class="tag tag-matched">ðŸŽ“ {{ cert }}</span>
+              <span class="tag tag-matched">🎓 {{ cert }}</span>
             {% endfor %}
           </div>
         </div>
@@ -128,11 +127,11 @@
         <!-- Tactical Insights -->
         <div style="margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div style="background: #fff8eb; border: 1px solid #ffe0a6; border-radius: 12px; padding: 18px;">
-            <strong style="color: #d97706; display: block; margin-bottom: 6px;">âš ï¸ Common Pitfall to Avoid</strong>
+            <strong style="color: #d97706; display: block; margin-bottom: 6px;">⚠️ Common Pitfall to Avoid</strong>
             <p style="margin: 0; font-size: 0.92rem; color: #92400e;">{{ advice.top_pitfall }}</p>
           </div>
           <div style="background: #e6fcf5; border: 1px solid #b2f2bb; border-radius: 12px; padding: 18px;">
-            <strong style="color: #0ca678; display: block; margin-bottom: 6px;">ðŸ’¡ Your Strategic Advantage</strong>
+            <strong style="color: #0ca678; display: block; margin-bottom: 6px;">💡 Your Strategic Advantage</strong>
             <p style="margin: 0; font-size: 0.92rem; color: #2b8a3e;">{{ advice.unfair_advantage }}</p>
           </div>
         </div>
@@ -146,7 +145,7 @@
       navigator.clipboard.writeText(text).then(() => {
         const btn = document.getElementById('copy-template-btn');
         const orig = btn.innerText;
-        btn.innerText = 'âœ“ Copied!';
+        btn.innerText = '✓ Copied!';
         btn.style.background = '#087f5b';
         setTimeout(() => {
           btn.innerText = orig;
@@ -155,6 +154,6 @@
       });
     }
   </script>
-  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>`n</body>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
+</body>
 </html>
-
