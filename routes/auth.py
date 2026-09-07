@@ -21,14 +21,16 @@ def login():
     return render_template("login.html")
 
 
-@auth_bp.post("/register")
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "GET":
+        return redirect(url_for("auth.login", mode="signup"))
     name = request.form.get("name", "").strip()
     email = request.form.get("email", "").strip().lower()
     password = request.form.get("password", "")
     if not name or not email or len(password) < 8:
         flash("Enter a name, a valid email, and a password of at least 8 characters.", "error")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login", mode="signup"))
     try:
         db = get_db()
         cursor = db.execute(
@@ -41,7 +43,7 @@ def register():
         return redirect(url_for("dashboard"))
     except Exception:
         flash("An account with that email already exists.", "error")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login", mode="signup"))
 
 
 @auth_bp.get("/logout")
