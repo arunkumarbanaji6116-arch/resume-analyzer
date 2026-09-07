@@ -1511,6 +1511,21 @@ hr {
   border-color: rgba(51, 65, 85, 0.8);
 }
 
+.dark nav {
+  background: rgba(15, 23, 42, 0.88);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+.dark nav a:not(.brand) {
+  color: #94a3b8;
+}
+
+.dark nav a:not(.brand):hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .dark .top-header-btn {
   background: rgba(15, 23, 42, 0.85);
   border-color: rgba(51, 65, 85, 0.8);

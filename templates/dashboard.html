@@ -18,417 +18,284 @@
   </script>
 </head>
 <body>
-  <div class="dashboard-layout">
-    <!-- Collapsible Sidebar -->
-    <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Main Navigation">
-      <div>
-        <!-- Brand & Logo -->
-        <a href="/dashboard" class="sidebar-title-section" style="text-decoration:none;">
-          <div class="sidebar-logo-icon">
-            <svg width="22" height="22" viewBox="0 0 50 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" fill="white" />
-              <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" fill="white" fill-opacity="0.85" />
+  <!-- Floating Island Navigation Bar -->
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div>
+      <a href="/resume">Resume Review</a>
+      <a href="/interview">Interview Lab</a>
+      <a href="/career">Career Coach</a>
+      <a href="/jobs">Job Analyzer</a>
+      <button type="button" class="top-header-btn" id="theme-toggle-btn" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme" style="width: 36px; height: 36px; border-radius: 50%; margin: 0; display: inline-flex;">
+        <svg id="theme-icon-sun" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+      <a href="/logout">Log out</a>
+    </div>
+  </nav>
+
+  <!-- Main Dashboard Content Container -->
+  <main class="container">
+    <div style="margin-top: 10px; margin-bottom: 28px;">
+      <p class="eyebrow" style="margin: 0 0 6px;">WELCOME BACK, {{ current_user or 'CANDIDATE' }}</p>
+      <h1 style="margin: 0 0 8px;">Your career workspace</h1>
+      <p class="workspace-intro" style="margin: 0;">Choose a focus area to step into your next career move.</p>
+    </div>
+
+    <!-- Quick Stats Bar (Bento-style summary) -->
+    <section class="quick-stats-grid" aria-label="Quick metrics">
+      <div class="panel quick-stat-card spatial-glow-surface">
+        <div class="quick-stat-header">
+          <div class="quick-stat-icon" style="background: rgba(109, 93, 252, 0.12); color: #6d5dfc;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
             </svg>
           </div>
-          <div class="sidebar-brand-text">
-            <span class="sidebar-brand-name">CareerForge AI</span>
-            <span class="sidebar-brand-plan">Pro Workspace</span>
-          </div>
-        </a>
-
-        <!-- Navigation items -->
-        <nav class="sidebar-nav">
-          <div class="sidebar-section-label">Workspace</div>
-
-          <a href="/dashboard" class="sidebar-item active" title="Dashboard">
-            <span class="sidebar-item-icon-box icon-box-dashboard">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Dashboard</span>
-          </a>
-
-          <a href="/resume" class="sidebar-item" title="Resume Review">
-            <span class="sidebar-item-icon-box icon-box-resume">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
-                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                <path d="M10 13h4"/>
-                <path d="M10 17h4"/>
-                <path d="M10 9h1"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Resume Review</span>
-            <span class="sidebar-badge badge-ats">ATS</span>
-          </a>
-
-          <a href="/interview" class="sidebar-item" title="Interview Lab">
-            <span class="sidebar-item-icon-box icon-box-interview">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" x2="12" y1="19" y2="22"/>
-                <line x1="8" x2="16" y1="22" y2="22"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Interview Lab</span>
-          </a>
-
-          <a href="/career" class="sidebar-item" title="Career Coach">
-            <span class="sidebar-item-icon-box icon-box-career">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Career Coach</span>
-          </a>
-
-          <a href="/jobs" class="sidebar-item" title="Job Analyzer">
-            <span class="sidebar-item-icon-box icon-box-jobs">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Job Analyzer</span>
-            <span class="sidebar-badge badge-jobs">5</span>
-          </a>
-
-          <div class="sidebar-section-label" style="margin-top: 14px;">Account</div>
-
-          <a href="/career" class="sidebar-item" title="Settings">
-            <span class="sidebar-item-icon-box icon-box-settings">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Settings</span>
-          </a>
-
-          <a href="/logout" class="sidebar-item item-logout" title="Log out">
-            <span class="sidebar-item-icon-box icon-box-logout">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" x2="9" y1="12" y2="12"/>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Log out</span>
-          </a>
-        </nav>
-
-        <!-- AI Engine Status Pill -->
-        <div class="sidebar-ai-status">
-          <span class="ai-status-pulse"></span>
-          <span class="ai-status-text">Gemini AI Active</span>
+          <span class="trend-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +6.4%
+          </span>
         </div>
+        <p class="quick-stat-label">ATS Match Score</p>
+        <p class="quick-stat-val">94%</p>
+        <p class="quick-stat-subtext">Top tier keyword density</p>
       </div>
 
-      <!-- Footer Collapse Button -->
-      <div class="sidebar-footer">
-        <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
-          <svg class="sidebar-toggle-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="11 19 4 12 11 5"/>
-            <polyline points="18 19 11 12 18 5"/>
-          </svg>
-          <span id="sidebar-toggle-label">Collapse</span>
+      <div class="panel quick-stat-card spatial-glow-surface">
+        <div class="quick-stat-header">
+          <div class="quick-stat-icon" style="background: rgba(12, 166, 120, 0.12); color: #0ca678;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            </svg>
+          </div>
+          <span class="trend-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +4 this wk
+          </span>
+        </div>
+        <p class="quick-stat-label">Practice Sessions</p>
+        <p class="quick-stat-val">12</p>
+        <p class="quick-stat-subtext">Avg STAR score: 86/100</p>
+      </div>
+
+      <div class="panel quick-stat-card spatial-glow-surface">
+        <div class="quick-stat-header">
+          <div class="quick-stat-icon" style="background: rgba(247, 103, 7, 0.12); color: #f76707;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
+          </div>
+          <span class="trend-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +14 pts
+          </span>
+        </div>
+        <p class="quick-stat-label">Readiness Index</p>
+        <p class="quick-stat-val">88<span style="font-size:1rem;color:var(--muted);font-weight:600;">/100</span></p>
+        <p class="quick-stat-subtext">Senior Engineer Track</p>
+      </div>
+
+      <div class="panel quick-stat-card spatial-glow-surface">
+        <div class="quick-stat-header">
+          <div class="quick-stat-icon" style="background: rgba(28, 126, 214, 0.12); color: #1c7ed6;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <span class="trend-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            5 strong fits
+          </span>
+        </div>
+        <p class="quick-stat-label">Jobs Analyzed</p>
+        <p class="quick-stat-val">18</p>
+        <p class="quick-stat-subtext">3 high-match applications</p>
+      </div>
+    </section>
+
+    <!-- 4 Interactive Workspace Tool Cards -->
+    <section style="margin-bottom: 32px;">
+      <div class="tool-grid" aria-label="Career tools" style="margin: 20px 0 32px;">
+        <!-- 1. Resume Review -->
+        <button class="workspace-card card-resume spatial-glow-surface" type="button" data-tool="Resume Review" data-description="Get practical, role-focused feedback that makes your experience clear, impactful, and ATS-ready." data-action="Review my resume" data-href="/resume">
+          <span class="card-orbit" aria-hidden="true"></span>
+          <span class="card-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+              <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+              <path d="M10 13h4"/>
+              <path d="M10 17h4"/>
+              <path d="M10 9h1"/>
+            </svg>
+          </span>
+          <strong>Resume Review</strong>
+          <span>Improve your story</span>
+          <em>Open space</em>
+        </button>
+
+        <!-- 2. Interview Lab -->
+        <button class="workspace-card card-interview spatial-glow-surface" type="button" data-tool="Interview Lab" data-description="Practice tailored questions, refine your answers with the STAR method, and track your running score." data-action="Start practice" data-href="/interview">
+          <span class="card-orbit" aria-hidden="true"></span>
+          <span class="card-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" x2="12" y1="19" y2="22"/>
+              <line x1="8" x2="16" y1="22" y2="22"/>
+            </svg>
+          </span>
+          <strong>Interview Lab</strong>
+          <span>Practice with structure</span>
+          <em>Open space</em>
+        </button>
+
+        <!-- 3. Career Coach -->
+        <button class="workspace-card card-career spatial-glow-surface" type="button" data-tool="Career Coach" data-description="Turn your career goal into a 4-phase milestone roadmap with weekly action sprints and LinkedIn outreach scripts." data-action="Plan my path" data-href="/career">
+          <span class="card-orbit" aria-hidden="true"></span>
+          <span class="card-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
+          </span>
+          <strong>Career Coach</strong>
+          <span>Make a targeted plan</span>
+          <em>Open space</em>
+        </button>
+
+        <!-- 4. Job Analyzer -->
+        <button class="workspace-card card-jobs spatial-glow-surface" type="button" data-tool="Job Analyzer" data-description="Compare job requirements with your resume, get AI semantic match scoring, and detect missing skills." data-action="Analyze a job" data-href="/jobs">
+          <span class="card-orbit" aria-hidden="true"></span>
+          <span class="card-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12h4"/>
+              <path d="M18 12h4"/>
+              <path d="M12 2v4"/>
+              <path d="M12 18v4"/>
+              <circle cx="12" cy="12" r="7"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor" fill-opacity="0.3"/>
+            </svg>
+          </span>
+          <strong>Job Analyzer</strong>
+          <span>Check your fit</span>
+          <em>Open space</em>
         </button>
       </div>
-    </aside>
+    </section>
 
-    <!-- Main Content Area -->
-    <main class="dashboard-main">
-      <!-- Top Header -->
-      <header class="dashboard-top-header">
-        <div class="top-header-title">
-          <p class="eyebrow" style="margin:0 0 4px;">WELCOME BACK, {{ current_user or 'CANDIDATE' }}</p>
-          <h1>Your Career Workspace</h1>
+    <!-- Content Split: Recent Activity & Career Progression Widgets -->
+    <section class="dashboard-content-split">
+      <!-- Left: Activity Stream -->
+      <div class="panel" style="padding: 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0;">Recent Activity</h2>
+          <span style="font-size: 0.8rem; color: var(--muted); font-weight: 600;">Real-time sync</span>
         </div>
 
-        <div class="top-header-actions">
-          <button type="button" class="top-header-btn" title="Notifications" aria-label="Notifications">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-            </svg>
-            <span class="notif-ping"></span>
-          </button>
+        {% if activities %}
+          <ul class="activity-stream">
+            {% for item in activities %}
+              <li class="activity-stream-item">
+                <div class="stream-icon-circle" style="
+                  {% if item.kind == 'resume' %}background:rgba(109, 93, 252, 0.12); color:#6d5dfc;
+                  {% elif item.kind == 'interview' %}background:rgba(12, 166, 120, 0.12); color:#0ca678;
+                  {% elif item.kind == 'career' %}background:rgba(247, 103, 7, 0.12); color:#f76707;
+                  {% else %}background:rgba(28, 126, 214, 0.12); color:#1c7ed6;{% endif %}
+                ">
+                  {% if item.kind == 'resume' %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+                  {% elif item.kind == 'interview' %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                  {% elif item.kind == 'career' %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                  {% else %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  {% endif %}
+                </div>
+                <div class="stream-content">
+                  <p class="stream-title">{{ item.title }}</p>
+                  <p class="stream-sub">{{ item.created_at or 'Recently updated' }} · {{ item.kind|capitalize }}</p>
+                </div>
+                <div class="stream-score">
+                  {% if item.score is not none %}{{ item.score }}/100{% else %}Done{% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div style="text-align: center; padding: 36px 20px;">
+            <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(109, 93, 252, 0.08); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <p style="font-weight: 750; margin: 0 0 6px; color: var(--ink);">No activities recorded yet</p>
+            <p style="font-size: 0.88rem; color: var(--muted); margin: 0 0 18px;">Start by uploading a resume or starting a tailored mock interview session.</p>
+            <a href="/resume" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; font-size:0.88rem;">Review Resume</a>
+          </div>
+        {% endif %}
+      </div>
 
-          <button type="button" class="top-header-btn" id="theme-toggle-btn" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme">
-            <svg id="theme-icon-sun" style="display:none;" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-            <svg id="theme-icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-            </svg>
-          </button>
+      <!-- Right: Career Progression Widget -->
+      <div class="panel career-widget-card">
+        <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0 0 6px;">Skill Readiness</h2>
+        <p style="font-size: 0.82rem; color: var(--muted); margin: 0 0 20px;">Target metrics calculated by Gemini AI</p>
 
-          <div class="top-header-btn" title="{{ current_user or 'Candidate Profile' }}" style="cursor:default; font-weight:750; color:var(--accent);">
-            {{ (current_user[0]|upper) if current_user else 'C' }}
+        <div class="progress-widget-row">
+          <div class="progress-widget-label">
+            <span>ATS Keyword Match</span>
+            <strong style="color:var(--accent);">92%</strong>
+          </div>
+          <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
+            <div style="background: var(--accent-gradient); height: 100%; width: 92%; border-radius: 999px;"></div>
           </div>
         </div>
-      </header>
 
-      <!-- Quick Stats Bar (Bento-style summary) -->
-      <section class="quick-stats-grid" aria-label="Quick metrics">
-        <div class="panel quick-stat-card spatial-glow-surface">
-          <div class="quick-stat-header">
-            <div class="quick-stat-icon" style="background: rgba(109, 93, 252, 0.12); color: #6d5dfc;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-              </svg>
-            </div>
-            <span class="trend-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-              +6.4%
-            </span>
+        <div class="progress-widget-row">
+          <div class="progress-widget-label">
+            <span>STAR Behavioral Structure</span>
+            <strong style="color:#0ca678;">85%</strong>
           </div>
-          <p class="quick-stat-label">ATS Match Score</p>
-          <p class="quick-stat-val">94%</p>
-          <p class="quick-stat-subtext">Top tier keyword density</p>
-        </div>
-
-        <div class="panel quick-stat-card spatial-glow-surface">
-          <div class="quick-stat-header">
-            <div class="quick-stat-icon" style="background: rgba(12, 166, 120, 0.12); color: #0ca678;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              </svg>
-            </div>
-            <span class="trend-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-              +4 this wk
-            </span>
-          </div>
-          <p class="quick-stat-label">Practice Sessions</p>
-          <p class="quick-stat-val">12</p>
-          <p class="quick-stat-subtext">Avg STAR score: 86/100</p>
-        </div>
-
-        <div class="panel quick-stat-card spatial-glow-surface">
-          <div class="quick-stat-header">
-            <div class="quick-stat-icon" style="background: rgba(247, 103, 7, 0.12); color: #f76707;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-              </svg>
-            </div>
-            <span class="trend-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-              +14 pts
-            </span>
-          </div>
-          <p class="quick-stat-label">Readiness Index</p>
-          <p class="quick-stat-val">88<span style="font-size:1rem;color:var(--muted);font-weight:600;">/100</span></p>
-          <p class="quick-stat-subtext">Senior Engineer Track</p>
-        </div>
-
-        <div class="panel quick-stat-card spatial-glow-surface">
-          <div class="quick-stat-header">
-            <div class="quick-stat-icon" style="background: rgba(28, 126, 214, 0.12); color: #1c7ed6;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-              </svg>
-            </div>
-            <span class="trend-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-              5 strong fits
-            </span>
-          </div>
-          <p class="quick-stat-label">Jobs Analyzed</p>
-          <p class="quick-stat-val">18</p>
-          <p class="quick-stat-subtext">3 high-match applications</p>
-        </div>
-      </section>
-
-      <!-- 4 Interactive Workspace Tool Cards -->
-      <section style="margin-bottom: 24px;">
-        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 14px;">
-          <h2 style="font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; margin: 0;">Interactive Focus Areas</h2>
-          <span style="font-size: 0.82rem; color: var(--muted); font-weight: 600;">Choose a tool to launch</span>
-        </div>
-
-        <div class="tool-grid" aria-label="Career tools" style="margin:0 0 32px;">
-          <!-- 1. Resume Review -->
-          <button class="workspace-card card-resume spatial-glow-surface" type="button" data-tool="Resume Review" data-description="Get practical, role-focused feedback that makes your experience clear, impactful, and ATS-ready." data-action="Review my resume" data-href="/resume">
-            <span class="card-orbit" aria-hidden="true"></span>
-            <span class="card-icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
-                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                <path d="M10 13h4"/>
-                <path d="M10 17h4"/>
-                <path d="M10 9h1"/>
-              </svg>
-            </span>
-            <strong>Resume Review</strong>
-            <span>Improve your story</span>
-            <em>Open space</em>
-          </button>
-
-          <!-- 2. Interview Lab -->
-          <button class="workspace-card card-interview spatial-glow-surface" type="button" data-tool="Interview Lab" data-description="Practice tailored questions, refine your answers with the STAR method, and track your running score." data-action="Start practice" data-href="/interview">
-            <span class="card-orbit" aria-hidden="true"></span>
-            <span class="card-icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" x2="12" y1="19" y2="22"/>
-                <line x1="8" x2="16" y1="22" y2="22"/>
-              </svg>
-            </span>
-            <strong>Interview Lab</strong>
-            <span>Practice with structure</span>
-            <em>Open space</em>
-          </button>
-
-          <!-- 3. Career Coach -->
-          <button class="workspace-card card-career spatial-glow-surface" type="button" data-tool="Career Coach" data-description="Turn your career goal into a 4-phase milestone roadmap with weekly action sprints and LinkedIn outreach scripts." data-action="Plan my path" data-href="/career">
-            <span class="card-orbit" aria-hidden="true"></span>
-            <span class="card-icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-              </svg>
-            </span>
-            <strong>Career Coach</strong>
-            <span>Make a targeted plan</span>
-            <em>Open space</em>
-          </button>
-
-          <!-- 4. Job Analyzer -->
-          <button class="workspace-card card-jobs spatial-glow-surface" type="button" data-tool="Job Analyzer" data-description="Compare job requirements with your resume, get AI semantic match scoring, and detect missing skills." data-action="Analyze a job" data-href="/jobs">
-            <span class="card-orbit" aria-hidden="true"></span>
-            <span class="card-icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12h4"/>
-                <path d="M18 12h4"/>
-                <path d="M12 2v4"/>
-                <path d="M12 18v4"/>
-                <circle cx="12" cy="12" r="7"/>
-                <circle cx="12" cy="12" r="3" fill="currentColor" fill-opacity="0.3"/>
-              </svg>
-            </span>
-            <strong>Job Analyzer</strong>
-            <span>Check your fit</span>
-            <em>Open space</em>
-          </button>
-        </div>
-      </section>
-
-      <!-- Content Split: Recent Activity & Career Progression Widgets -->
-      <section class="dashboard-content-split">
-        <!-- Left: Activity Stream -->
-        <div class="panel" style="padding: 24px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-            <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0;">Recent Activity</h2>
-            <span style="font-size: 0.8rem; color: var(--muted); font-weight: 600;">Real-time sync</span>
-          </div>
-
-          {% if activities %}
-            <ul class="activity-stream">
-              {% for item in activities %}
-                <li class="activity-stream-item">
-                  <div class="stream-icon-circle" style="
-                    {% if item.kind == 'resume' %}background:rgba(109, 93, 252, 0.12); color:#6d5dfc;
-                    {% elif item.kind == 'interview' %}background:rgba(12, 166, 120, 0.12); color:#0ca678;
-                    {% elif item.kind == 'career' %}background:rgba(247, 103, 7, 0.12); color:#f76707;
-                    {% else %}background:rgba(28, 126, 214, 0.12); color:#1c7ed6;{% endif %}
-                  ">
-                    {% if item.kind == 'resume' %}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                    {% elif item.kind == 'interview' %}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-                    {% elif item.kind == 'career' %}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-                    {% else %}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                    {% endif %}
-                  </div>
-                  <div class="stream-content">
-                    <p class="stream-title">{{ item.title }}</p>
-                    <p class="stream-sub">{{ item.created_at or 'Recently updated' }} · {{ item.kind|capitalize }}</p>
-                  </div>
-                  <div class="stream-score">
-                    {% if item.score is not none %}{{ item.score }}/100{% else %}Done{% endif %}
-                  </div>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <div style="text-align: center; padding: 36px 20px;">
-              <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(109, 93, 252, 0.08); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              </div>
-              <p style="font-weight: 750; margin: 0 0 6px; color: var(--ink);">No activities recorded yet</p>
-              <p style="font-size: 0.88rem; color: var(--muted); margin: 0 0 18px;">Start by uploading a resume or starting a tailored mock interview session.</p>
-              <a href="/resume" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; font-size:0.88rem;">Review Resume</a>
-            </div>
-          {% endif %}
-        </div>
-
-        <!-- Right: Career Progression Widget -->
-        <div class="panel career-widget-card">
-          <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0 0 6px;">Skill Readiness</h2>
-          <p style="font-size: 0.82rem; color: var(--muted); margin: 0 0 20px;">Target metrics calculated by Gemini AI</p>
-
-          <div class="progress-widget-row">
-            <div class="progress-widget-label">
-              <span>ATS Keyword Match</span>
-              <strong style="color:var(--accent);">92%</strong>
-            </div>
-            <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
-              <div style="background: var(--accent-gradient); height: 100%; width: 92%; border-radius: 999px;"></div>
-            </div>
-          </div>
-
-          <div class="progress-widget-row">
-            <div class="progress-widget-label">
-              <span>STAR Behavioral Structure</span>
-              <strong style="color:#0ca678;">85%</strong>
-            </div>
-            <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
-              <div style="background: linear-gradient(90deg, #0ca678, #20c997); height: 100%; width: 85%; border-radius: 999px;"></div>
-            </div>
-          </div>
-
-          <div class="progress-widget-row" style="margin-bottom: 24px;">
-            <div class="progress-widget-label">
-              <span>System Design Readiness</span>
-              <strong style="color:#f76707;">78%</strong>
-            </div>
-            <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
-              <div style="background: linear-gradient(90deg, #f76707, #ff922b); height: 100%; width: 78%; border-radius: 999px;"></div>
-            </div>
-          </div>
-
-          <div style="border-top: 1px solid var(--line); padding-top: 18px;">
-            <p style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 10px;">In-Demand Tags</p>
-            <div style="display:flex; flex-wrap:wrap; gap:6px;">
-              <span class="pill" style="font-size:0.75rem; padding:4px 10px;">System Design</span>
-              <span class="pill" style="font-size:0.75rem; padding:4px 10px;">FastAPI / Python</span>
-              <span class="pill" style="font-size:0.75rem; padding:4px 10px;">Distributed Cache</span>
-              <span class="pill" style="font-size:0.75rem; padding:4px 10px;">Kubernetes</span>
-            </div>
+          <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #0ca678, #20c997); height: 100%; width: 85%; border-radius: 999px;"></div>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+
+        <div class="progress-widget-row" style="margin-bottom: 24px;">
+          <div class="progress-widget-label">
+            <span>System Design Readiness</span>
+            <strong style="color:#f76707;">78%</strong>
+          </div>
+          <div style="background: rgba(0,0,0,0.06); height: 8px; border-radius: 999px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #f76707, #ff922b); height: 100%; width: 78%; border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--line); padding-top: 18px;">
+          <p style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 10px;">In-Demand Tags</p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="pill" style="font-size:0.75rem; padding:4px 10px;">System Design</span>
+            <span class="pill" style="font-size:0.75rem; padding:4px 10px;">FastAPI / Python</span>
+            <span class="pill" style="font-size:0.75rem; padding:4px 10px;">Distributed Cache</span>
+            <span class="pill" style="font-size:0.75rem; padding:4px 10px;">Kubernetes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- Bottom Sheet Animated Drawer -->
   <div class="tool-drawer" id="tool-drawer" aria-hidden="true">
