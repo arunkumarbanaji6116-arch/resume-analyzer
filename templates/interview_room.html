@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -12,7 +12,7 @@
     <div><a href="/interview">Exit Session</a></div>
   </nav>
 
-  <main class="container" id="interview-app" data-role="{{ role }}" data-questions='{{ questions|tojson }}'>
+  <main class="container" id="interview-app" data-role="{{ role }}" data-questions='{{ questions|tojson }}' data-voice="{{ voice }}" data-auto-speak="{{ 'true' if auto_speak else 'false' }}" data-elevenlabs="{{ 'true' if elevenlabs_configured else 'false' }}">
     <!-- Header with Live Progress & Running Score -->
     <div class="interview-header-card">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -46,7 +46,42 @@
 
     <!-- Active Question & Answering Section -->
     <section class="panel interview-question-panel" id="question-section">
-      <div class="question-meta">
+      <!-- AI Voice Interviewer Header Bar -->
+      <div class="voice-interviewer-header">
+        <div class="voice-interviewer-profile">
+          <div class="voice-avatar-circle" id="voice-avatar">
+            <span class="voice-avatar-emoji">🎙️</span>
+            <div class="voice-ripple-ring"></div>
+          </div>
+          <div class="voice-interviewer-meta">
+            <div class="voice-interviewer-name-row">
+              <strong id="current-voice-name">AI Interviewer ({{ voice|capitalize }})</strong>
+              <span class="voice-engine-badge" id="voice-engine-badge">
+                {% if elevenlabs_configured %}ElevenLabs HD Voice{% else %}Interactive Voice{% endif %}
+              </span>
+            </div>
+            <div class="voice-status-line" id="voice-status-line">
+              <div class="sound-wave-bars" id="sound-wave-bars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <span id="voice-status-text">Ready to ask question</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="voice-controls-row">
+          <button type="button" class="voice-control-btn replay-voice-btn" id="replay-voice-btn" title="Listen to question again">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <span id="replay-btn-label">Replay Question</span>
+          </button>
+          <button type="button" class="voice-control-btn mute-voice-btn" id="mute-voice-btn" title="Toggle audio sound">
+            <svg id="mute-icon-unmuted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="mute-icon-muted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="question-meta" style="margin-top: 14px;">
         <span class="badge badge-category" id="question-category-badge">Category</span>
       </div>
 

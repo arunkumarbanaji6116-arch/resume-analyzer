@@ -2,8 +2,11 @@ from datetime import datetime, timezone
 
 from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for
 
+from config import Config
 from ai.interview_ai import assess_answer, questions_for
+from ai.voice_ai import generate_speech, VOICES
 from db import get_db
+from flask import Response
 
 interview_bp = Blueprint("interview", __name__)
 
@@ -15,8 +18,14 @@ def setup():
     if request.method == "POST":
         session["interview_role"] = request.form.get("role", "General")
         session["interview_count"] = int(request.form.get("question_count", 5))
+        session["interview_voice"] = request.form.get("voice", "rachel")
+        session["interview_auto_speak"] = request.form.get("auto_speak") != "off"
         return redirect(url_for("interview.room"))
-    return render_template("interview_setup.html")
+    return render_template(
+        "interview_setup.html",
+        elevenlabs_configured=bool(Config.ELEVENLABS_API_KEY),
+        voices=VOICES
+    )
 
 
 @interview_bp.get("/interview/room")
@@ -25,14 +34,41 @@ def room():
         return redirect(url_for("auth.login"))
     role = session.get("interview_role", "General")
     count = session.get("interview_count", 5)
+    voice = session.get("interview_voice", "rachel")
+    auto_speak = session.get("interview_auto_speak", True)
     all_questions = questions_for(role)
     selected_questions = all_questions[:count]
     return render_template(
         "interview_room.html",
         role=role,
         questions=selected_questions,
-        total_count=len(selected_questions)
+        total_count=len(selected_questions),
+        voice=voice,
+        auto_speak=auto_speak,
+        elevenlabs_configured=bool(Config.ELEVENLABS_API_KEY),
+        voices=VOICES
     )
+
+
+@interview_bp.post("/interview/speak")
+def speak():
+    if "user_id" not in session:
+        return jsonify({"error": "Please sign in."}), 401
+    payload = request.get_json(silent=True) or {}
+    text = payload.get("text", "").strip()
+    voice = payload.get("voice") or session.get("interview_voice", "rachel")
+
+    if not text:
+        return jsonify({"error": "Text is required."}), 400
+
+    audio_bytes = generate_speech(text, voice)
+    if audio_bytes:
+        return Response(audio_bytes, mimetype="audio/mpeg")
+
+    return jsonify({
+        "fallback": True,
+        "message": "ElevenLabs audio not generated; using speech synthesis."
+    })
 
 
 @interview_bp.post("/interview/assess")

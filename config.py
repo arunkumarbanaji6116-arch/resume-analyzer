@@ -14,6 +14,8 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "careerforge-session-secret-2026")
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("SECRET_KEY")
     GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+    ELEVENLABS_DEFAULT_VOICE = os.getenv("ELEVENLABS_DEFAULT_VOICE", "21m00Tcm4TlvDq8ikWAM")
 
     if IS_VERCEL:
         _tmp = Path(tempfile.gettempdir())

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -12,7 +12,7 @@
     <div><a href="/dashboard">Dashboard</a></div>
   </nav>
 
-  <main class="auth-card" style="max-width: 540px; margin: 40px auto 80px;">
+  <main class="auth-card" style="max-width: 540px; margin: 100px auto 80px;">
     <p class="eyebrow">MOCK INTERVIEW SIMULATOR</p>
     <h1>Set up your interview</h1>
     <p class="muted" style="margin: -6px 0 20px;">Experience a realistic question drill. Practice your STAR framework, receive AI feedback on every question, and track your running score progress.</p>
@@ -30,12 +30,36 @@
         </select>
       </label>
 
-      <label style="margin-top: 10px;">Session Length
+      <label style="margin-top: 12px;">Session Length
         <select name="question_count">
           <option value="5" selected>Full Mock Interview (5 Questions: Tech, Behavioral, Leadership)</option>
           <option value="3">Focused Sprint (3 Questions)</option>
         </select>
       </label>
+
+      <label style="margin-top: 12px;">
+        <span style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-weight: 700;">🎙️ AI Interviewer Voice</span>
+          {% if elevenlabs_configured %}
+            <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; font-size: 0.72rem; padding: 2px 8px; border: 1px solid rgba(16, 185, 129, 0.3);">ElevenLabs HD</span>
+          {% else %}
+            <span class="badge" style="background: rgba(109, 93, 252, 0.12); color: #6d5dfc; font-size: 0.72rem; padding: 2px 8px;">Web Voice</span>
+          {% endif %}
+        </span>
+        <select name="voice">
+          <option value="rachel" selected>Rachel · Professional Recruiter (Clear, polished, female)</option>
+          <option value="adam">Adam · Senior Hiring Manager (Deep, structured, male)</option>
+          <option value="sarah">Sarah · Technical Lead (Warm, articulate, female)</option>
+          <option value="george">George · Executive Director (Seasoned, measured, male)</option>
+        </select>
+      </label>
+
+      <div style="margin-top: 14px; display: flex; align-items: center; gap: 10px; background: rgba(248, 247, 255, 0.85); border: 1px solid rgba(109, 93, 252, 0.25); border-radius: 12px; padding: 12px 16px;">
+        <input type="checkbox" id="auto_speak" name="auto_speak" checked style="width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--accent);">
+        <label for="auto_speak" style="margin: 0; font-size: 0.88rem; font-weight: 600; cursor: pointer; color: var(--ink);">
+          Auto-speak questions out loud upon arrival
+        </label>
+      </div>
 
       <div style="background: rgba(255, 255, 255, 0.75); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.88rem; color: var(--muted); box-shadow: var(--spatial-shadow-sm);">
         <strong style="color: var(--ink); display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.92rem;">
