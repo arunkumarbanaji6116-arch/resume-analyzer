@@ -38,8 +38,10 @@
 
         <!-- Navigation items -->
         <nav class="sidebar-nav">
+          <div class="sidebar-section-label">Workspace</div>
+
           <a href="/dashboard" class="sidebar-item active" title="Dashboard">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-dashboard">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
@@ -49,7 +51,7 @@
           </a>
 
           <a href="/resume" class="sidebar-item" title="Resume Review">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-resume">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
                 <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
@@ -59,11 +61,11 @@
               </svg>
             </span>
             <span class="sidebar-item-text">Resume Review</span>
-            <span class="sidebar-badge">ATS</span>
+            <span class="sidebar-badge badge-ats">ATS</span>
           </a>
 
           <a href="/interview" class="sidebar-item" title="Interview Lab">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-interview">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -75,7 +77,7 @@
           </a>
 
           <a href="/career" class="sidebar-item" title="Career Coach">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-career">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -85,20 +87,20 @@
           </a>
 
           <a href="/jobs" class="sidebar-item" title="Job Analyzer">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-jobs">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
               </svg>
             </span>
             <span class="sidebar-item-text">Job Analyzer</span>
-            <span class="sidebar-badge" style="background:#0284c7;">5</span>
+            <span class="sidebar-badge badge-jobs">5</span>
           </a>
 
-          <div class="sidebar-section-label">Account</div>
+          <div class="sidebar-section-label" style="margin-top: 14px;">Account</div>
 
           <a href="/career" class="sidebar-item" title="Settings">
-            <span class="sidebar-item-icon">
+            <span class="sidebar-item-icon-box icon-box-settings">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -107,8 +109,8 @@
             <span class="sidebar-item-text">Settings</span>
           </a>
 
-          <a href="/logout" class="sidebar-item" title="Log out">
-            <span class="sidebar-item-icon">
+          <a href="/logout" class="sidebar-item item-logout" title="Log out">
+            <span class="sidebar-item-icon-box icon-box-logout">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                 <polyline points="16 17 21 12 16 7"/>
@@ -118,6 +120,12 @@
             <span class="sidebar-item-text">Log out</span>
           </a>
         </nav>
+
+        <!-- AI Engine Status Pill -->
+        <div class="sidebar-ai-status">
+          <span class="ai-status-pulse"></span>
+          <span class="ai-status-text">Gemini AI Active</span>
+        </div>
       </div>
 
       <!-- Footer Collapse Button -->
