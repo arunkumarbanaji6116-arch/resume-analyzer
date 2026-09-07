@@ -737,11 +737,27 @@ hr {
   box-shadow: var(--spatial-shadow-sm);
 }
 
+.upload-dropzone input[type="file"] {
+  display: none !important;
+}
+
 .upload-dropzone:hover {
   border-color: var(--accent);
   background: rgba(248, 247, 255, 0.85);
   transform: translateY(-2px);
   box-shadow: 0 12px 28px -6px rgba(109, 93, 252, 0.15);
+}
+
+.upload-dropzone.drag-active {
+  border-color: #6d5dfc !important;
+  background: rgba(238, 235, 255, 0.95) !important;
+  transform: scale(1.02);
+  box-shadow: 0 14px 32px rgba(109, 93, 252, 0.25);
+}
+
+.upload-dropzone.has-file {
+  border-color: rgba(16, 185, 129, 0.6);
+  background: rgba(240, 253, 244, 0.75);
 }
 
 .dropzone-icon {
@@ -760,6 +776,85 @@ hr {
   margin: 4px 0;
   font-size: 0.9rem;
   color: var(--muted);
+}
+
+/* Modern Selected File Chip */
+.selected-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #10b981;
+  border-radius: 9999px;
+  padding: 6px 14px 6px 10px;
+  margin-top: 14px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+  animation: chipSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90%;
+  text-align: left;
+}
+
+@keyframes chipSlideUp {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chip-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.chip-details {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.chip-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #065f46;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.chip-size {
+  font-size: 0.75rem;
+  color: #059669;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.chip-remove-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-remove-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
 }
 
 .image-preview-container {
@@ -1426,18 +1521,25 @@ hr {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 14px;
   backdrop-filter: blur(16px);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropzone-icon-badge:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .compact-dropzone .dropzone-icon-badge {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .dropzone-badge-resume {
@@ -1454,8 +1556,30 @@ hr {
   box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.25), inset 0 1.5px 1.5px #fff;
 }
 
+/* Micro badge pill on the icon badge */
+.badge-tap-pill {
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2.5px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.dropzone-icon-badge:hover,
 .upload-dropzone:hover .dropzone-icon-badge {
-  transform: translateY(-3px) scale(1.08);
+  transform: translateY(-3px) scale(1.09);
 }
 
 .upload-dropzone:hover .dropzone-badge-resume {
@@ -1468,6 +1592,26 @@ hr {
   background: linear-gradient(135deg, #0284c7, #2563eb);
   color: #ffffff;
   box-shadow: 0 12px 30px rgba(2, 132, 199, 0.45), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.6);
+}
+
+.upload-dropzone:hover .badge-tap-pill {
+  background: #6d5dfc;
+  transform: translateX(-50%) scale(1.08);
+  box-shadow: 0 4px 12px rgba(109, 93, 252, 0.4);
+}
+
+.upload-dropzone .dropzone-badge-job:hover .badge-tap-pill,
+.compact-dropzone:hover .dropzone-badge-job .badge-tap-pill {
+  background: #0284c7;
+}
+
+.dropzone-icon-badge:active {
+  transform: scale(0.96);
+}
+
+.dropzone-file-status {
+  min-height: 8px;
+  transition: all 0.2s ease;
 }
 
 .auth-card {
@@ -3371,27 +3515,77 @@ hr {
   }
 }
 
-/* Print Styles */
+/* Print & PDF Export Styles */
+.tool-btn.download-pdf-btn {
+  background: #6d5dfc;
+  color: #ffffff;
+  border-color: #6d5dfc;
+  box-shadow: 0 4px 12px rgba(109, 93, 252, 0.25);
+  font-weight: 700;
+}
+
+.tool-btn.download-pdf-btn:hover {
+  background: #5b4be8;
+  border-color: #5b4be8;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(109, 93, 252, 0.35);
+}
+
+.tool-btn.download-pdf-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media print {
-  body * {
-    visibility: hidden;
+  nav,
+  .builder-form-panel,
+  .preview-toolbar,
+  .sheet-strategy-banner,
+  .flash,
+  .brand,
+  button,
+  .toast-container,
+  .score-elevation-actions,
+  .score-elevation-banner,
+  .improvements-applied-box {
+    display: none !important;
   }
+
+  body, html {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 11pt !important;
+  }
+
+  .container,
+  .builder-container,
+  .builder-preview-panel {
+    display: block !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   .resume-paper-sheet,
-  .resume-paper-sheet * {
-    visibility: visible;
+  .improved-resume-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
   }
-  .resume-paper-sheet {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    border: none;
-  }
-  .sheet-strategy-banner {
-    display: none;
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 12mm 12mm 12mm;
   }
 }
 

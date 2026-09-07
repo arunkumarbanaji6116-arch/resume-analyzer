@@ -22,18 +22,20 @@
         <input name="target_role" value="{{ request.form.get('target_role', '') }}" placeholder="e.g., Senior Full-Stack Engineer, Junior Data Analyst">
       </label>
       
-      <div class="upload-dropzone" id="resume-dropzone">
-        <div class="dropzone-icon-badge dropzone-badge-resume">
+      <div class="upload-dropzone" id="resume-dropzone" data-upload-zone>
+        <div class="dropzone-icon-badge dropzone-badge-resume" role="button" tabindex="0" title="Tap logo to upload resume">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
             <path d="M12 18v-6"/>
             <polyline points="9 15 12 12 15 15"/>
           </svg>
+          <span class="badge-tap-pill">Tap Logo</span>
         </div>
-        <p class="dropzone-title">Click to upload or drag & drop your resume image</p>
-        <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (up to 8 MB)</p>
+        <p class="dropzone-title">Upload Resume Screenshot / Image</p>
+        <p class="muted form-hint">Tap logo above to upload · PNG, JPG, JPEG, or WEBP (up to 8 MB)</p>
         <input id="resume-file-input" name="resume_image" type="file" accept="image/png,image/jpeg,image/webp" required>
+        <div class="dropzone-file-status"></div>
         <div id="image-preview-container" class="image-preview-container" style="display:none;">
           <img id="image-preview" src="" alt="Resume preview">
           <span id="preview-filename" class="preview-filename"></span>
@@ -89,7 +91,11 @@
             <div class="score-elevation-actions">
               <button type="button" class="tool-btn" id="copy-improved-btn">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                Copy Improved Resume
+                Copy Text
+              </button>
+              <button type="button" class="tool-btn download-pdf-btn" id="download-improved-pdf-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download PDF
               </button>
               <a href="/builder?role={{ improved.target_role | urlencode }}" class="button secondary" style="padding: 10px 18px; font-size: 0.88rem; margin: 0; display: inline-flex; align-items: center;">
                 Open in Full Builder →
@@ -169,6 +175,7 @@
       {% endif %}
     {% endif %}
   </main>
+  <script src="{{ url_for('static', filename='js/html2pdf.bundle.min.js') }}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const copyBtn = document.getElementById('copy-improved-btn');
@@ -181,6 +188,43 @@
               copyBtn.innerHTML = '✓ Copied!';
               setTimeout(() => { copyBtn.innerHTML = orig; }, 2000);
             });
+          }
+        });
+      }
+
+      const downloadBtn = document.getElementById('download-improved-pdf-btn');
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+          const content = document.getElementById('improved-sheet-content');
+          if (!content) return;
+          const orig = downloadBtn.innerHTML;
+          downloadBtn.innerHTML = 'Generating PDF...';
+          downloadBtn.disabled = true;
+
+          const opt = {
+            margin: [10, 10, 10, 10],
+            filename: 'Improved_Resume.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          if (typeof html2pdf !== 'undefined') {
+            html2pdf().set(opt).from(content).save().then(() => {
+              downloadBtn.innerHTML = '✓ Downloaded!';
+              setTimeout(() => {
+                downloadBtn.innerHTML = orig;
+                downloadBtn.disabled = false;
+              }, 2000);
+            }).catch(() => {
+              downloadBtn.innerHTML = orig;
+              downloadBtn.disabled = false;
+              window.print();
+            });
+          } else {
+            downloadBtn.innerHTML = orig;
+            downloadBtn.disabled = false;
+            window.print();
           }
         });
       }

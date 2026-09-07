@@ -215,9 +215,13 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                 Copy Text
               </button>
-              <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or Save as PDF">
+              <button type="button" class="tool-btn download-pdf-btn" id="download-resume-pdf-btn" title="Direct Download as PDF File">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="download-pdf-label">Download PDF</span>
+              </button>
+              <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or System PDF">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-                Export PDF
+                Print
               </button>
             {% endif %}
           </div>
@@ -400,8 +404,94 @@
           });
         });
       }
+
+      // Direct PDF Download Handler
+      const downloadPdfBtn = document.getElementById('download-resume-pdf-btn');
+      const downloadPdfLabel = document.getElementById('download-pdf-label');
+
+      if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+          const sheet = document.getElementById('resume-sheet');
+          if (!sheet) {
+            alert('Please generate your resume first.');
+            return;
+          }
+
+          const originalText = downloadPdfLabel ? downloadPdfLabel.textContent : 'Download PDF';
+          if (downloadPdfLabel) downloadPdfLabel.textContent = 'Generating PDF...';
+          downloadPdfBtn.disabled = true;
+
+          // Clone sheet to avoid mutating the visible DOM
+          const clone = sheet.cloneNode(true);
+          // Strip strategy banner from downloaded PDF
+          const banner = clone.querySelector('.sheet-strategy-banner');
+          if (banner) banner.remove();
+
+          // Prepare clean styles for high-fidelity A4 PDF rendering
+          clone.style.width = '794px';
+          clone.style.minHeight = '1120px';
+          clone.style.boxShadow = 'none';
+          clone.style.border = 'none';
+          clone.style.borderRadius = '0';
+          clone.style.background = '#ffffff';
+          clone.style.color = '#111827';
+          clone.style.padding = '36px 42px';
+          clone.style.margin = '0';
+
+          const wrapper = document.createElement('div');
+          wrapper.style.position = 'fixed';
+          wrapper.style.top = '-99999px';
+          wrapper.style.left = '0';
+          wrapper.style.width = '794px';
+          wrapper.style.zIndex = '-99999';
+          wrapper.appendChild(clone);
+          document.body.appendChild(wrapper);
+
+          // Build clean filename: Candidate_Name_Resume.pdf
+          let candidateName = "{% if resume %}{{ resume.candidate_name | e }}{% else %}Candidate{% endif %}";
+          candidateName = candidateName.replace(/[^a-zA-Z0-9_\s-]/g, '').trim().replace(/\s+/g, '_') || 'My';
+          const filename = `${candidateName}_Resume.pdf`;
+
+          const opt = {
+            margin:       [8, 8, 8, 8],
+            filename:     filename,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+              scale: 2, 
+              useCORS: true, 
+              letterRendering: true,
+              scrollY: 0,
+              windowWidth: 800
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          if (typeof html2pdf !== 'undefined') {
+            html2pdf().set(opt).from(clone).save().then(() => {
+              if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+              if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ Downloaded!';
+              setTimeout(() => {
+                if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
+                downloadPdfBtn.disabled = false;
+              }, 2500);
+            }).catch(err => {
+              console.error('PDF Generation failed:', err);
+              if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+              if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
+              downloadPdfBtn.disabled = false;
+              window.print();
+            });
+          } else {
+            if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+            if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
+            downloadPdfBtn.disabled = false;
+            window.print();
+          }
+        });
+      }
     });
   </script>
+  <script src="{{ url_for('static', filename='js/html2pdf.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
 </body>
 </html>

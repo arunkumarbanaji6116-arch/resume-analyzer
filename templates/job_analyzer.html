@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -28,17 +28,19 @@
       <fieldset class="form-section">
         <legend><h3>1. Job Description</h3></legend>
         
-        <div class="upload-dropzone compact-dropzone">
-          <div class="dropzone-icon-badge dropzone-badge-job">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <div class="upload-dropzone compact-dropzone" data-upload-zone>
+          <div class="dropzone-icon-badge dropzone-badge-job" role="button" tabindex="0" title="Tap logo to upload screenshot">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect width="18" height="18" x="3" y="3" rx="4"/>
               <circle cx="9" cy="9" r="2"/>
               <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
             </svg>
+            <span class="badge-tap-pill">Tap Logo</span>
           </div>
           <p class="dropzone-title">Upload Job Posting Screenshot / Image</p>
-          <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
+          <p class="muted form-hint">Tap logo above to upload · PNG, JPG, JPEG, or WEBP (OCR)</p>
           <input name="job_image" type="file" accept="image/png,image/jpeg,image/webp">
+          <div class="dropzone-file-status"></div>
         </div>
 
         <label style="margin-top: 12px;">Or paste job description text
@@ -52,18 +54,20 @@
       <fieldset class="form-section">
         <legend><h3>2. Your Resume</h3></legend>
         
-        <div class="upload-dropzone compact-dropzone">
-          <div class="dropzone-icon-badge dropzone-badge-resume">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <div class="upload-dropzone compact-dropzone" data-upload-zone>
+          <div class="dropzone-icon-badge dropzone-badge-resume" role="button" tabindex="0" title="Tap logo to upload resume">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
               <path d="M12 18v-6"/>
               <polyline points="9 15 12 12 15 15"/>
             </svg>
+            <span class="badge-tap-pill">Tap Logo</span>
           </div>
           <p class="dropzone-title">Upload Resume Screenshot / Image</p>
-          <p class="muted form-hint">PNG, JPG, JPEG, or WEBP (OCR extracts text automatically)</p>
+          <p class="muted form-hint">Tap logo above to upload · PNG, JPG, JPEG, or WEBP (OCR)</p>
           <input name="resume_image" type="file" accept="image/png,image/jpeg,image/webp">
+          <div class="dropzone-file-status"></div>
         </div>
 
         <label style="margin-top: 12px;">Or paste resume text
