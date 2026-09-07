@@ -28,6 +28,8 @@ def resume():
                     text = extract_text_from_resume_image(resume_image)
                     analysis = analyze_resume(text, role)
                     analysis["source"] = f"uploaded image ({resume_image.filename})"
+                    analysis["raw_text"] = text
+                    analysis["target_role"] = role
                     db = get_db()
                     db.execute(
                         "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
@@ -37,3 +39,52 @@ def resume():
                 except ResumeImageError as error:
                     flash(str(error))
     return render_template("resume.html", analysis=analysis)
+
+
+@resume_bp.post("/resume/improve")
+def improve():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    text = request.form.get("resume_text", "").strip()
+    role = request.form.get("target_role", "").strip()
+    try:
+        initial_score = int(request.form.get("initial_score", 70))
+    except (ValueError, TypeError):
+        initial_score = 70
+    notes = request.form.getlist("notes")
+    try:
+        variation_index = int(request.form.get("variation_index", 1))
+    except (ValueError, TypeError):
+        variation_index = 1
+
+    from ai.gemini_client import gemini_improve_resume
+    improved_data = gemini_improve_resume(text, role, initial_score, notes, variation_index)
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
+        (
+            session["user_id"],
+            "resume_boost",
+            f"Resume Boost: {role or 'General'} (+{improved_data.get('score_boost', 25)} pts)",
+            improved_data["improved_score"],
+            datetime.now(timezone.utc).isoformat(),
+        ),
+    )
+    db.commit()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+        return {"status": "ok", "improved": improved_data}
+
+    synthetic_analysis = {
+        "score": initial_score,
+        "raw_text": text,
+        "target_role": role,
+        "notes": notes,
+        "source": "Uploaded resume",
+        "word_count": len(text.split()),
+        "metrics": 2,
+    }
+    return render_template("resume.html", analysis=synthetic_analysis, improved=improved_data)
+

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -49,10 +49,143 @@
           <h2>Your resume snapshot</h2>
           <p>Analyzed from {{ analysis.source }}: {{ analysis.word_count }} words · {{ analysis.metrics }} measurable outcomes found</p>
           <ul>{% for note in analysis.notes %}<li>{{ note }}</li>{% endfor %}</ul>
+
+          <!-- Make This Resume Better Trigger Button -->
+          {% if not improved %}
+            <form action="/resume/improve" method="post" style="margin-top: 20px; display: inline-block;">
+              <input type="hidden" name="resume_text" value="{{ analysis.raw_text }}">
+              <input type="hidden" name="target_role" value="{{ analysis.target_role }}">
+              <input type="hidden" name="initial_score" value="{{ analysis.score }}">
+              {% for note in analysis.notes %}
+                <input type="hidden" name="notes" value="{{ note }}">
+              {% endfor %}
+              <button type="submit" class="button boost-resume-btn spatial-glow-surface" style="margin-top: 0; padding: 12px 24px;">
+                ✨ Make This Resume Better (Boost Score to 95+) →
+              </button>
+            </form>
+          {% endif %}
         </div>
       </section>
+
+      <!-- Improved Resume Result Showcase -->
+      {% if improved %}
+        <section class="panel improved-resume-panel" style="margin-top: 28px;">
+          <div class="score-elevation-banner">
+            <div class="score-pill-compare">
+              <div class="score-box-before">
+                <span class="score-label">Original Score</span>
+                <span class="score-num-old">{{ improved.initial_score }}</span>
+              </div>
+              <div class="score-arrow-growth">
+                <span class="growth-badge">+{{ improved.score_boost }} pts</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/></svg>
+              </div>
+              <div class="score-box-after">
+                <span class="score-label">Elevated ATS Score</span>
+                <span class="score-num-new">{{ improved.improved_score }}<small>/100</small></span>
+              </div>
+            </div>
+
+            <div class="score-elevation-actions">
+              <button type="button" class="tool-btn" id="copy-improved-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy Improved Resume
+              </button>
+              <a href="/builder?role={{ improved.target_role | urlencode }}" class="button secondary" style="padding: 10px 18px; font-size: 0.88rem; margin: 0; display: inline-flex; align-items: center;">
+                Open in Full Builder →
+              </a>
+            </div>
+          </div>
+
+          <!-- Key Improvements Applied -->
+          <div class="improvements-applied-box">
+            <h3 style="font-size: 1.05rem; margin: 0 0 10px; color: var(--ink);">⚡ High-Impact Improvements Applied by AI</h3>
+            <ul class="improvements-list">
+              {% for imp in improved.key_improvements %}
+                <li><strong style="color: #059669; margin-right: 6px;">✓</strong>{{ imp }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- The Polished Resume Preview -->
+          <div class="improved-resume-sheet" id="improved-sheet-content">
+            <header class="sheet-header">
+              <h2 class="sheet-candidate-name">{{ improved.candidate_name }}</h2>
+              <p class="sheet-target-role">{{ improved.target_role }}</p>
+            </header>
+
+            <section class="sheet-section">
+              <h3 class="sheet-section-heading">EXECUTIVE SUMMARY</h3>
+              <p class="sheet-summary-text">{{ improved.executive_summary }}</p>
+            </section>
+
+            <section class="sheet-section">
+              <h3 class="sheet-section-heading">CORE COMPETENCIES & KEYWORDS</h3>
+              <div class="sheet-skills-grid">
+                {% for group in improved.skills %}
+                  <div class="sheet-skill-category">
+                    <strong>{{ group.category }}:</strong>
+                    <span>{% if group['items'] is iterable and group['items'] is not string %}{{ group['items'] | join(', ') }}{% else %}{{ group['items'] }}{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="sheet-section">
+              <h3 class="sheet-section-heading">ENHANCED EXPERIENCE (XYZ STAR FORMULA)</h3>
+              {% for exp in improved.experience %}
+                <div class="sheet-job-entry">
+                  <div class="sheet-job-header">
+                    <div>
+                      <strong class="sheet-job-title">{{ exp.title }}</strong>
+                      <span class="sheet-job-company"> · {{ exp.company }}</span>
+                    </div>
+                    <div class="sheet-job-meta">
+                      <span>{{ exp.period }}</span>
+                      {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
+                    </div>
+                  </div>
+                  <ul class="sheet-bullets">
+                    {% for bullet in exp.bullets %}
+                      <li>{{ bullet }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endfor %}
+            </section>
+
+            {% if improved.education %}
+              <section class="sheet-section">
+                <h3 class="sheet-section-heading">EDUCATION & CREDENTIALS</h3>
+                {% for edu in improved.education %}
+                  <div class="sheet-edu-entry">
+                    <strong>{{ edu.degree }}</strong> — {{ edu.institution }} ({{ edu.year }})
+                  </div>
+                {% endfor %}
+              </section>
+            {% endif %}
+          </div>
+        </section>
+      {% endif %}
     {% endif %}
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyBtn = document.getElementById('copy-improved-btn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const content = document.getElementById('improved-sheet-content');
+          if (content) {
+            navigator.clipboard.writeText(content.innerText).then(() => {
+              const orig = copyBtn.innerHTML;
+              copyBtn.innerHTML = '✓ Copied!';
+              setTimeout(() => { copyBtn.innerHTML = orig; }, 2000);
+            });
+          }
+        });
+      }
+    });
+  </script>
   <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
   <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
 </body>

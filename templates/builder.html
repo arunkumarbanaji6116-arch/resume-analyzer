@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Resume Builder · CareerForge AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('careerforge_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Floating Island Navigation Bar -->
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div>
+      <a href="/builder" class="nav-active" style="color: var(--accent); font-weight: 700;">Resume Builder</a>
+      <a href="/interview">Interview Lab</a>
+      <a href="/career">Career Coach</a>
+      <a href="/jobs">Job Analyzer</a>
+      <button type="button" class="top-header-btn" id="theme-toggle-btn" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme" style="width: 36px; height: 36px; border-radius: 50%; margin: 0; display: inline-flex;">
+        <svg id="theme-icon-sun" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+      <a href="/logout">Log out</a>
+    </div>
+  </nav>
+
+  <main class="container" style="max-width: 1300px; padding-bottom: 60px;">
+    <!-- Page Header -->
+    <div style="margin-top: 10px; margin-bottom: 24px;">
+      <p class="eyebrow" style="margin: 0 0 6px;">AI RESUME ARCHITECT FROM SCRATCH</p>
+      <h1 style="margin: 0 0 8px;">Resume Builder</h1>
+      <p class="workspace-intro" style="margin: 0;">
+        Build executive-grade, ATS-crushing resumes from scratch with Google Gemini AI. 
+        Each generation explores distinctive phrasing, varied action verbs, and tailored strategic hooks.
+      </p>
+    </div>
+
+    <!-- Builder Dual Grid Layout -->
+    <div class="resume-builder-grid">
+
+      <!-- LEFT COLUMN: Candidate Inputs & Variation Controls -->
+      <div class="panel builder-form-panel">
+        <form id="resume-builder-form" action="/builder/generate" method="post">
+          <input type="hidden" name="variation_seed" id="variation_seed_input" value="{{ current_seed or 1 }}">
+          
+          <!-- Strategy Selector (Ensures distinct generations) -->
+          <div class="builder-section">
+            <label class="builder-section-label">
+              <span>NARRATIVE STRATEGY</span>
+              <small class="muted">Each strategy generates completely different phrasing</small>
+            </label>
+            <div class="strategy-selector-grid">
+              <label class="strategy-pill-card {% if (active_strategy or 'metric_driven') == 'metric_driven' %}active{% endif %}">
+                <input type="radio" name="strategy" value="metric_driven" {% if (active_strategy or 'metric_driven') == 'metric_driven' %}checked{% endif %}>
+                <div class="strategy-pill-content">
+                  <strong>📊 Quantitative & ROI</strong>
+                  <p>Heavy on metrics, revenue impact, %, and business acceleration.</p>
+                </div>
+              </label>
+
+              <label class="strategy-pill-card {% if active_strategy == 'architectural' %}active{% endif %}">
+                <input type="radio" name="strategy" value="architectural" {% if active_strategy == 'architectural' %}checked{% endif %}>
+                <div class="strategy-pill-content">
+                  <strong>🏗️ Technical & Architecture</strong>
+                  <p>Focused on distributed systems, scalability, and code depth.</p>
+                </div>
+              </label>
+
+              <label class="strategy-pill-card {% if active_strategy == 'executive' %}active{% endif %}">
+                <input type="radio" name="strategy" value="executive" {% if active_strategy == 'executive' %}checked{% endif %}>
+                <div class="strategy-pill-content">
+                  <strong>👔 Executive Leadership</strong>
+                  <p>Emphasizes cross-functional leadership, squad mentoring, and strategy.</p>
+                </div>
+              </label>
+
+              <label class="strategy-pill-card {% if active_strategy == 'creative_modern' %}active{% endif %}">
+                <input type="radio" name="strategy" value="creative_modern" {% if active_strategy == 'creative_modern' %}checked{% endif %}>
+                <div class="strategy-pill-content">
+                  <strong>🚀 Modern Product Agility</strong>
+                  <p>Highlights zero-to-one velocity, user experience, and rapid shipping.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Basic Info -->
+          <div class="builder-section">
+            <label class="builder-section-label"><span>TARGET & PROFILE</span></label>
+            <div class="form-row-2col">
+              <div>
+                <label>Full Name</label>
+                <input name="name" value="{{ prefill.name if prefill else (current_user or '') }}" placeholder="e.g. Alex Morgan" required>
+              </div>
+              <div>
+                <label>Target Job Title</label>
+                <input name="target_role" value="{{ prefill.target_role if prefill else '' }}" placeholder="e.g. Senior Full-Stack Engineer" required>
+              </div>
+            </div>
+
+            <div class="form-row-2col" style="margin-top: 10px;">
+              <div>
+                <label>Experience Level</label>
+                <select name="experience_level">
+                  <option value="Entry-Level / Early Career" {% if prefill and prefill.experience_level == 'Entry-Level / Early Career' %}selected{% endif %}>Entry-Level / Early Career</option>
+                  <option value="Mid-Level (3-5 years)" {% if not prefill or prefill.experience_level == 'Mid-Level' or prefill.experience_level == 'Mid-Level (3-5 years)' %}selected{% endif %}>Mid-Level (3–5 years)</option>
+                  <option value="Senior Level (5-9 years)" {% if prefill and 'Senior' in prefill.experience_level %}selected{% endif %}>Senior Level (5–9 years)</option>
+                  <option value="Staff / Principal / Director" {% if prefill and 'Director' in prefill.experience_level %}selected{% endif %}>Staff / Principal / Director</option>
+                </select>
+              </div>
+              <div>
+                <label>Industry / Domain</label>
+                <input name="industry" value="{{ prefill.industry if prefill else 'Technology & Software' }}" placeholder="e.g. FinTech, AI / ML, Healthcare">
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Details -->
+          <div class="builder-section">
+            <label class="builder-section-label"><span>CONTACT & LINKS</span></label>
+            <div class="form-row-2col">
+              <div>
+                <label>Email</label>
+                <input name="email" type="email" value="{{ prefill.email if prefill else '' }}" placeholder="alex@example.com">
+              </div>
+              <div>
+                <label>Phone & Location</label>
+                <input name="phone" value="{{ prefill.phone if prefill else '' }}" placeholder="+1 (555) 019-2834 · San Francisco, CA">
+              </div>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>LinkedIn / GitHub / Portfolio</label>
+              <input name="linkedin" value="{{ prefill.linkedin if prefill else '' }}" placeholder="linkedin.com/in/alexmorgan · github.com/alexmorgan">
+            </div>
+          </div>
+
+          <!-- Skills & Experience Raw Input -->
+          <div class="builder-section">
+            <label class="builder-section-label"><span>SKILLS & EXPERIENCES</span></label>
+            <div style="margin-bottom: 12px;">
+              <label>Key Skills & Technologies</label>
+              <textarea name="skills" rows="2" placeholder="e.g. Python, TypeScript, React, Docker, Kubernetes, AWS, PostgreSQL, Microservices, CI/CD, Agile">{{ prefill.skills if prefill else '' }}</textarea>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label>Past Roles & Responsibilities (raw notes or bullet points)</label>
+              <textarea name="experience_raw" rows="4" placeholder="Briefly describe your past jobs:&#10;• Lead Engineer at TechCorp (2021-Present): built core payments pipeline, led 5 engineers, reduced latency.&#10;• Software Engineer at CloudLabs (2018-2021): developed React/Node dashboard, optimized SQL queries.">{{ prefill.experience_raw if prefill else '' }}</textarea>
+            </div>
+
+            <div class="form-row-2col">
+              <div>
+                <label>Education</label>
+                <input name="education_raw" value="{{ prefill.education_raw if prefill else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018">
+              </div>
+              <div>
+                <label>Projects & Certifications (Optional)</label>
+                <input name="projects_raw" value="{{ prefill.projects_raw if prefill else '' }}" placeholder="e.g. AWS Solutions Architect, Open Source Contributor">
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="builder-action-footer">
+            <button type="submit" id="generate-btn" class="button builder-generate-btn">
+              <span>⚡ Generate Resume from Scratch</span>
+            </button>
+            <button type="button" id="regenerate-variation-btn" class="button secondary builder-variation-btn" title="Generate a fresh variation with different narrative hooks and verbs">
+              <span>🎲 Generate Different Variation <span id="variation-badge" class="badge-seed">#{{ (current_seed or 1) + 1 }}</span></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: Interactive Live Resume Sheet Preview -->
+      <div class="builder-preview-panel">
+        <div class="preview-toolbar">
+          <div class="preview-toolbar-left">
+            <span class="preview-badge-status">
+              <span class="pulse-indicator"></span>
+              Live AI Preview
+            </span>
+            {% if resume %}
+              <span class="ats-score-pill">
+                ATS Score: <strong>{{ resume.ats_score }}/100</strong>
+              </span>
+            {% endif %}
+          </div>
+          <div class="preview-toolbar-actions">
+            {% if resume %}
+              <button type="button" class="tool-btn" id="copy-markdown-btn" title="Copy resume as Markdown">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy Text
+              </button>
+              <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or Save as PDF">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                Export PDF
+              </button>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Paper Sheet Container -->
+        <div class="resume-paper-sheet" id="resume-sheet">
+          {% if resume %}
+            <!-- Resume Header -->
+            <header class="sheet-header">
+              <h1 class="sheet-candidate-name">{{ resume.candidate_name }}</h1>
+              <p class="sheet-target-role">{{ resume.target_role }}</p>
+              <div class="sheet-contact-line">
+                {{ resume.contact_line }}
+              </div>
+            </header>
+
+            <!-- Strategy Indicator Chip -->
+            <div class="sheet-strategy-banner">
+              <span class="sheet-strategy-tag">Generation #{{ resume.variation_seed or 1 }} · {{ resume.strategy_title }}</span>
+              <span class="sheet-strategy-desc">{{ resume.strategy_description }}</span>
+            </div>
+
+            <!-- Executive Summary -->
+            <section class="sheet-section">
+              <h2 class="sheet-section-heading">PROFESSIONAL SUMMARY</h2>
+              <p class="sheet-summary-text">{{ resume.executive_summary }}</p>
+            </section>
+
+            <!-- Core Skills -->
+            <section class="sheet-section">
+              <h2 class="sheet-section-heading">CORE COMPETENCIES & TECHNICAL EXPERTISE</h2>
+              <div class="sheet-skills-grid">
+                {% for skill_group in resume.skills %}
+                  <div class="sheet-skill-category">
+                    <strong>{{ skill_group.category }}:</strong>
+                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="sheet-section">
+              <h2 class="sheet-section-heading">PROFESSIONAL EXPERIENCE</h2>
+              {% for exp in resume.experience %}
+                <div class="sheet-job-entry">
+                  <div class="sheet-job-header">
+                    <div>
+                      <strong class="sheet-job-title">{{ exp.title }}</strong>
+                      <span class="sheet-job-company"> · {{ exp.company }}</span>
+                    </div>
+                    <div class="sheet-job-meta">
+                      <span>{{ exp.period }}</span>
+                      {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
+                    </div>
+                  </div>
+                  <ul class="sheet-bullets">
+                    {% for bullet in exp.bullets %}
+                      <li>{{ bullet }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endfor %}
+            </section>
+
+            <!-- Education -->
+            {% if resume.education %}
+              <section class="sheet-section">
+                <h2 class="sheet-section-heading">EDUCATION</h2>
+                {% for edu in resume.education %}
+                  <div class="sheet-edu-entry">
+                    <div>
+                      <strong>{{ edu.degree }}</strong> — {{ edu.institution }}
+                    </div>
+                    <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                  </div>
+                {% endfor %}
+              </section>
+            {% endif %}
+
+            <!-- Projects or Certs -->
+            {% if resume.projects_or_certifications %}
+              <section class="sheet-section">
+                <h2 class="sheet-section-heading">PROJECTS & CERTIFICATIONS</h2>
+                {% for proj in resume.projects_or_certifications %}
+                  <div class="sheet-proj-entry">
+                    <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                  </div>
+                {% endfor %}
+              </section>
+            {% endif %}
+
+          {% else %}
+            <!-- Blank / Placeholder State Before Generation -->
+            <div class="sheet-empty-state">
+              <div class="sheet-empty-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <line x1="10" y1="9" x2="8" y2="9"/>
+                </svg>
+              </div>
+              <h3>Ready to Architect Your Dream Resume</h3>
+              <p>Fill out the profile and experience notes on the left, choose your narrative strategy, and click <strong>Generate Resume</strong> to produce your tailored document.</p>
+              <div class="empty-mockup-bars">
+                <div class="mockup-bar" style="width: 45%; height: 16px; margin: 0 auto 12px;"></div>
+                <div class="mockup-bar" style="width: 70%; height: 10px; margin: 0 auto 20px;"></div>
+                <div class="mockup-bar" style="width: 100%; height: 8px; margin-bottom: 8px;"></div>
+                <div class="mockup-bar" style="width: 95%; height: 8px; margin-bottom: 8px;"></div>
+                <div class="mockup-bar" style="width: 80%; height: 8px; margin-bottom: 24px;"></div>
+                <div class="mockup-bar" style="width: 100%; height: 8px; margin-bottom: 8px;"></div>
+                <div class="mockup-bar" style="width: 90%; height: 8px;"></div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('resume-builder-form');
+      const seedInput = document.getElementById('variation_seed_input');
+      const regenBtn = document.getElementById('regenerate-variation-btn');
+      const variationBadge = document.getElementById('variation-badge');
+      const copyBtn = document.getElementById('copy-markdown-btn');
+      const strategyCards = document.querySelectorAll('.strategy-pill-card');
+
+      // Strategy Pill Selection
+      strategyCards.forEach(card => {
+        card.addEventListener('click', () => {
+          strategyCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+        });
+      });
+
+      // Regenerate with Distinct Variation (Increments Seed & Changes Strategy)
+      if (regenBtn) {
+        regenBtn.addEventListener('click', () => {
+          let currentSeed = parseInt(seedInput.value || '1', 10);
+          currentSeed += 1;
+          seedInput.value = currentSeed;
+          if (variationBadge) {
+            variationBadge.textContent = `#${currentSeed}`;
+          }
+
+          // Cycle to next strategy for variety
+          const radios = document.querySelectorAll('input[name="strategy"]');
+          if (radios.length > 0) {
+            let nextIndex = (currentSeed - 1) % radios.length;
+            radios[nextIndex].checked = true;
+            strategyCards.forEach((c, idx) => {
+              if (idx === nextIndex) c.classList.add('active');
+              else c.classList.remove('active');
+            });
+          }
+
+          // Submit form
+          form.submit();
+        });
+      }
+
+      // Copy Markdown / Text
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const sheet = document.getElementById('resume-sheet');
+          if (!sheet) return;
+          const text = sheet.innerText;
+          navigator.clipboard.writeText(text).then(() => {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✓ Copied!';
+            setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+          }).catch(() => {
+            alert('Copied to clipboard');
+          });
+        });
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
+</body>
+</html>
