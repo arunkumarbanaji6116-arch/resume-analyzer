@@ -1,4 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ==========================================================================
+     Theme (Dark / Light) Toggle
+     ========================================================================== */
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  const sunIcon = document.getElementById("theme-icon-sun");
+  const moonIcon = document.getElementById("theme-icon-moon");
+
+  function updateThemeIcons(isDark) {
+    if (sunIcon && moonIcon) {
+      if (isDark) {
+        sunIcon.style.display = "block";
+        moonIcon.style.display = "none";
+      } else {
+        sunIcon.style.display = "none";
+        moonIcon.style.display = "block";
+      }
+    }
+  }
+
+  // Sync icons on page load
+  const isCurrentlyDark = document.documentElement.classList.contains("dark");
+  updateThemeIcons(isCurrentlyDark);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.toggle("dark");
+      localStorage.setItem("careerforge_theme", isDark ? "dark" : "light");
+      updateThemeIcons(isDark);
+    });
+  }
+
+  /* ==========================================================================
+     Collapsible Sidebar Toggle
+     ========================================================================== */
+  const sidebar = document.getElementById("dashboard-sidebar");
+  const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+  const sidebarToggleLabel = document.getElementById("sidebar-toggle-label");
+
+  if (sidebar && sidebarToggleBtn) {
+    // Restore sidebar state from localStorage
+    const isCollapsedSaved = localStorage.getItem("careerforge_sidebar_collapsed") === "true";
+    if (isCollapsedSaved) {
+      sidebar.classList.add("sidebar-collapsed");
+      if (sidebarToggleLabel) sidebarToggleLabel.textContent = "Expand";
+    }
+
+    sidebarToggleBtn.addEventListener("click", () => {
+      const isCollapsed = sidebar.classList.toggle("sidebar-collapsed");
+      localStorage.setItem("careerforge_sidebar_collapsed", isCollapsed ? "true" : "false");
+      if (sidebarToggleLabel) {
+        sidebarToggleLabel.textContent = isCollapsed ? "Expand" : "Collapse";
+      }
+    });
+  }
+
+  /* ==========================================================================
+     Workspace Tools Drawer Logic
+     ========================================================================== */
   const drawer = document.getElementById("tool-drawer");
   if (!drawer) return;
 
