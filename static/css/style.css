@@ -2350,6 +2350,30 @@ hr {
   justify-content: center;
   font-size: 1rem;
   flex-shrink: 0;
+  background: rgba(28, 126, 214, 0.12);
+  color: #1c7ed6;
+}
+
+.stream-kind-resume {
+  background: rgba(109, 93, 252, 0.12);
+  color: #6d5dfc;
+}
+
+.stream-kind-interview {
+  background: rgba(12, 166, 120, 0.12);
+  color: #0ca678;
+}
+
+.stream-kind-career {
+  background: rgba(247, 103, 7, 0.12);
+  color: #f76707;
+}
+
+.stream-kind-jobs,
+.stream-kind-job,
+.stream-kind-builder {
+  background: rgba(28, 126, 214, 0.12);
+  color: #1c7ed6;
 }
 
 .stream-content {

@@ -211,12 +211,7 @@
           <ul class="activity-stream">
             {% for item in activities %}
               <li class="activity-stream-item">
-                <div class="stream-icon-circle" style="
-                  {% if item.kind == 'resume' %}background:rgba(109, 93, 252, 0.12); color:#6d5dfc;
-                  {% elif item.kind == 'interview' %}background:rgba(12, 166, 120, 0.12); color:#0ca678;
-                  {% elif item.kind == 'career' %}background:rgba(247, 103, 7, 0.12); color:#f76707;
-                  {% else %}background:rgba(28, 126, 214, 0.12); color:#1c7ed6;{% endif %}
-                ">
+                <div class="stream-icon-circle stream-kind-{{ item.kind }}">
                   {% if item.kind == 'resume' %}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
                   {% elif item.kind == 'interview' %}
