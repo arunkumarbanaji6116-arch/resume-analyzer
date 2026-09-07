@@ -1099,6 +1099,67 @@ hr {
   accent-color: var(--accent);
 }
 
+.career-credentials-box {
+  background: rgba(248, 247, 255, 0.7);
+  border: 1px solid rgba(109, 93, 252, 0.18);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.career-outreach-box {
+  background: rgba(248, 247, 255, 0.85);
+  border: 1px solid rgba(109, 93, 252, 0.22);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.career-outreach-pre {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(109, 93, 252, 0.15);
+  color: var(--ink);
+}
+
+.career-pitfall-box {
+  background: rgba(254, 243, 199, 0.45);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--ink);
+}
+
+.career-advantage-box {
+  background: rgba(209, 250, 229, 0.45);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--ink);
+}
+
+.voice-toggle-row {
+  background: rgba(248, 247, 255, 0.85);
+  border: 1px solid rgba(109, 93, 252, 0.25);
+  color: var(--ink);
+}
+
+.setup-info-box {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.star-guidance-box {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(248, 247, 255, 0.85);
+  border: 1px dashed rgba(109, 93, 252, 0.3);
+  border-radius: 12px;
+  font-size: 0.86rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.progression-table th,
+.progression-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
 /* ==========================================================================
    Interview Simulator & Progress Tracking
    ========================================================================== */
@@ -3719,16 +3780,21 @@ hr {
 .sheet-empty-state h3 {
   font-size: 1.25rem;
   font-weight: 750;
-  color: var(--ink);
+  color: #0f172a !important;
   margin: 0 0 8px;
 }
 
 .sheet-empty-state p {
   font-size: 0.88rem;
-  color: var(--muted);
+  color: #475569 !important;
   max-width: 420px;
   margin: 0 0 28px;
   line-height: 1.55;
+}
+
+.sheet-empty-state strong {
+  color: #0f172a !important;
+  font-weight: 750;
 }
 
 .empty-mockup-bars {
@@ -3858,6 +3924,277 @@ hr {
   .improvements-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   Universal Tool Dark Mode Overrides (Interview, Career, Jobs, Dropzones)
+   ========================================================================== */
+
+/* Resume Builder Empty State (Sheet remains white paper canvas) */
+.dark .sheet-empty-state h3 {
+  color: #0f172a !important;
+}
+
+.dark .sheet-empty-state p {
+  color: #475569 !important;
+}
+
+.dark .sheet-empty-state strong {
+  color: #0f172a !important;
+}
+
+.dark .sheet-empty-icon {
+  background: rgba(109, 93, 252, 0.12) !important;
+  color: #6d5dfc !important;
+}
+
+.dark .empty-mockup-bars {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.dark .empty-mockup-bars .mockup-bar {
+  background: #e2e8f0 !important;
+}
+
+/* Dropzones & Upload Badges in Dark Mode */
+.dark .upload-dropzone {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border-color: rgba(109, 93, 252, 0.35) !important;
+  color: #f8fafc;
+}
+
+.dark .upload-dropzone:hover {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 12px 28px -6px rgba(109, 93, 252, 0.3);
+}
+
+.dark .upload-dropzone.drag-active {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: #8b5cf6 !important;
+}
+
+.dark .dropzone-badge-resume {
+  background: linear-gradient(135deg, rgba(109, 93, 252, 0.3), rgba(79, 70, 229, 0.4)) !important;
+  color: #c4b5fd !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark .dropzone-badge-job {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.3), rgba(14, 165, 233, 0.4)) !important;
+  color: #7dd3fc !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark .badge-tap-pill {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Auth Cards & Setup Panels */
+.dark .auth-card {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc;
+}
+
+.dark .voice-toggle-row {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(109, 93, 252, 0.35) !important;
+  color: #f8fafc !important;
+}
+
+.dark .setup-info-box {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Interview Lab in Dark Mode */
+.dark .interview-header-card {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark .progress-track {
+  background: rgba(30, 41, 59, 0.9) !important;
+}
+
+.dark .q-pill {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+}
+
+.dark .q-pill-active {
+  background: rgba(109, 93, 252, 0.28) !important;
+  border-color: var(--accent) !important;
+}
+
+.dark .q-pill-active .q-pill-num {
+  color: #c4b5fd !important;
+}
+
+.dark .q-pill-done {
+  background: rgba(6, 78, 59, 0.3) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.dark .q-pill-done .q-pill-num,
+.dark .q-pill-done .q-pill-score {
+  color: #34d399 !important;
+}
+
+.dark .voice-interviewer-header {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(109, 93, 252, 0.35) !important;
+}
+
+.dark .voice-interviewer-name-row strong {
+  color: #f8fafc !important;
+}
+
+.dark .voice-control-btn {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  color: #cbd5e1 !important;
+}
+
+.dark .voice-control-btn:hover {
+  background: rgba(45, 55, 72, 0.95) !important;
+  border-color: var(--accent) !important;
+  color: #f8fafc !important;
+}
+
+.dark .voice-control-btn.mute-voice-btn.muted {
+  background: rgba(127, 29, 29, 0.3) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  color: #fca5a5 !important;
+}
+
+.dark .star-guidance-box {
+  background: rgba(30, 41, 59, 0.6) !important;
+  border-color: rgba(109, 93, 252, 0.35) !important;
+  color: #cbd5e1 !important;
+}
+
+.dark .star-badge-missing {
+  background: rgba(30, 41, 59, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #94a3b8 !important;
+}
+
+.dark .star-badge-active {
+  background: rgba(6, 78, 59, 0.35) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #34d399 !important;
+}
+
+.dark .strengths-box {
+  background: rgba(6, 78, 59, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #e2e8f0 !important;
+}
+
+.dark .strengths-box strong {
+  color: #34d399 !important;
+}
+
+.dark .improvements-box {
+  background: rgba(124, 45, 18, 0.25) !important;
+  border-color: rgba(249, 115, 22, 0.35) !important;
+  color: #e2e8f0 !important;
+}
+
+.dark .improvements-box strong {
+  color: #fb923c !important;
+}
+
+.dark .progression-table th,
+.dark .progression-table td {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+/* Career Coach in Dark Mode */
+.dark .phase-card {
+  background: rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+.dark .phase-card h4 {
+  color: #f8fafc !important;
+}
+
+.dark .phase-badge {
+  background: rgba(109, 93, 252, 0.25) !important;
+  color: #c4b5fd !important;
+}
+
+.dark .sprint-item {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+.dark .sprint-item:hover {
+  background: rgba(45, 55, 72, 0.9) !important;
+  border-color: var(--accent) !important;
+}
+
+.dark .career-credentials-box {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(109, 93, 252, 0.3) !important;
+}
+
+.dark .career-outreach-box {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(109, 93, 252, 0.35) !important;
+}
+
+.dark .career-outreach-pre {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(109, 93, 252, 0.25) !important;
+  color: #f8fafc !important;
+}
+
+.dark .career-pitfall-box {
+  background: rgba(120, 53, 15, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #f8fafc !important;
+}
+
+.dark .career-advantage-box {
+  background: rgba(6, 78, 59, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #f8fafc !important;
+}
+
+/* Job Analyzer & Universal Tags in Dark Mode */
+.dark .tag-matched {
+  background: rgba(6, 78, 59, 0.3) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.dark .tag-missing {
+  background: rgba(124, 45, 18, 0.3) !important;
+  color: #fb923c !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
+}
+
+.dark .score {
+  background: radial-gradient(circle at 35% 35%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.85)) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.5), 
+              0 0 0 4px rgba(255, 255, 255, 0.08) inset,
+              0 0 24px rgba(109, 93, 252, 0.2) !important;
+  color: #a78bfa !important;
 }
 
 /* Print & PDF Export Styles */

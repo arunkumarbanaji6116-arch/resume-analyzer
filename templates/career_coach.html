@@ -1,13 +1,48 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Career Coach · CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('careerforge_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 </head>
 <body>
-  <nav><a class="brand" href="/dashboard">CareerForge<span>AI</span></a><div><a href="/dashboard">Dashboard</a></div></nav>
+  <nav>
+    <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
+    <div>
+      <a href="/builder">Resume Builder</a>
+      <a href="/interview">Interview Lab</a>
+      <a href="/career" class="nav-active" style="color: var(--accent); font-weight: 700;">Career Coach</a>
+      <a href="/jobs">Job Analyzer</a>
+      <button type="button" class="top-header-btn" id="theme-toggle-btn" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme" style="width: 36px; height: 36px; border-radius: 50%; margin: 0; display: inline-flex;">
+        <svg id="theme-icon-sun" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+      <a href="/logout">Log out</a>
+    </div>
+  </nav>
   
   <main class="container">
     <p class="eyebrow">STRATEGIC CAREER ROADMAP</p>
@@ -102,7 +137,7 @@
         </div>
 
         <!-- Certifications & Learning Tracks -->
-        <div style="margin-top: 32px; background: #f8fafc; border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
+        <div class="career-credentials-box" style="margin-top: 32px; border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
           <h3 style="margin: 0 0 10px;">Recommended Credentials & Learning Tracks</h3>
           <p class="muted" style="margin: 0 0 14px; font-size: 0.92rem;">These verified credentials carry high brand recognition in hiring evaluations for {{ advice.goal }}:</p>
           <div class="skill-tags">
@@ -113,7 +148,7 @@
         </div>
 
         <!-- Cold Outreach LinkedIn Template -->
-        <div style="margin-top: 28px; background: #f0edff; border: 1px solid #d4ceff; border-radius: 14px; padding: 20px;">
+        <div class="career-outreach-box" style="margin-top: 28px; border-radius: 14px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <h3 style="margin: 0; color: var(--accent);">High-Conversion Informational Outreach Script</h3>
             <button type="button" id="copy-template-btn" style="margin: 0; padding: 8px 14px; font-size: 0.85rem;" onclick="copyTemplate()">
@@ -121,18 +156,18 @@
             </button>
           </div>
           <p class="muted" style="margin: 6px 0 12px; font-size: 0.9rem;">Send this on LinkedIn to peers or alumni at companies you are targeting:</p>
-          <pre id="outreach-text" style="background: white; border: 1px solid #dcd7ff; border-radius: 10px; padding: 14px; font-family: inherit; font-size: 0.92rem; white-space: pre-wrap; line-height: 1.5; color: var(--ink);">{{ advice.outreach_template }}</pre>
+          <pre id="outreach-text" class="career-outreach-pre" style="border-radius: 10px; padding: 14px; font-family: inherit; font-size: 0.92rem; white-space: pre-wrap; line-height: 1.5;">{{ advice.outreach_template }}</pre>
         </div>
 
         <!-- Tactical Insights -->
         <div style="margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div style="background: #fff8eb; border: 1px solid #ffe0a6; border-radius: 12px; padding: 18px;">
+          <div class="career-pitfall-box" style="border-radius: 12px; padding: 18px;">
             <strong style="color: #d97706; display: block; margin-bottom: 6px;">⚠️ Common Pitfall to Avoid</strong>
-            <p style="margin: 0; font-size: 0.92rem; color: #92400e;">{{ advice.top_pitfall }}</p>
+            <p style="margin: 0; font-size: 0.92rem;">{{ advice.top_pitfall }}</p>
           </div>
-          <div style="background: #e6fcf5; border: 1px solid #b2f2bb; border-radius: 12px; padding: 18px;">
+          <div class="career-advantage-box" style="border-radius: 12px; padding: 18px;">
             <strong style="color: #0ca678; display: block; margin-bottom: 6px;">💡 Your Strategic Advantage</strong>
-            <p style="margin: 0; font-size: 0.92rem; color: #2b8a3e;">{{ advice.unfair_advantage }}</p>
+            <p style="margin: 0; font-size: 0.92rem;">{{ advice.unfair_advantage }}</p>
           </div>
         </div>
       </section>

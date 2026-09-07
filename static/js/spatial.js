@@ -33,7 +33,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Universal Dropzone Controller (Tap Logo to Upload)
   initUploadDropzones();
+
+  // Universal Theme Controller (Dark / Light toggle)
+  initThemeController();
 });
+
+function initThemeController() {
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  const sunIcon = document.getElementById("theme-icon-sun");
+  const moonIcon = document.getElementById("theme-icon-moon");
+
+  function updateThemeIcons(isDark) {
+    if (sunIcon && moonIcon) {
+      if (isDark) {
+        sunIcon.style.display = "block";
+        moonIcon.style.display = "none";
+      } else {
+        sunIcon.style.display = "none";
+        moonIcon.style.display = "block";
+      }
+    }
+  }
+
+  // Sync icons on page load with current class on html
+  const isCurrentlyDark = document.documentElement.classList.contains("dark");
+  updateThemeIcons(isCurrentlyDark);
+
+  if (themeToggleBtn) {
+    // Avoid double listeners if already bound elsewhere
+    if (!themeToggleBtn.dataset.bound) {
+      themeToggleBtn.dataset.bound = "true";
+      themeToggleBtn.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("careerforge_theme", isDark ? "dark" : "light");
+        updateThemeIcons(isDark);
+      });
+    }
+  }
+}
 
 function initUploadDropzones() {
   const dropzones = document.querySelectorAll('.upload-dropzone');

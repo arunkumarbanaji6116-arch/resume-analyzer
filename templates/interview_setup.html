@@ -5,11 +5,43 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Interview Lab · CareerForge AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('careerforge_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 </head>
 <body>
   <nav>
     <a class="brand" href="/dashboard">CareerForge<span>AI</span></a>
-    <div><a href="/dashboard">Dashboard</a></div>
+    <div>
+      <a href="/builder">Resume Builder</a>
+      <a href="/interview" class="nav-active" style="color: var(--accent); font-weight: 700;">Interview Lab</a>
+      <a href="/career">Career Coach</a>
+      <a href="/jobs">Job Analyzer</a>
+      <button type="button" class="top-header-btn" id="theme-toggle-btn" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme" style="width: 36px; height: 36px; border-radius: 50%; margin: 0; display: inline-flex;">
+        <svg id="theme-icon-sun" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+      <a href="/logout">Log out</a>
+    </div>
   </nav>
 
   <main class="auth-card" style="max-width: 540px; margin: 100px auto 80px;">
@@ -54,14 +86,14 @@
         </select>
       </label>
 
-      <div style="margin-top: 14px; display: flex; align-items: center; gap: 10px; background: rgba(248, 247, 255, 0.85); border: 1px solid rgba(109, 93, 252, 0.25); border-radius: 12px; padding: 12px 16px;">
+      <div class="voice-toggle-row" style="margin-top: 14px; display: flex; align-items: center; gap: 10px; border-radius: 12px; padding: 12px 16px;">
         <input type="checkbox" id="auto_speak" name="auto_speak" checked style="width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--accent);">
         <label for="auto_speak" style="margin: 0; font-size: 0.88rem; font-weight: 600; cursor: pointer; color: var(--ink);">
           Auto-speak questions out loud upon arrival
         </label>
       </div>
 
-      <div style="background: rgba(255, 255, 255, 0.75); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.88rem; color: var(--muted); box-shadow: var(--spatial-shadow-sm);">
+      <div class="setup-info-box" style="border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.88rem; box-shadow: var(--spatial-shadow-sm);">
         <strong style="color: var(--ink); display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.92rem;">
           <span style="color: var(--accent); font-size: 1rem;">✦</span> AI Rubric Highlights
         </strong>
