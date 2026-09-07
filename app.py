@@ -91,5 +91,8 @@ def create_app():
     return app
 
 
+# Top-level Flask app instance required by Vercel and WSGI runtimes
+app = create_app()
+
 if __name__ == "__main__":
-    create_app().run(debug=True)
+    app.run(debug=True)
