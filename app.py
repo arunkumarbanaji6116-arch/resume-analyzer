@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 import sqlite3
 
 from flask import Flask, flash, g, redirect, render_template, request, session

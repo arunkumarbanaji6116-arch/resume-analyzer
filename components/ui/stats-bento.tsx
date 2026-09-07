@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from "react";
 
 export const StatsBento = () => {
@@ -7,7 +7,7 @@ export const StatsBento = () => {
       <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-2 gap-4 max-w-7xl mx-auto">
         {/* Primary Stat */}
         <div className="md:col-span-3 md:row-span-2 bg-primary rounded-3xl p-10 flex flex-col justify-between overflow-hidden relative">
-          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[repeating-linear-gradient(45deg,#808080_0px_1px,transparent_1px_10px)] opacity-30 mask-[radial-gradient(ellipse_80%_50%_at_100%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[repeating-linear-gradient(45deg,#808080_0px_1px,transparent_1px_10px)] opacity-30 pointer-events-none"></div>
           <div>
             <span className="inline-block px-3 py-1 bg-primary-foreground/10 rounded-full text-[10px] font-semibold text-primary-foreground/60 uppercase tracking-widest mb-6">
               Market Share
@@ -35,7 +35,7 @@ export const StatsBento = () => {
               <div
                 key={i}
                 className="w-1.5 bg-foreground rounded-full"
-                style={{ height: ${h}% }}
+                style={{ height: `${h}%` }}
               />
             ))}
           </div>
