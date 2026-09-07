@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from ai.gemini_client import gemini_build_resume_from_scratch
-from app import get_db
+from db import get_db
 
 builder_bp = Blueprint("builder", __name__)
 
@@ -67,3 +67,4 @@ def generate_resume():
         return {"status": "ok", "resume": generated}
 
     return render_template("builder.html", prefill=data, resume=generated, active_strategy=strategy, current_seed=variation_seed)
+

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, redirect, render_template, request, session, url_for
 
 from ai.career_ai import coach_response
-from app import get_db
+from db import get_db
 
 career_bp = Blueprint("career", __name__)
 

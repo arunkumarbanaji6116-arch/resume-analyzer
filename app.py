@@ -1,42 +1,8 @@
-import sqlite3
-
 from flask import Flask, flash, g, redirect, render_template, request, session
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from config import Config
-
-
-def get_db():
-    if "db" not in g:
-        g.db = sqlite3.connect(Config.DATABASE)
-        g.db.row_factory = sqlite3.Row
-    return g.db
-
-
-def init_db():
-    db = sqlite3.connect(Config.DATABASE)
-    db.executescript(
-        """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS activity (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            kind TEXT NOT NULL,
-            title TEXT NOT NULL,
-            score INTEGER,
-            created_at TEXT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-        """
-    )
-    db.commit()
-    db.close()
+from db import get_db, init_db
 
 
 def create_app():

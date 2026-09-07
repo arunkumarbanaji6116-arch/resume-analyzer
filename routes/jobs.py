@@ -4,7 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 
 from ai.job_analyzer import analyze_job
 from ai.resume_ai import ResumeImageError, extract_text_from_resume_image
-from app import get_db
+from db import get_db
 
 jobs_bp = Blueprint("jobs", __name__)
 

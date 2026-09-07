@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from ai.resume_ai import ResumeImageError, analyze_resume, extract_text_from_resume_image
-from app import get_db
+from db import get_db
 
 resume_bp = Blueprint("resume", __name__)
 

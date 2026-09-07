@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for
 
 from ai.interview_ai import assess_answer, questions_for
-from app import get_db
+from db import get_db
 
 interview_bp = Blueprint("interview", __name__)
 
