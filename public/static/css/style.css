@@ -1300,6 +1300,110 @@ hr {
 }
 
 /* ==========================================================================
+   Multiple Choice Questions (MCQ) Option Cards & Explanations
+   ========================================================================== */
+
+.mcq-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.mcq-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 18px;
+  border-radius: 14px;
+  border: 1.5px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  box-shadow: var(--spatial-shadow-sm);
+  position: relative;
+}
+
+.mcq-option-card:hover:not(.disabled) {
+  border-color: var(--accent);
+  background: rgba(248, 247, 255, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(109, 93, 252, 0.15);
+}
+
+.mcq-option-card.selected {
+  border-color: var(--accent);
+  background: rgba(240, 237, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(109, 93, 252, 0.35);
+}
+
+.mcq-option-letter {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.92rem;
+  background: rgba(109, 93, 252, 0.1);
+  color: var(--accent);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  margin-top: 1px;
+}
+
+.mcq-option-card.selected .mcq-option-letter {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.mcq-option-text {
+  font-size: 0.94rem;
+  color: var(--ink);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.mcq-option-card.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Post-submission Result Highlights */
+.mcq-option-card.correct {
+  border-color: #10b981 !important;
+  background: rgba(209, 250, 229, 0.8) !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35) !important;
+}
+
+.mcq-option-card.correct .mcq-option-letter {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.mcq-option-card.wrong {
+  border-color: #ef4444 !important;
+  background: rgba(254, 226, 226, 0.8) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35) !important;
+}
+
+.mcq-option-card.wrong .mcq-option-letter {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.mcq-explanation-box {
+  background: rgba(248, 247, 255, 0.88);
+  border: 1px solid rgba(109, 93, 252, 0.22);
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: var(--spatial-shadow-sm);
+}
+
+/* ==========================================================================
    AI Voice Interviewer & Sound Wave Visualizer
    ========================================================================== */
 
@@ -4118,6 +4222,39 @@ hr {
 .dark .progression-table td {
   border-color: rgba(255, 255, 255, 0.1) !important;
   color: #f8fafc !important;
+}
+
+/* MCQ in Dark Mode */
+.dark .mcq-option-card {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc;
+}
+
+.dark .mcq-option-card:hover:not(.disabled) {
+  background: rgba(45, 55, 72, 0.85) !important;
+  border-color: var(--accent) !important;
+}
+
+.dark .mcq-option-card.selected {
+  background: rgba(109, 93, 252, 0.25) !important;
+  border-color: var(--accent) !important;
+}
+
+.dark .mcq-option-card.correct {
+  background: rgba(6, 78, 59, 0.35) !important;
+  border-color: #10b981 !important;
+}
+
+.dark .mcq-option-card.wrong {
+  background: rgba(127, 29, 29, 0.35) !important;
+  border-color: #ef4444 !important;
+}
+
+.dark .mcq-explanation-box {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(109, 93, 252, 0.3) !important;
+  color: #cbd5e1 !important;
 }
 
 /* Career Coach in Dark Mode */

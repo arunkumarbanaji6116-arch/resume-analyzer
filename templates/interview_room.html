@@ -40,12 +40,12 @@
     </div>
   </nav>
 
-  <main class="container" id="interview-app" data-role="{{ role }}" data-questions='{{ questions|tojson }}' data-voice="{{ voice }}" data-auto-speak="{{ 'true' if auto_speak else 'false' }}" data-elevenlabs="{{ 'true' if elevenlabs_configured else 'false' }}">
+  <main class="container" id="interview-app" data-role="{{ role }}" data-interview-type="{{ interview_type }}" data-questions='{{ questions|tojson }}' data-voice="{{ voice }}" data-auto-speak="{{ 'true' if auto_speak else 'false' }}" data-elevenlabs="{{ 'true' if elevenlabs_configured else 'false' }}">
     <!-- Header with Live Progress & Running Score -->
     <div class="interview-header-card">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <span class="eyebrow">{{ role|upper }} MOCK INTERVIEW</span>
+          <span class="eyebrow">{{ role|upper }} {% if interview_type == 'mcq' %}MULTIPLE CHOICE DRILL{% else %}MOCK INTERVIEW{% endif %}</span>
           <h1 id="question-number-title" style="margin: 4px 0 0; font-size: 1.8rem;">Question 1 of {{ total_count }}</h1>
         </div>
         <div class="running-score-container">
@@ -115,21 +115,35 @@
 
       <h2 id="question-prompt" class="question-prompt-text">Loading question...</h2>
 
-      <div class="answer-wrapper">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label for="answer" style="margin: 0; font-weight: 700;">Your Response</label>
-          <span class="muted form-hint" id="word-counter" style="margin: 0;">0 words (aim for 90–180)</span>
+      <!-- STAR Open-Ended Answer Block -->
+      <div id="star-answer-block">
+        <div class="answer-wrapper">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="answer" style="margin: 0; font-weight: 700;">Your Response</label>
+            <span class="muted form-hint" id="word-counter" style="margin: 0;">0 words (aim for 90–180)</span>
+          </div>
+          <textarea id="answer" rows="7" placeholder="Structure your response using STAR: What was the Situation, what was your Task, what specific Actions did you take, and what was the quantifiable Result?"></textarea>
         </div>
-        <textarea id="answer" rows="7" placeholder="Structure your response using STAR: What was the Situation, what was your Task, what specific Actions did you take, and what was the quantifiable Result?"></textarea>
+
+        <!-- STAR Assistant Guidance Box -->
+        <div class="star-guidance-box">
+          <span style="font-weight: 700; color: var(--accent);">STAR Rubric:</span>
+          <span><strong>S</strong>ituation (Context)</span> ·
+          <span><strong>T</strong>ask (Goal)</span> ·
+          <span><strong>A</strong>ction (Your exact work)</span> ·
+          <span><strong>R</strong>esult (Impact & metrics)</span>
+        </div>
       </div>
 
-      <!-- STAR Assistant Guidance Box -->
-      <div class="star-guidance-box">
-        <span style="font-weight: 700; color: var(--accent);">STAR Rubric:</span>
-        <span><strong>S</strong>ituation (Context)</span> ·
-        <span><strong>T</strong>ask (Goal)</span> ·
-        <span><strong>A</strong>ction (Your exact work)</span> ·
-        <span><strong>R</strong>esult (Impact & metrics)</span>
+      <!-- Multiple Choice Options Selection Block -->
+      <div id="mcq-answer-block" style="display: none; margin-top: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <label style="margin: 0; font-weight: 700; font-size: 0.95rem;">Select the optimal solution:</label>
+          <span class="muted form-hint" id="mcq-hint" style="margin: 0;">Choose 1 option below</span>
+        </div>
+        <div class="mcq-options-grid" id="mcq-options-grid">
+          <!-- Populated dynamically by JS -->
+        </div>
       </div>
 
       <div style="margin-top: 18px; display: flex; gap: 12px; align-items: center;">
@@ -152,26 +166,39 @@
         </div>
       </div>
 
-      <!-- STAR Rubric Breakdown Badges -->
-      <div style="margin-top: 18px;">
-        <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);">STAR Structure Detected</strong>
-        <div class="star-badges-row">
-          <span class="star-badge" id="star-badge-s">Situation</span>
-          <span class="star-badge" id="star-badge-t">Task</span>
-          <span class="star-badge" id="star-badge-a">Action</span>
-          <span class="star-badge" id="star-badge-r">Result / Metric</span>
+      <!-- STAR Specific Feedback Details -->
+      <div id="star-feedback-details">
+        <!-- STAR Rubric Breakdown Badges -->
+        <div style="margin-top: 18px;">
+          <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);">STAR Structure Detected</strong>
+          <div class="star-badges-row">
+            <span class="star-badge" id="star-badge-s">Situation</span>
+            <span class="star-badge" id="star-badge-t">Task</span>
+            <span class="star-badge" id="star-badge-a">Action</span>
+            <span class="star-badge" id="star-badge-r">Result / Metric</span>
+          </div>
+        </div>
+
+        <!-- Strengths & Improvements Grid -->
+        <div class="feedback-grid" style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="feedback-box strengths-box">
+            <strong style="color: #087f5b;">✓ Strengths</strong>
+            <ul id="feedback-strengths-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
+          </div>
+          <div class="feedback-box improvements-box">
+            <strong style="color: #f76707;">⚡ High-Impact Tip</strong>
+            <ul id="feedback-improvements-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
+          </div>
         </div>
       </div>
 
-      <!-- Strengths & Improvements Grid -->
-      <div class="feedback-grid" style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-        <div class="feedback-box strengths-box">
-          <strong style="color: #087f5b;">✓ Strengths</strong>
-          <ul id="feedback-strengths-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
-        </div>
-        <div class="feedback-box improvements-box">
-          <strong style="color: #f76707;">⚡ High-Impact Tip</strong>
-          <ul id="feedback-improvements-list" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.92rem;"></ul>
+      <!-- MCQ Specific Feedback Details -->
+      <div id="mcq-feedback-details" style="display: none; margin-top: 18px;">
+        <div class="mcq-explanation-box">
+          <strong style="color: var(--accent); display: block; margin-bottom: 6px; font-size: 0.96rem;">
+            💡 Technical Rationale & Deep Dive
+          </strong>
+          <p id="mcq-explanation-text" style="margin: 0; line-height: 1.55;"></p>
         </div>
       </div>
 

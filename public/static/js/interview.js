@@ -64,6 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
     r: document.getElementById('star-badge-r'),
   };
 
+  const interviewType = app.dataset.interviewType || 'star';
+  const isMcq = interviewType === 'mcq';
+
+  // MCQ UI Elements
+  const starAnswerBlock = document.getElementById('star-answer-block');
+  const mcqAnswerBlock = document.getElementById('mcq-answer-block');
+  const mcqOptionsGrid = document.getElementById('mcq-options-grid');
+  const starFeedbackDetails = document.getElementById('star-feedback-details');
+  const mcqFeedbackDetails = document.getElementById('mcq-feedback-details');
+  const mcqExplanationText = document.getElementById('mcq-explanation-text');
+
+  let selectedOptionId = null;
+  let isAssessed = false;
+
   // Pre-load browser voices if available
   if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.onvoiceschanged = () => {
@@ -257,6 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load specific question into the UI
   function loadQuestion(index) {
+    if (index < 0 || index >= totalCount) return;
+    currentIndex = index;
+    isAssessed = false;
+    selectedOptionId = null;
     stopAllAudio();
 
     const q = questions[index];
@@ -266,13 +284,57 @@ document.addEventListener('DOMContentLoaded', () => {
     if (questionTitle) questionTitle.textContent = `Question ${index + 1} of ${totalCount}`;
     if (questionCategory) questionCategory.textContent = category;
     if (questionPrompt) questionPrompt.textContent = text;
-    if (answerTextarea) {
-      answerTextarea.value = '';
-      answerTextarea.focus();
-    }
-    if (wordCounter) {
-      wordCounter.textContent = '0 words (aim for 90–180)';
-      wordCounter.style.color = 'var(--muted)';
+
+    if (isMcq) {
+      if (starAnswerBlock) starAnswerBlock.style.display = 'none';
+      if (mcqAnswerBlock) mcqAnswerBlock.style.display = 'block';
+      if (starFeedbackDetails) starFeedbackDetails.style.display = 'none';
+      if (mcqFeedbackDetails) mcqFeedbackDetails.style.display = 'block';
+      if (assessBtn) {
+        assessBtn.textContent = 'Submit Option for Instant Review';
+        assessBtn.disabled = false;
+      }
+
+      // Render options dynamically
+      if (mcqOptionsGrid) {
+        mcqOptionsGrid.innerHTML = '';
+        const options = q.options || [];
+        options.forEach((opt) => {
+          const card = document.createElement('div');
+          card.className = 'mcq-option-card';
+          card.dataset.optionId = opt.id;
+          card.innerHTML = `
+            <span class="mcq-option-letter">${opt.id}</span>
+            <span class="mcq-option-text">${opt.text}</span>
+          `;
+          card.addEventListener('click', () => {
+            if (isAssessed) return;
+            const allCards = mcqOptionsGrid.querySelectorAll('.mcq-option-card');
+            allCards.forEach((c) => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedOptionId = opt.id;
+          });
+          mcqOptionsGrid.appendChild(card);
+        });
+      }
+    } else {
+      if (starAnswerBlock) starAnswerBlock.style.display = 'block';
+      if (mcqAnswerBlock) mcqAnswerBlock.style.display = 'none';
+      if (starFeedbackDetails) starFeedbackDetails.style.display = 'block';
+      if (mcqFeedbackDetails) mcqFeedbackDetails.style.display = 'none';
+      if (assessBtn) {
+        assessBtn.textContent = 'Submit Answer for AI Review';
+        assessBtn.disabled = false;
+      }
+
+      if (answerTextarea) {
+        answerTextarea.value = '';
+        answerTextarea.focus();
+      }
+      if (wordCounter) {
+        wordCounter.textContent = '0 words (aim for 90–180)';
+        wordCounter.style.color = 'var(--muted)';
+      }
     }
 
     // Update Progress bar
@@ -349,105 +411,214 @@ document.addEventListener('DOMContentLoaded', () => {
     assessBtn.addEventListener('click', async () => {
       stopAllAudio();
 
-      const answer = answerTextarea.value.trim();
-      if (!answer) {
-        alert('Please write an answer before requesting feedback.');
-        answerTextarea.focus();
-        return;
-      }
-
-      assessBtn.disabled = true;
-      assessBtn.textContent = 'Analyzing with STAR rubric...';
-
       const currentQ = questions[currentIndex];
       const qText = typeof currentQ === 'object' ? currentQ.text : currentQ;
       const qCat = typeof currentQ === 'object' ? currentQ.category : 'General';
 
-      try {
-        const res = await fetch('/interview/assess', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answer, question: qText }),
-        });
-        const result = await res.json();
-
-        scores.push(result.score);
-        sessionResults.push({
-          question: qText,
-          category: qCat,
-          score: result.score,
-          answer: answer,
-          feedback: result.feedback,
-        });
-
-        // Update current pill with score
-        const pill = document.getElementById(`q-pill-${currentIndex}`);
-        const pillScore = document.getElementById(`q-pill-score-${currentIndex}`);
-        if (pill) {
-          pill.classList.remove('q-pill-active', 'q-pill-pending');
-          pill.classList.add('q-pill-done');
-        }
-        if (pillScore) {
-          pillScore.textContent = `${result.score}%`;
+      if (isMcq) {
+        if (!selectedOptionId) {
+          alert('Please select one of the options (A, B, C, or D) before submitting.');
+          return;
         }
 
-        // Calculate and update running score
-        const runningAvg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-        if (runningScoreValue) runningScoreValue.textContent = runningAvg;
+        assessBtn.disabled = true;
+        assessBtn.textContent = 'Evaluating choice...';
 
-        // Populate feedback card
-        if (questionScoreNum) questionScoreNum.textContent = result.score;
-        if (feedbackSummaryTitle) {
-          if (result.score >= 80) feedbackSummaryTitle.textContent = '🌟 Strong Response';
-          else if (result.score >= 65) feedbackSummaryTitle.textContent = '👍 Good Answer';
-          else feedbackSummaryTitle.textContent = '⚠️ Needs More Structure';
-        }
-        if (feedbackMainText) feedbackMainText.textContent = result.feedback;
-
-        // STAR Badges
-        if (result.star) {
-          Object.keys(starBadges).forEach((key) => {
-            const badge = starBadges[key];
-            if (badge) {
-              const fullKey = key === 's' ? 'situation' : key === 't' ? 'task' : key === 'a' ? 'action' : 'result';
-              if (result.star[fullKey]) {
-                badge.className = 'star-badge star-badge-active';
-                badge.textContent = `✓ ${badge.textContent.replace(/^([✓+]\s*)?/, '')}`;
-              } else {
-                badge.className = 'star-badge star-badge-missing';
-                badge.textContent = `+ ${badge.textContent.replace(/^([✓+]\s*)?/, '')}`;
-              }
-            }
+        try {
+          const res = await fetch('/interview/assess', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              interview_type: 'mcq',
+              selected_option: selectedOptionId,
+              correct_option: currentQ.correct,
+              explanation: currentQ.explanation
+            }),
           });
-        }
+          const result = await res.json();
+          isAssessed = true;
 
-        // Strengths & Improvements
-        if (strengthsList) {
-          strengthsList.innerHTML = (result.strengths || []).map((s) => `<li>${s}</li>`).join('');
-        }
-        if (improvementsList) {
-          improvementsList.innerHTML = (result.improvements || []).map((i) => `<li>${i}</li>`).join('');
-        }
-
-        // Configure next button
-        if (nextBtn) {
-          if (currentIndex < totalCount - 1) {
-            nextBtn.textContent = 'Next Question →';
-          } else {
-            nextBtn.textContent = 'Complete Interview & View Scorecard 🏆';
+          // Highlight correct and wrong options
+          if (mcqOptionsGrid) {
+            const allCards = mcqOptionsGrid.querySelectorAll('.mcq-option-card');
+            allCards.forEach((card) => {
+              card.classList.add('disabled');
+              if (card.dataset.optionId === currentQ.correct) {
+                card.classList.add('correct');
+              }
+              if (!result.is_correct && card.dataset.optionId === selectedOptionId) {
+                card.classList.add('wrong');
+              }
+            });
           }
+
+          scores.push(result.score);
+          sessionResults.push({
+            question: qText,
+            category: qCat,
+            score: result.score,
+            is_correct: result.is_correct,
+            selected_option: selectedOptionId,
+            correct_option: currentQ.correct,
+            explanation: result.explanation
+          });
+
+          // Update current pill with score
+          const pill = document.getElementById(`q-pill-${currentIndex}`);
+          const pillScore = document.getElementById(`q-pill-score-${currentIndex}`);
+          if (pill) {
+            pill.classList.remove('q-pill-active', 'q-pill-pending');
+            pill.classList.add('q-pill-done');
+          }
+          if (pillScore) {
+            pillScore.textContent = `${result.score}%`;
+          }
+
+          // Calculate and update running score
+          const runningAvg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+          if (runningScoreValue) runningScoreValue.textContent = runningAvg;
+
+          // Populate feedback card
+          if (questionScoreNum) questionScoreNum.textContent = result.score;
+          const scoreCircle = document.getElementById('question-score-circle');
+          if (scoreCircle) {
+            scoreCircle.style.borderColor = result.is_correct ? '#10b981' : '#ef4444';
+            scoreCircle.style.color = result.is_correct ? '#10b981' : '#ef4444';
+          }
+          if (feedbackSummaryTitle) {
+            feedbackSummaryTitle.textContent = result.is_correct ? '✓ Correct Choice!' : `✗ Incorrect (Correct: Option ${currentQ.correct})`;
+          }
+          if (feedbackMainText) {
+            feedbackMainText.textContent = result.feedback;
+          }
+          if (mcqExplanationText) {
+            mcqExplanationText.textContent = result.explanation;
+          }
+
+          // Configure next button
+          if (nextBtn) {
+            if (currentIndex < totalCount - 1) {
+              nextBtn.textContent = 'Next Question →';
+            } else {
+              nextBtn.textContent = 'Complete Drill & View Scorecard 🏆';
+            }
+          }
+
+          // Show feedback
+          if (feedbackSection) {
+            feedbackSection.style.display = 'block';
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } catch (err) {
+          alert('An error occurred during evaluation. Please try again.');
+        } finally {
+          assessBtn.disabled = true;
+          assessBtn.textContent = 'Answer Evaluated ✓';
         }
 
-        // Show feedback
-        if (feedbackSection) {
-          feedbackSection.style.display = 'block';
-          feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // STAR Mode (Existing Flow)
+        const answer = answerTextarea.value.trim();
+        if (!answer) {
+          alert('Please write an answer before requesting feedback.');
+          answerTextarea.focus();
+          return;
         }
-      } catch (err) {
-        alert('An error occurred during assessment. Please try again.');
-      } finally {
-        assessBtn.disabled = false;
-        assessBtn.textContent = 'Submit Answer for AI Review';
+
+        assessBtn.disabled = true;
+        assessBtn.textContent = 'Analyzing with STAR rubric...';
+
+        try {
+          const res = await fetch('/interview/assess', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answer, question: qText, interview_type: 'star' }),
+          });
+          const result = await res.json();
+
+          scores.push(result.score);
+          sessionResults.push({
+            question: qText,
+            category: qCat,
+            score: result.score,
+            answer: answer,
+            feedback: result.feedback,
+          });
+
+          // Update current pill with score
+          const pill = document.getElementById(`q-pill-${currentIndex}`);
+          const pillScore = document.getElementById(`q-pill-score-${currentIndex}`);
+          if (pill) {
+            pill.classList.remove('q-pill-active', 'q-pill-pending');
+            pill.classList.add('q-pill-done');
+          }
+          if (pillScore) {
+            pillScore.textContent = `${result.score}%`;
+          }
+
+          // Calculate and update running score
+          const runningAvg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+          if (runningScoreValue) runningScoreValue.textContent = runningAvg;
+
+          // Populate feedback card
+          if (questionScoreNum) questionScoreNum.textContent = result.score;
+          const scoreCircle = document.getElementById('question-score-circle');
+          if (scoreCircle) {
+            scoreCircle.style.borderColor = '';
+            scoreCircle.style.color = '';
+          }
+          if (feedbackSummaryTitle) {
+            if (result.score >= 80) feedbackSummaryTitle.textContent = '🌟 Strong Response';
+            else if (result.score >= 65) feedbackSummaryTitle.textContent = '👍 Good Answer';
+            else feedbackSummaryTitle.textContent = '⚠️ Needs More Structure';
+          }
+          if (feedbackMainText) feedbackMainText.textContent = result.feedback;
+
+          // STAR Badges
+          if (result.star) {
+            Object.keys(starBadges).forEach((key) => {
+              const badge = starBadges[key];
+              if (badge) {
+                const fullKey = key === 's' ? 'situation' : key === 't' ? 'task' : key === 'a' ? 'action' : 'result';
+                if (result.star[fullKey]) {
+                  badge.className = 'star-badge star-badge-active';
+                  badge.textContent = `✓ ${badge.textContent.replace(/^([✓+]\s*)?/, '')}`;
+                } else {
+                  badge.className = 'star-badge star-badge-missing';
+                  badge.textContent = `+ ${badge.textContent.replace(/^([✓+]\s*)?/, '')}`;
+                }
+              }
+            });
+          }
+
+          // Strengths & Improvements
+          if (strengthsList) {
+            strengthsList.innerHTML = (result.strengths || []).map((s) => `<li>${s}</li>`).join('');
+          }
+          if (improvementsList) {
+            improvementsList.innerHTML = (result.improvements || []).map((i) => `<li>${i}</li>`).join('');
+          }
+
+          // Configure next button
+          if (nextBtn) {
+            if (currentIndex < totalCount - 1) {
+              nextBtn.textContent = 'Next Question →';
+            } else {
+              nextBtn.textContent = 'Complete Interview & View Scorecard 🏆';
+            }
+          }
+
+          // Show feedback
+          if (feedbackSection) {
+            feedbackSection.style.display = 'block';
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } catch (err) {
+          alert('An error occurred during assessment. Please try again.');
+        } finally {
+          assessBtn.disabled = false;
+          assessBtn.textContent = 'Submit Answer for AI Review';
+        }
       }
     });
   }
@@ -489,31 +660,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (finalScoreNum) finalScoreNum.textContent = overallAvg;
     if (finalRatingLabel) {
-      if (overallAvg >= 82) finalRatingLabel.textContent = 'Ready for Real Interviews! 🔥';
-      else if (overallAvg >= 68) finalRatingLabel.textContent = 'Solid Performance — Polish metrics to stand out';
-      else finalRatingLabel.textContent = 'Good Practice Run — Emphasize the STAR format';
+      if (isMcq) {
+        const correctCount = scores.filter((s) => s === 100).length;
+        if (overallAvg >= 80) finalRatingLabel.textContent = `Mastery Demonstrated! 🔥 (${correctCount} of ${totalCount} Correct)`;
+        else if (overallAvg >= 60) finalRatingLabel.textContent = `Solid Technical Base 👍 (${correctCount} of ${totalCount} Correct)`;
+        else finalRatingLabel.textContent = `Needs Review 📚 (${correctCount} of ${totalCount} Correct)`;
+      } else {
+        if (overallAvg >= 82) finalRatingLabel.textContent = 'Ready for Real Interviews! 🔥';
+        else if (overallAvg >= 68) finalRatingLabel.textContent = 'Solid Performance — Polish metrics to stand out';
+        else finalRatingLabel.textContent = 'Good Practice Run — Emphasize the STAR format';
+      }
     }
 
     if (tableBody) {
-      tableBody.innerHTML = sessionResults
-        .map(
-          (r, idx) => `
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px 10px;">
-            <strong>Q${idx + 1}:</strong> ${r.question.slice(0, 65)}...
-          </td>
-          <td style="padding: 12px 10px;">
-            <span class="badge" style="background:#eef2ff; color:#4f46e5;">${r.category}</span>
-          </td>
-          <td style="padding: 12px 10px; text-align: right; font-weight: 800; color: ${
-            r.score >= 75 ? '#087f5b' : r.score >= 60 ? 'var(--accent)' : '#f76707'
-          };">
-            ${r.score}%
-          </td>
-        </tr>
-      `
-        )
-        .join('');
+      if (isMcq) {
+        tableBody.innerHTML = sessionResults
+          .map(
+            (r, idx) => `
+          <tr style="border-bottom: 1px solid var(--line);">
+            <td style="padding: 12px 10px;">
+              <strong>Q${idx + 1}:</strong> ${r.question.slice(0, 75)}...
+              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 3px;">
+                Your choice: <strong>Option ${r.selected_option}</strong> · Correct answer: <strong>Option ${r.correct_option}</strong>
+              </div>
+            </td>
+            <td style="padding: 12px 10px;">
+              <span class="badge" style="background:rgba(109, 93, 252, 0.1); color:var(--accent);">${r.category}</span>
+            </td>
+            <td style="padding: 12px 10px; text-align: right; font-weight: 800; color: ${
+              r.is_correct ? '#087f5b' : '#ef4444'
+            };">
+              ${r.is_correct ? '✓ 100%' : '✗ 0%'}
+            </td>
+          </tr>
+        `
+          )
+          .join('');
+      } else {
+        tableBody.innerHTML = sessionResults
+          .map(
+            (r, idx) => `
+          <tr style="border-bottom: 1px solid var(--line);">
+            <td style="padding: 12px 10px;">
+              <strong>Q${idx + 1}:</strong> ${r.question.slice(0, 65)}...
+            </td>
+            <td style="padding: 12px 10px;">
+              <span class="badge" style="background:#eef2ff; color:#4f46e5;">${r.category}</span>
+            </td>
+            <td style="padding: 12px 10px; text-align: right; font-weight: 800; color: ${
+              r.score >= 75 ? '#087f5b' : r.score >= 60 ? 'var(--accent)' : '#f76707'
+            };">
+              ${r.score}%
+            </td>
+          </tr>
+        `
+          )
+          .join('');
+      }
     }
 
     if (questionSection) questionSection.style.display = 'none';

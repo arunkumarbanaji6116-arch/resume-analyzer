@@ -44,47 +44,76 @@
     </div>
   </nav>
 
-  <main class="auth-card" style="max-width: 540px; margin: 100px auto 80px;">
+  <main class="container">
     <p class="eyebrow">MOCK INTERVIEW SIMULATOR</p>
     <h1>Set up your interview</h1>
-    <p class="muted" style="margin: -6px 0 20px;">Experience a realistic question drill. Practice your STAR framework, receive AI feedback on every question, and track your running score progress.</p>
+    <p class="muted">Experience realistic interview drills. Choose between open-ended STAR behavioral simulations or multiple-choice technical challenges with instant feedback.</p>
 
-    <form method="post">
-      <label>Target Role
-        <select name="role">
-          <option>Software Engineer</option>
-          <option>Frontend Developer</option>
-          <option>Backend Developer</option>
-          <option>Data Analyst</option>
-          <option>Product Manager</option>
-          <option>DevOps / Cloud Engineer</option>
-          <option>General</option>
-        </select>
-      </label>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}<p class="flash" role="alert">{{ message }}</p>{% endfor %}
+      {% endif %}
+    {% endwith %}
 
-      <label style="margin-top: 12px;">Session Length
-        <select name="question_count">
-          <option value="5" selected>Full Mock Interview (5 Questions: Tech, Behavioral, Leadership)</option>
-          <option value="3">Focused Sprint (3 Questions)</option>
-        </select>
-      </label>
+    <form method="post" class="panel">
+      <!-- 2-Column Controls Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <label>Target Role
+          <select name="role" id="interview_role_select">
+            <option>Software Engineer</option>
+            <option>Frontend Developer</option>
+            <option>Backend Developer</option>
+            <option>Data Analyst</option>
+            <option>Product Manager</option>
+            <option>DevOps / Cloud Engineer</option>
+            <option>General</option>
+          </select>
+        </label>
 
-      <label style="margin-top: 12px;">
-        <span style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-weight: 700;">🎙️ AI Interviewer Voice</span>
-          {% if elevenlabs_configured %}
-            <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; font-size: 0.72rem; padding: 2px 8px; border: 1px solid rgba(16, 185, 129, 0.3);">ElevenLabs HD</span>
-          {% else %}
-            <span class="badge" style="background: rgba(109, 93, 252, 0.12); color: #6d5dfc; font-size: 0.72rem; padding: 2px 8px;">Web Voice</span>
-          {% endif %}
+        <label>Interview Format
+          <select name="interview_type" id="interview_type_select">
+            <option value="star" selected>🎯 Interactive STAR Simulation (Open-Ended Answer & AI Feedback)</option>
+            <option value="mcq">🔘 Multiple Choice Drill (Choose the Correct Option & Instant Review)</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px;">
+        <label>Session Length
+          <select name="question_count">
+            <option value="5" selected>Full Mock Interview (5 Questions)</option>
+            <option value="3">Focused Sprint (3 Questions)</option>
+            <option value="6">Comprehensive Drill (6 Questions)</option>
+          </select>
+        </label>
+
+        <label>
+          <span style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-weight: 700;">🎙️ AI Interviewer Voice</span>
+            {% if elevenlabs_configured %}
+              <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; font-size: 0.72rem; padding: 2px 8px; border: 1px solid rgba(16, 185, 129, 0.3);">ElevenLabs HD</span>
+            {% else %}
+              <span class="badge" style="background: rgba(109, 93, 252, 0.12); color: #6d5dfc; font-size: 0.72rem; padding: 2px 8px;">Web Voice</span>
+            {% endif %}
+          </span>
+          <select name="voice">
+            <option value="rachel" selected>Rachel · Professional Recruiter (Clear, polished, female)</option>
+            <option value="adam">Adam · Senior Hiring Manager (Deep, structured, male)</option>
+            <option value="sarah">Sarah · Technical Lead (Warm, articulate, female)</option>
+            <option value="george">George · Executive Director (Seasoned, measured, male)</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Format Helper Description Banner -->
+      <div id="mode-helper-box" class="voice-toggle-row" style="margin-top: 18px; padding: 14px 18px; border-radius: 12px; font-size: 0.88rem; line-height: 1.5;">
+        <strong id="mode-helper-title" style="color: var(--accent); display: block; margin-bottom: 4px; font-size: 0.94rem;">
+          🎯 Mode: Interactive STAR Simulation
+        </strong>
+        <span id="mode-helper-desc">
+          Formulate open-ended responses using Situation, Task, Action, and Result. Gemini AI evaluates your narrative depth, active verbs, and quantifiable metrics.
         </span>
-        <select name="voice">
-          <option value="rachel" selected>Rachel · Professional Recruiter (Clear, polished, female)</option>
-          <option value="adam">Adam · Senior Hiring Manager (Deep, structured, male)</option>
-          <option value="sarah">Sarah · Technical Lead (Warm, articulate, female)</option>
-          <option value="george">George · Executive Director (Seasoned, measured, male)</option>
-        </select>
-      </label>
+      </div>
 
       <div class="voice-toggle-row" style="margin-top: 14px; display: flex; align-items: center; gap: 10px; border-radius: 12px; padding: 12px 16px;">
         <input type="checkbox" id="auto_speak" name="auto_speak" checked style="width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--accent);">
@@ -95,18 +124,40 @@
 
       <div class="setup-info-box" style="border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.88rem; box-shadow: var(--spatial-shadow-sm);">
         <strong style="color: var(--ink); display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.92rem;">
-          <span style="color: var(--accent); font-size: 1rem;">✦</span> AI Rubric Highlights
+          <span style="color: var(--accent); font-size: 1rem;">✦</span> Session Highlights
         </strong>
-        <div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.45;">
-          <div>&bull; Answers are graded on Situation, Task, Action, and Result (STAR)</div>
-          <div>&bull; Score progression tracks your running average as you advance</div>
-          <div>&bull; Actionable tips highlight metrics and concrete outcomes</div>
+        <div id="session-highlights-list" style="display: flex; flex-direction: column; gap: 6px; line-height: 1.45;">
+          <div>&bull; Real-time question voice synthesis and audio playback</div>
+          <div>&bull; Live score tracking with running average and progression pills</div>
+          <div>&bull; Actionable review insights and comprehensive post-interview scorecard</div>
         </div>
       </div>
 
-      <button type="submit" style="margin-top: 20px; width: 100%;">Enter Mock Interview Room</button>
+      <button type="submit" style="margin-top: 22px; width: 100%; padding: 14px 20px; font-size: 1rem;">
+        Enter Mock Interview Room →
+      </button>
     </form>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const typeSelect = document.getElementById('interview_type_select');
+      const helperTitle = document.getElementById('mode-helper-title');
+      const helperDesc = document.getElementById('mode-helper-desc');
+
+      if (typeSelect && helperTitle && helperDesc) {
+        typeSelect.addEventListener('change', () => {
+          if (typeSelect.value === 'mcq') {
+            helperTitle.textContent = '🔘 Mode: Multiple Choice Drill (Choose Correct Option)';
+            helperDesc.textContent = 'Test your architectural, technical, and strategic decision-making with 4 curated options per question. Receive instant scoring, correct answer checks, and deep rationales.';
+          } else {
+            helperTitle.textContent = '🎯 Mode: Interactive STAR Simulation';
+            helperDesc.textContent = 'Formulate open-ended responses using Situation, Task, Action, and Result. Gemini AI evaluates your narrative depth, active verbs, and quantifiable metrics.';
+          }
+        });
+      }
+    });
+  </script>
   <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
 </body>
 </html>
