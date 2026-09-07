@@ -3884,13 +3884,19 @@ hr {
 }
 
 @media print {
+  /* Completely hide website header, navigation, form panels, and extra UI */
   nav,
+  .builder-page-header,
+  .no-print,
+  .workspace-intro,
+  .eyebrow,
   .builder-form-panel,
   .preview-toolbar,
   .sheet-strategy-banner,
   .flash,
   .brand,
   button,
+  .tool-btn,
   .toast-container,
   .score-elevation-actions,
   .score-elevation-banner,
@@ -3903,21 +3909,28 @@ hr {
     color: #111827 !important;
     padding: 0 !important;
     margin: 0 !important;
-    font-size: 11pt !important;
+    font-size: 10pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .container,
   .builder-container,
+  .resume-builder-grid,
   .builder-preview-panel {
     display: block !important;
     max-width: 100% !important;
     width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
   .resume-paper-sheet,
   .improved-resume-sheet {
+    display: block !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
@@ -3926,11 +3939,80 @@ hr {
     width: 100% !important;
     max-width: 100% !important;
     min-height: auto !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .sheet-header {
+    border-bottom: 2px solid #0f172a !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .sheet-candidate-name {
+    font-size: 1.65rem !important;
+    margin: 0 0 2px !important;
+  }
+
+  .sheet-target-role {
+    font-size: 0.98rem !important;
+    margin: 0 0 4px !important;
+  }
+
+  .sheet-contact-line {
+    font-size: 0.8rem !important;
+  }
+
+  .sheet-section {
+    margin-bottom: 12px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .sheet-section-heading {
+    font-size: 0.8rem !important;
+    padding-bottom: 2px !important;
+    margin: 0 0 6px !important;
+  }
+
+  .sheet-summary-text {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .sheet-skills-grid {
+    gap: 4px !important;
+  }
+
+  .sheet-skill-category {
+    font-size: 0.82rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .sheet-job-entry {
+    margin-bottom: 10px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .sheet-job-title {
+    font-size: 0.88rem !important;
+  }
+
+  .sheet-bullets {
+    margin: 4px 0 0 !important;
+    padding-left: 18px !important;
+  }
+
+  .sheet-bullets li {
+    font-size: 0.82rem !important;
+    line-height: 1.45 !important;
+    margin-bottom: 3px !important;
   }
 
   @page {
     size: A4 portrait;
-    margin: 12mm 12mm 12mm 12mm;
+    margin: 10mm 14mm 10mm 14mm;
   }
 }
 

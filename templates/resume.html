@@ -9,15 +9,15 @@
 <body>
   <nav><a class="brand" href="/dashboard">CareerForge<span>AI</span></a><div><a href="/dashboard">Dashboard</a></div></nav>
   <main class="container">
-    <p class="eyebrow">INTELLIGENT OCR REVIEW</p>
-    <h1>Resume Review</h1>
-    <p class="muted">Upload a clear photo or screenshot of your resume. Our OCR extracts the text securely in-memory for instant review and scoring.</p>
+    <p class="eyebrow no-print">INTELLIGENT OCR REVIEW</p>
+    <h1 class="no-print">Resume Review</h1>
+    <p class="muted no-print">Upload a clear photo or screenshot of your resume. Our OCR extracts the text securely in-memory for instant review and scoring.</p>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        {% for message in messages %}<p class="flash" role="alert">{{ message }}</p>{% endfor %}
+        {% for message in messages %}<p class="flash no-print" role="alert">{{ message }}</p>{% endfor %}
       {% endif %}
     {% endwith %}
-    <form method="post" enctype="multipart/form-data" class="panel">
+    <form method="post" enctype="multipart/form-data" class="panel no-print">
       <label>Target role (optional)
         <input name="target_role" value="{{ request.form.get('target_role', '') }}" placeholder="e.g., Senior Full-Stack Engineer, Junior Data Analyst">
       </label>
@@ -230,6 +230,7 @@
       }
     });
   </script>
+  <script src="{{ url_for('static', filename='js/html2pdf.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
   <script src="{{ url_for('static', filename='js/spatial.js') }}"></script>
 </body>

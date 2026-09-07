@@ -50,7 +50,7 @@
 
   <main class="container" style="max-width: 1300px; padding-bottom: 60px;">
     <!-- Page Header -->
-    <div style="margin-top: 10px; margin-bottom: 24px;">
+    <div class="builder-page-header no-print" style="margin-top: 10px; margin-bottom: 24px;">
       <p class="eyebrow" style="margin: 0 0 6px;">AI RESUME ARCHITECT FROM SCRATCH</p>
       <h1 style="margin: 0 0 8px;">Resume Builder</h1>
       <p class="workspace-intro" style="margin: 0;">
@@ -427,23 +427,39 @@
           const banner = clone.querySelector('.sheet-strategy-banner');
           if (banner) banner.remove();
 
-          // Prepare clean styles for high-fidelity A4 PDF rendering
+          // Prepare clean styles for high-fidelity A4 PDF rendering (single page, no left cutoff)
           clone.style.width = '794px';
-          clone.style.minHeight = '1120px';
+          clone.style.maxWidth = '794px';
+          clone.style.minHeight = 'auto';
+          clone.style.height = 'auto';
+          clone.style.boxSizing = 'border-box';
           clone.style.boxShadow = 'none';
           clone.style.border = 'none';
           clone.style.borderRadius = '0';
           clone.style.background = '#ffffff';
           clone.style.color = '#111827';
-          clone.style.padding = '36px 42px';
+          clone.style.padding = '26px 34px';
           clone.style.margin = '0';
+          clone.style.fontFamily = "'Inter', -apple-system, sans-serif";
 
+          // Prevent page break splits inside sections
+          const sections = clone.querySelectorAll('.sheet-section, .sheet-job-entry, .sheet-header');
+          sections.forEach(s => {
+            s.style.pageBreakInside = 'avoid';
+            s.style.breakInside = 'avoid';
+          });
+
+          // Create an invisible wrapper positioned safely at 0,0 behind viewport
           const wrapper = document.createElement('div');
           wrapper.style.position = 'fixed';
-          wrapper.style.top = '-99999px';
           wrapper.style.left = '0';
+          wrapper.style.top = '0';
           wrapper.style.width = '794px';
-          wrapper.style.zIndex = '-99999';
+          wrapper.style.zIndex = '-9999';
+          wrapper.style.opacity = '1';
+          wrapper.style.pointerEvents = 'none';
+          wrapper.style.background = '#ffffff';
+          wrapper.style.overflow = 'hidden';
           wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
 
@@ -453,7 +469,7 @@
           const filename = `${candidateName}_Resume.pdf`;
 
           const opt = {
-            margin:       [8, 8, 8, 8],
+            margin:       [6, 8, 6, 8],
             filename:     filename,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
@@ -461,9 +477,11 @@
               useCORS: true, 
               letterRendering: true,
               scrollY: 0,
-              windowWidth: 800
+              scrollX: 0,
+              logging: false
             },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
           };
 
           if (typeof html2pdf !== 'undefined') {
@@ -475,7 +493,7 @@
                 downloadPdfBtn.disabled = false;
               }, 2500);
             }).catch(err => {
-              console.error('PDF Generation failed:', err);
+              console.error('PDF Generation failed, invoking print fallback:', err);
               if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
               if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
               downloadPdfBtn.disabled = false;
