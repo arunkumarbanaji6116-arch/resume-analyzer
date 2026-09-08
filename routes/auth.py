@@ -77,26 +77,24 @@ def send_google_otp():
 
     sent, status_or_msg = send_otp_email(email, otp_code)
 
-    if status_or_msg == "dev_mode":
-        return jsonify({
-            "success": True,
-            "is_dev_mode": True,
-            "dev_code": otp_code,
-            "message": f"Email service not configured in .env. Test PIN is: {otp_code}",
-        })
-    elif sent:
+    if sent:
         return jsonify({
             "success": True,
             "is_dev_mode": False,
             "message": f"Verification code successfully sent to {email}. Please check your inbox.",
         })
     else:
+        # Email delivery failed
+        logger.error(f"[AUTH ERROR] Failed to deliver OTP to {email}: {status_or_msg}")
+        if status_or_msg == "dev_mode":
+            error_msg = "Email service not configured in .env. Please configure RESEND_API in your .env file."
+        else:
+            error_msg = f"Email delivery failed: {status_or_msg}. Please check your Resend configuration."
         return jsonify({
-            "success": True,
-            "is_dev_mode": True,
-            "dev_code": otp_code,
-            "message": f"Email delivery failed ({status_or_msg}). For testing, your PIN is: {otp_code}",
-        })
+            "success": False,
+            "is_dev_mode": False,
+            "message": error_msg,
+        }), 400
 
 
 @auth_bp.route("/google-otp/verify", methods=["POST"])

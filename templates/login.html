@@ -387,7 +387,7 @@
             </svg>
           </div>
           <h3 class="google-modal-title">Continue with Google</h3>
-          <p class="google-modal-subtitle">Enter your Google / Gmail account to receive a secure login code via SMTP.</p>
+          <p class="google-modal-subtitle">Enter your Google / Gmail account to receive a secure verification code via Resend email.</p>
         </div>
 
         <div id="googleEmailError" class="google-alert google-alert-error" style="display: none;"></div>
@@ -415,7 +415,7 @@
             </svg>
           </div>
           <h3 class="google-modal-title">Enter Verification Code</h3>
-          <p class="google-modal-subtitle">We sent a 6-digit security PIN via SMTP to <strong id="targetGoogleEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>.</p>
+          <p class="google-modal-subtitle">We sent a 6-digit verification code to <strong id="targetGoogleEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox to enter your code.</p>
         </div>
 
         <div id="googleOtpNotice" class="google-alert google-alert-info" style="display: none;"></div>
@@ -553,7 +553,7 @@
         stepOtp.style.display = 'block';
         otpError.style.display = 'none';
 
-        if (noticeText) {
+        if (noticeText && !noticeText.toLowerCase().includes('pin is:')) {
           otpNotice.textContent = noticeText;
           otpNotice.style.display = 'flex';
         } else {
@@ -562,14 +562,7 @@
 
         otpDigits.forEach(d => d.value = '');
         setTimeout(() => {
-          if (devCode && devCode.length === 6) {
-            devCode.split('').forEach((char, i) => {
-              if (otpDigits[i]) otpDigits[i].value = char;
-            });
-            otpDigits[5].focus();
-          } else {
-            otpDigits[0].focus();
-          }
+          otpDigits[0].focus();
         }, 150);
         startResendTimer(60);
       }
@@ -619,7 +612,7 @@
           const data = res.data;
 
           if (res.ok && data && data.success) {
-            showStepOtp(email, data.message, data.dev_code);
+            showStepOtp(email, data.message);
           } else {
             emailError.textContent = (data && data.message) || 'Failed to dispatch verification code. Please check your email.';
             emailError.style.display = 'flex';
