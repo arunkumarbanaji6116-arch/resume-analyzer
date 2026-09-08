@@ -9,13 +9,28 @@ if (fileInput && previewContainer && previewImg) {
   fileInput.addEventListener('change', () => {
     const file = fileInput.files && fileInput.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        previewImg.src = e.target.result;
-        if (previewFilename) previewFilename.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+      const isImage = file.type && file.type.startsWith('image/');
+      const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+      const isDocx = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc');
+
+      if (isImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          previewImg.style.display = 'block';
+          if (previewFilename) previewFilename.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+          previewContainer.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImg.style.display = 'none';
+        previewImg.src = '';
+        const badge = isPdf ? '📄 PDF Document: ' : isDocx ? '📝 Word Document: ' : '📄 ';
+        if (previewFilename) previewFilename.textContent = `${badge}${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
         previewContainer.style.display = 'flex';
-      };
-      reader.readAsDataURL(file);
+      }
+    } else {
+      previewContainer.style.display = 'none';
     }
   });
 }

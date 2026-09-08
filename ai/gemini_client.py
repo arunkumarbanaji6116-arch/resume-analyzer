@@ -535,3 +535,35 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
     }
 
 
+def gemini_extract_text_from_image_bytes(image_bytes: bytes, mime_type: str = "image/png") -> str | None:
+    """Multimodal OCR fallback using Gemini when local engines return empty or fail."""
+    client = get_gemini_client()
+    if not client:
+        return None
+
+    try:
+        from google.genai import types
+        part = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
+        prompt = (
+            "Transcribe all text from this resume or document accurately. "
+            "Preserve sections, bullet points, headings, numbers, and dates. "
+            "Return ONLY the plain extracted text without conversational introductions or quotes."
+        )
+        for model in CANDIDATE_MODELS:
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=[part, prompt],
+                )
+                if response and response.text:
+                    cleaned = response.text.strip()
+                    if cleaned:
+                        return cleaned
+            except Exception as err:
+                logger.warning(f"Gemini OCR fallback failed with model {model}: {err}")
+                continue
+    except Exception as exc:
+        logger.warning(f"Gemini OCR initialization failed: {exc}")
+    return None
+
+

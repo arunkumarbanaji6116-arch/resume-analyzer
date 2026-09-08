@@ -21,26 +21,26 @@ def jobs():
         job_image = request.files.get("job_image")
         resume_image = request.files.get("resume_image")
 
-        # Process Job Description image via OCR if uploaded
+        # Process Job Description file/image via extraction if uploaded
         if job_image and job_image.filename:
             try:
                 extracted_job_text = extract_text_from_resume_image(job_image)
                 job_description = "\n".join(filter(None, (job_description, extracted_job_text)))
             except ResumeImageError as err:
-                flash(f"Job image error: {err}")
+                flash(f"Job posting error: {err}")
 
-        # Process Resume image via OCR if uploaded
+        # Process Resume file/image via extraction if uploaded
         if resume_image and resume_image.filename:
             try:
                 extracted_resume_text = extract_text_from_resume_image(resume_image)
                 resume_text = "\n".join(filter(None, (resume_text, extracted_resume_text)))
             except ResumeImageError as err:
-                flash(f"Resume image error: {err}")
+                flash(f"Resume upload error: {err}")
 
         if not job_description:
-            flash("Please provide a job description by pasting text or uploading a job posting screenshot.")
+            flash("Please provide a job description by pasting text or uploading a document/screenshot.")
         elif not resume_text:
-            flash("Please provide your resume by pasting text or uploading a resume image.")
+            flash("Please provide your resume by pasting text or uploading a PDF, DOCX, or image.")
         else:
             analysis = analyze_job(job_description, resume_text)
             db = get_db()

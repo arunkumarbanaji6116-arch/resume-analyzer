@@ -102,9 +102,14 @@ function initUploadDropzones() {
         return;
       }
       zone.classList.add('has-file');
+      const ext = file.name ? file.name.split('.').pop().toLowerCase() : '';
+      let chipIconHtml = '✓';
+      if (ext === 'pdf') chipIconHtml = '📄';
+      else if (ext === 'docx' || ext === 'doc') chipIconHtml = '📝';
+
       statusContainer.innerHTML = `
         <div class="selected-file-chip">
-          <div class="chip-icon">✓</div>
+          <div class="chip-icon">${chipIconHtml}</div>
           <div class="chip-details">
             <span class="chip-name" title="${file.name}">${file.name}</span>
             <span class="chip-size">${formatBytes(file.size)}</span>

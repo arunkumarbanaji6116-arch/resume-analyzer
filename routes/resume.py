@@ -18,16 +18,17 @@ def resume():
         resume_image = request.files.get("resume_image")
 
         if not resume_image or not resume_image.filename:
-            flash("Please upload a resume image (PNG, JPG, JPEG, or WEBP) to begin the review.")
+            flash("Please upload your resume (PDF, DOCX, PNG, JPG, or WEBP) to begin the review.")
         else:
             extension = resume_image.filename.rsplit(".", 1)[-1].lower() if "." in resume_image.filename else ""
-            if extension not in {"jpg", "jpeg", "png", "webp"}:
-                flash("Unsupported format. Please upload a PNG, JPG, JPEG, or WEBP image.")
+            allowed_extensions = {"pdf", "docx", "doc", "txt", "rtf", "png", "jpg", "jpeg", "webp"}
+            if extension and extension not in allowed_extensions:
+                flash("Unsupported format. Please upload a PDF, DOCX, DOC, TXT, or image file.")
             else:
                 try:
                     text = extract_text_from_resume_image(resume_image)
                     analysis = analyze_resume(text, role)
-                    analysis["source"] = f"uploaded image ({resume_image.filename})"
+                    analysis["source"] = f"uploaded file ({resume_image.filename})"
                     analysis["raw_text"] = text
                     analysis["target_role"] = role
                     db = get_db()
