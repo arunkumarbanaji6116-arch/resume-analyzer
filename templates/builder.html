@@ -18,6 +18,72 @@
       }
     })();
   </script>
+  <style>
+    /* High contrast narrative strategy pill cards */
+    .strategy-pill-card {
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 11px 13px !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+    }
+    .strategy-pill-card:hover {
+      border-color: var(--accent, #6d5dfc) !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 12px rgba(109, 93, 252, 0.12) !important;
+    }
+    .strategy-pill-card.active {
+      border-color: var(--accent, #6d5dfc) !important;
+      background: rgba(109, 93, 252, 0.08) !important;
+      box-shadow: 0 0 0 1.5px var(--accent, #6d5dfc), 0 4px 14px rgba(109, 93, 252, 0.16) !important;
+    }
+    .strategy-pill-content strong {
+      color: #0f172a !important;
+      font-size: 0.84rem !important;
+      font-weight: 700 !important;
+    }
+    .strategy-pill-content p {
+      color: #475569 !important;
+      font-size: 0.74rem !important;
+      line-height: 1.4 !important;
+    }
+    .strategy-pill-card.active .strategy-pill-content strong {
+      color: var(--accent-dark, #4f46e5) !important;
+    }
+    .strategy-pill-card.active .strategy-pill-content p {
+      color: #334155 !important;
+    }
+
+    /* Dark theme visibility */
+    .dark .strategy-pill-card {
+      background: #151d2f !important;
+      border: 1.5px solid #28354d !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    .dark .strategy-pill-card:hover {
+      border-color: #818cf8 !important;
+      background: #1b253b !important;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.22) !important;
+    }
+    .dark .strategy-pill-card.active {
+      border-color: #818cf8 !important;
+      background: rgba(99, 102, 241, 0.22) !important;
+      box-shadow: 0 0 0 1.5px #818cf8, 0 0 18px rgba(99, 102, 241, 0.3) !important;
+    }
+    .dark .strategy-pill-content strong {
+      color: #f8fafc !important;
+    }
+    .dark .strategy-pill-content p {
+      color: #94a3b8 !important;
+    }
+    .dark .strategy-pill-card.active .strategy-pill-content strong {
+      color: #ffffff !important;
+    }
+    .dark .strategy-pill-card.active .strategy-pill-content p {
+      color: #c7d2fe !important;
+    }
+  </style>
 </head>
 <body>
   <!-- Floating Island Navigation Bar -->

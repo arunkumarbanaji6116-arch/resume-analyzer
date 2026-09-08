@@ -3540,13 +3540,20 @@ hr {
 
 .strategy-pill-card {
   display: flex;
-  border: 1.5px solid var(--glass-border-subtle);
+  border: 1.5px solid var(--line, #e2e8f0);
   border-radius: 12px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.6);
+  padding: 11px 13px;
+  background: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.strategy-pill-card:hover {
+  border-color: var(--accent, #6d5dfc);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(109, 93, 252, 0.1);
 }
 
 .strategy-pill-card input[type="radio"] {
@@ -3554,23 +3561,68 @@ hr {
 }
 
 .strategy-pill-card.active {
-  border-color: var(--accent);
+  border-color: var(--accent, #6d5dfc);
   background: rgba(109, 93, 252, 0.08);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: 0 0 0 1.5px var(--accent, #6d5dfc), 0 4px 14px rgba(109, 93, 252, 0.15);
 }
 
 .strategy-pill-content strong {
   display: block;
-  font-size: 0.82rem;
-  color: var(--ink);
-  margin-bottom: 2px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
 }
 
 .strategy-pill-content p {
-  font-size: 0.72rem;
-  color: var(--muted);
+  font-size: 0.73rem;
+  color: #475569;
   margin: 0;
-  line-height: 1.35;
+  line-height: 1.4;
+}
+
+.strategy-pill-card.active .strategy-pill-content strong {
+  color: var(--accent-dark, #4f46e5);
+}
+
+.strategy-pill-card.active .strategy-pill-content p {
+  color: #334155;
+}
+
+/* Dark Mode Visibility Overrides */
+.dark .strategy-pill-card {
+  background: #151d2f;
+  border: 1.5px solid #28354d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark .strategy-pill-card:hover {
+  border-color: #818cf8;
+  background: #1b253b;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.dark .strategy-pill-card.active {
+  border-color: #818cf8;
+  background: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 1.5px #818cf8, 0 0 18px rgba(99, 102, 241, 0.28);
+}
+
+.dark .strategy-pill-content strong {
+  color: #f8fafc;
+}
+
+.dark .strategy-pill-content p {
+  color: #94a3b8;
+}
+
+.dark .strategy-pill-card.active .strategy-pill-content strong {
+  color: #ffffff;
+}
+
+.dark .strategy-pill-card.active .strategy-pill-content p {
+  color: #c7d2fe;
 }
 
 .form-row-2col {
