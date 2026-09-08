@@ -546,7 +546,7 @@
         emailError.style.display = 'none';
       }
 
-      function showStepOtp(email, noticeText) {
+      function showStepOtp(email, noticeText, devCode) {
         currentEmail = email;
         targetEmailDisplay.textContent = email;
         stepEmail.style.display = 'none';
@@ -561,29 +561,43 @@
         }
 
         otpDigits.forEach(d => d.value = '');
-        setTimeout(() => otpDigits[0].focus(), 50);
+        setTimeout(() => {
+          if (devCode && devCode.length === 6) {
+            devCode.split('').forEach((char, i) => {
+              if (otpDigits[i]) otpDigits[i].value = char;
+            });
+            otpDigits[5].focus();
+          } else {
+            otpDigits[0].focus();
+          }
+        }, 150);
         startResendTimer(60);
       }
 
-      function startResendTimer(seconds) {
-        if (resendTimer) clearInterval(resendTimer);
-        resendSecondsLeft = seconds;
-        btnResend.disabled = true;
-        btnResend.style.opacity = '0.5';
-        resendCountdown.style.display = 'inline';
-        resendCountdown.textContent = `(${resendSecondsLeft}s)`;
-
-        resendTimer = setInterval(() => {
-          resendSecondsLeft--;
-          if (resendSecondsLeft <= 0) {
-            clearInterval(resendTimer);
-            btnResend.disabled = false;
-            btnResend.style.opacity = '1';
-            resendCountdown.style.display = 'none';
-          } else {
-            resendCountdown.textContent = `(${resendSecondsLeft}s)`;
+      async function postJsonWithFallback(urls, bodyData) {
+        let lastErr = null;
+        for (const url of urls) {
+          try {
+            const resp = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify(bodyData)
+            });
+            const text = await resp.text();
+            let data = null;
+            try {
+              data = JSON.parse(text);
+            } catch (jsonErr) {
+              data = { success: false, message: `Server response: ${text.slice(0, 100)}` };
+            }
+            if (resp.status !== 404) {
+              return { ok: resp.ok, status: resp.status, data };
+            }
+          } catch (e) {
+            lastErr = e;
           }
-        }, 1000);
+        }
+        return { ok: false, status: 0, data: { success: false, message: lastErr ? lastErr.message : 'Network error' } };
       }
 
       async function handleSendOtp() {
@@ -601,21 +615,17 @@
         btnSendOtpText.textContent = 'Sending code...';
 
         try {
-          const resp = await fetch('/auth/google-otp/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-          });
-          const data = await resp.json();
+          const res = await postJsonWithFallback(['/google-otp/send', '/auth/google-otp/send'], { email });
+          const data = res.data;
 
-          if (resp.ok && data.success) {
-            showStepOtp(email, data.message);
+          if (res.ok && data && data.success) {
+            showStepOtp(email, data.message, data.dev_code);
           } else {
-            emailError.textContent = data.message || 'Failed to dispatch verification code. Please check your email.';
+            emailError.textContent = (data && data.message) || 'Failed to dispatch verification code. Please check your email.';
             emailError.style.display = 'flex';
           }
         } catch (err) {
-          emailError.textContent = 'Network or server error. Please try again.';
+          emailError.textContent = 'Network or server error (' + (err.message || 'connection failed') + '). Please try again.';
           emailError.style.display = 'flex';
         } finally {
           btnSendOtp.disabled = false;
@@ -638,14 +648,13 @@
         btnVerifyOtpText.textContent = 'Verifying...';
 
         try {
-          const resp = await fetch('/auth/google-otp/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: currentEmail, otp: enteredCode })
+          const res = await postJsonWithFallback(['/google-otp/verify', '/auth/google-otp/verify'], {
+            email: currentEmail,
+            otp: enteredCode
           });
-          const data = await resp.json();
+          const data = res.data;
 
-          if (resp.ok && data.success) {
+          if (res.ok && data && data.success) {
             otpNotice.className = 'google-alert google-alert-success';
             otpNotice.textContent = '✓ Verified successfully! Redirecting to your dashboard...';
             otpNotice.style.display = 'flex';
@@ -653,7 +662,7 @@
               window.location.href = data.redirect_url || '/dashboard';
             }, 600);
           } else {
-            otpError.textContent = data.message || 'Invalid or expired code. Please try again.';
+            otpError.textContent = (data && data.message) || 'Invalid or expired code. Please try again.';
             otpError.style.display = 'flex';
             otpDigits.forEach(d => d.value = '');
             otpDigits[0].focus();

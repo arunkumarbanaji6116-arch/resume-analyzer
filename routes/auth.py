@@ -49,7 +49,8 @@ def register():
         return redirect(url_for("auth.login", mode="signup"))
 
 
-@auth_bp.post("/google-otp/send")
+@auth_bp.route("/google-otp/send", methods=["POST"])
+@auth_bp.route("/auth/google-otp/send", methods=["POST"])
 def send_google_otp():
     data = request.get_json(silent=True) or request.form
     email = (data.get("email") or "").strip().lower()
@@ -81,7 +82,7 @@ def send_google_otp():
             "success": True,
             "is_dev_mode": True,
             "dev_code": otp_code,
-            "message": f"Verification code generated. (SMTP dev mode test PIN: {otp_code})",
+            "message": f"SMTP not configured in .env. Test PIN is: {otp_code}",
         })
     elif sent:
         return jsonify({
@@ -94,11 +95,12 @@ def send_google_otp():
             "success": True,
             "is_dev_mode": True,
             "dev_code": otp_code,
-            "message": f"SMTP send failed ({status_or_msg}). For testing, use code: {otp_code}",
+            "message": f"SMTP send attempt failed ({status_or_msg}). For testing, your PIN is: {otp_code}",
         })
 
 
-@auth_bp.post("/google-otp/verify")
+@auth_bp.route("/google-otp/verify", methods=["POST"])
+@auth_bp.route("/auth/google-otp/verify", methods=["POST"])
 def verify_google_otp():
     data = request.get_json(silent=True) or request.form
     email = (data.get("email") or session.get("google_auth_email") or "").strip().lower()
