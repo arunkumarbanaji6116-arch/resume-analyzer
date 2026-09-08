@@ -79,6 +79,17 @@ def register():
         return redirect(url_for("auth.login", mode="signup"))
 
 
+def _format_email_error(status_or_msg: str) -> str:
+    if status_or_msg == "dev_mode":
+        return "Email service not configured in .env. Please configure RESEND_API_KEY in your .env file."
+    if "You can only send testing emails to your own email address" in status_or_msg:
+        return (
+            "Resend testing mode restriction: Verification emails can only be delivered to your registered account "
+            "(arunkumarbanaji6116@gmail.com). To send to other addresses, please verify a custom domain at resend.com."
+        )
+    return f"Email delivery failed: {status_or_msg}. Please check your Resend configuration."
+
+
 @auth_bp.route("/google-otp/send", methods=["POST"])
 @auth_bp.route("/auth/google-otp/send", methods=["POST"])
 def send_google_otp():
@@ -119,14 +130,10 @@ def send_google_otp():
     else:
         # Email delivery failed
         logger.error(f"[AUTH ERROR] Failed to deliver OTP to {email}: {status_or_msg}")
-        if status_or_msg == "dev_mode":
-            error_msg = "Email service not configured in .env. Please configure RESEND_API in your .env file."
-        else:
-            error_msg = f"Email delivery failed: {status_or_msg}. Please check your Resend configuration."
         return jsonify({
             "success": False,
             "is_dev_mode": False,
-            "message": error_msg,
+            "message": _format_email_error(status_or_msg),
         }), 400
 
 
@@ -280,7 +287,7 @@ def send_github_otp():
     else:
         return jsonify({
             "success": False,
-            "message": f"Failed to deliver verification email: {status_or_msg}. Please try again.",
+            "message": _format_email_error(status_or_msg),
         }), 400
 
 
@@ -472,13 +479,14 @@ def send_forgot_password_otp():
 
     otp_code = f"{secrets.randbelow(900000) + 100000}"
     now = datetime.now(timezone.utc)
-    expires_at = (now + timedelta(minutes=10)).isoformat()
+    expires_at = (now + timedelta(minutes=30)).isoformat()
+    now_iso = now.isoformat()
 
     try:
-        db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
+        db.execute("DELETE FROM email_otps WHERE email = ? AND expires_at < ?", (email, now_iso))
         db.execute(
             "INSERT INTO email_otps (email, otp_code, expires_at, created_at) VALUES (?, ?, ?, ?)",
-            (email, otp_code, expires_at, now.isoformat()),
+            (email, otp_code, expires_at, now_iso),
         )
         db.commit()
     except Exception as exc:
@@ -493,7 +501,7 @@ def send_forgot_password_otp():
     else:
         return jsonify({
             "success": False,
-            "message": f"Failed to deliver reset email: {status_or_msg}. Please try again.",
+            "message": _format_email_error(status_or_msg),
         }), 400
 
 

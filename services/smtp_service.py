@@ -43,7 +43,7 @@ Use the following 6-digit verification code to complete your sign-in:
 
 {clean_code}
 
-This code expires in 10 minutes. If you did not request this code, please ignore this email.
+This code expires in 30 minutes. If you did not request this code, please ignore this email.
 
 — The CareerForge.AI Team
 """

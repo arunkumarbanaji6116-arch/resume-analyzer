@@ -711,6 +711,7 @@
       }
 
       function resetModal() {
+        currentEmail = '';
         emailInput.value = '';
         emailError.style.display = 'none';
         emailError.textContent = '';
@@ -722,9 +723,12 @@
         otpDigits.forEach(d => d.value = '');
         if (resendTimer) clearInterval(resendTimer);
         resendSecondsLeft = 0;
-        resendCountdown.style.display = 'none';
-        btnResend.disabled = false;
-        btnResend.style.opacity = '1';
+        if (resendCountdown) resendCountdown.style.display = 'none';
+        if (btnResend) {
+          btnResend.disabled = false;
+          btnResend.style.display = 'inline';
+          btnResend.style.opacity = '1';
+        }
         btnSendOtp.disabled = false;
         btnSendOtpSpinner.style.display = 'none';
         btnSendOtpText.textContent = 'Send Verification Code';
@@ -734,9 +738,12 @@
       }
 
       function showStepEmail() {
+        currentEmail = '';
         stepEmail.style.display = 'block';
         stepOtp.style.display = 'none';
         emailError.style.display = 'none';
+        emailError.textContent = '';
+        setTimeout(() => emailInput.focus(), 50);
       }
 
       function showStepOtp(email, noticeText, devCode) {
@@ -816,7 +823,8 @@
       }
 
       async function handleSendOtp() {
-        const email = (currentEmail || emailInput.value).trim().toLowerCase();
+        const isResend = stepOtp && stepOtp.style.display !== 'none';
+        const email = (isResend ? (currentEmail || emailInput.value) : emailInput.value).trim().toLowerCase();
         if (!email || !email.includes('@') || !email.includes('.')) {
           if (stepOtp.style.display !== 'none') {
             otpError.textContent = 'Please enter a valid Google email address.';
@@ -1028,6 +1036,7 @@
       }
 
       function showGhStepEmail() {
+        currentGhEmail = '';
         ghStepEmail.style.display = 'block';
         ghStepOtp.style.display = 'none';
         ghEmailError.style.display = 'none';
@@ -1073,7 +1082,8 @@
       }
 
       async function handleSendGhOtp() {
-        const identifier = (currentGhEmail || ghEmailInput.value).trim();
+        const isGhResend = ghStepOtp && ghStepOtp.style.display !== 'none';
+        const identifier = (isGhResend ? (currentGhEmail || ghEmailInput.value) : ghEmailInput.value).trim();
         if (!identifier) {
           if (ghStepOtp.style.display !== 'none') {
             ghOtpError.textContent = 'Please enter your GitHub email or username.';
