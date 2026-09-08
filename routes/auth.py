@@ -6,7 +6,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import get_db
-from services.smtp_service import is_smtp_configured, send_otp_email
+from services.smtp_service import is_smtp_configured, send_otp_email, send_password_reset_email
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -15,13 +15,31 @@ auth_bp = Blueprint("auth", __name__)
 def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        remember = bool(request.form.get("remember"))
+
         user = get_db().execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
-        if user and check_password_hash(user["password_hash"], request.form.get("password", "")):
+        if user and check_password_hash(user["password_hash"], password):
+            session.permanent = bool(remember)
             session["user_id"] = user["id"]
             session["user"] = user["name"]
-            return redirect(url_for("dashboard"))
-        flash("Email or password is incorrect.", "error")
-    return render_template("login.html")
+            resp = redirect(url_for("dashboard"))
+            if remember:
+                resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+            else:
+                resp.delete_cookie("remember_email")
+            return resp
+
+        # Helpful hint if user exists but has google auth
+        if user and user["password_hash"] == "google_smtp_verified":
+            flash("This account was created with Google Sign-In. Click 'Google' below to log in or reset your password.", "error")
+        else:
+            flash("Email or password is incorrect.", "error")
+
+        return render_template("login.html", email=email, remember=remember)
+
+    remember_email = request.cookies.get("remember_email", "")
+    return render_template("login.html", email=remember_email, remember=bool(remember_email))
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -41,9 +59,12 @@ def register():
             (name, email, generate_password_hash(password), datetime.now(timezone.utc).isoformat()),
         )
         db.commit()
+        session.permanent = True
         session["user_id"] = cursor.lastrowid
         session["user"] = name
-        return redirect(url_for("dashboard"))
+        resp = redirect(url_for("dashboard"))
+        resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+        return resp
     except Exception:
         flash("An account with that email already exists.", "error")
         return redirect(url_for("auth.login", mode="signup"))
@@ -140,15 +161,107 @@ def verify_google_otp():
         user_id = user["id"]
         user_name = user["name"]
 
+    session.permanent = True
     session["user_id"] = user_id
     session["user"] = user_name
     session.pop("google_auth_email", None)
 
-    return jsonify({
+    resp = jsonify({
         "success": True,
         "redirect_url": url_for("dashboard"),
         "user_name": user_name,
     })
+    resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+    return resp
+
+
+@auth_bp.route("/forgot-password/send", methods=["POST"])
+@auth_bp.route("/auth/forgot-password/send", methods=["POST"])
+def send_forgot_password_otp():
+    data = request.get_json(silent=True) or request.form
+    email = (data.get("email") or "").strip().lower()
+
+    if not email or "@" not in email or "." not in email:
+        return jsonify({"success": False, "message": "Please enter a valid email address."}), 400
+
+    db = get_db()
+    user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    if not user:
+        return jsonify({"success": False, "message": "No account found with that email address. Please check your email or sign up."}), 404
+
+    otp_code = f"{secrets.randbelow(900000) + 100000}"
+    now = datetime.now(timezone.utc)
+    expires_at = (now + timedelta(minutes=10)).isoformat()
+
+    try:
+        db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
+        db.execute(
+            "INSERT INTO email_otps (email, otp_code, expires_at, created_at) VALUES (?, ?, ?, ?)",
+            (email, otp_code, expires_at, now.isoformat()),
+        )
+        db.commit()
+    except Exception as exc:
+        return jsonify({"success": False, "message": f"Database error: {exc}"}), 500
+
+    sent, status_or_msg = send_password_reset_email(email, otp_code)
+    if sent:
+        return jsonify({
+            "success": True,
+            "message": f"Password reset verification code sent to {email}. Please check your inbox.",
+        })
+    else:
+        return jsonify({
+            "success": False,
+            "message": f"Failed to deliver reset email: {status_or_msg}. Please try again.",
+        }), 400
+
+
+@auth_bp.route("/forgot-password/reset", methods=["POST"])
+@auth_bp.route("/auth/forgot-password/reset", methods=["POST"])
+def reset_forgot_password():
+    data = request.get_json(silent=True) or request.form
+    email = (data.get("email") or "").strip().lower()
+    otp_code = (data.get("otp") or "").strip()
+    new_password = (data.get("password") or "").strip()
+
+    if not email or not otp_code or not new_password:
+        return jsonify({"success": False, "message": "Email, verification code, and new password are required."}), 400
+
+    if len(new_password) < 8:
+        return jsonify({"success": False, "message": "New password must be at least 8 characters long."}), 400
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    db = get_db()
+    record = db.execute(
+        "SELECT * FROM email_otps WHERE email = ? AND otp_code = ? AND expires_at >= ?",
+        (email, otp_code, now_iso),
+    ).fetchone()
+
+    if not record:
+        return jsonify({
+            "success": False,
+            "message": "Invalid or expired verification code. Please check the code or request a new one.",
+        }), 400
+
+    user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    if not user:
+        return jsonify({"success": False, "message": "User account not found."}), 404
+
+    db.execute("UPDATE users SET password_hash = ? WHERE email = ?", (generate_password_hash(new_password), email))
+    db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
+    db.commit()
+
+    session.permanent = True
+    session["user_id"] = user["id"]
+    session["user"] = user["name"]
+
+    resp = jsonify({
+        "success": True,
+        "redirect_url": url_for("dashboard"),
+        "message": "Password updated successfully! Logging you in...",
+    })
+    resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+    return resp
 
 
 @auth_bp.get("/logout")

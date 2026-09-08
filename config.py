@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import os
 import tempfile
@@ -12,6 +13,7 @@ IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
 
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "careerforge-session-secret-2026")
+    PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("SECRET_KEY")
     GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")

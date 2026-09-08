@@ -300,7 +300,7 @@
 
           <div class="form-group">
             <label class="form-label" for="login-email">Email</label>
-            <input class="form-input" id="login-email" name="email" type="email" placeholder="hello@example.com" autocomplete="email" required>
+            <input class="form-input" id="login-email" name="email" type="email" placeholder="hello@example.com" value="{{ email or '' }}" autocomplete="username email" required>
           </div>
 
           <div class="form-group">
@@ -310,10 +310,10 @@
 
           <div class="auth-options-row">
             <label class="remember-label">
-              <input type="checkbox" name="remember" class="custom-checkbox">
+              <input type="checkbox" id="remember-me" name="remember" class="custom-checkbox" {% if remember %}checked{% endif %}>
               <span>Remember me</span>
             </label>
-            <a href="#" class="forgot-link" onclick="alert('Password reset link has been dispatched to your email.'); return false;">Forgot password?</a>
+            <a href="#" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
           </div>
 
           <button type="submit" class="auth-btn-primary">LOGIN</button>
@@ -441,6 +441,84 @@
           <span id="resendCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
           <div style="margin-top: 10px;">
             <button type="button" id="btnBackToEmail" style="background:none; border:none; color:#64748b; font-size: 0.8rem; cursor:pointer;">&larr; Use a different Google email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FORGOT PASSWORD / RESET MODAL ================= -->
+  <div class="google-modal-backdrop" id="forgotModalBackdrop" style="display: none;">
+    <div class="google-modal" id="forgotModal">
+      <button type="button" class="google-modal-close" id="forgotModalClose" aria-label="Close modal">&times;</button>
+      
+      <!-- Step 1: Input Account Email -->
+      <div id="forgotStepEmail" class="google-modal-step">
+        <div class="google-modal-header">
+          <div class="google-logo-pill" style="color: #4f46e5;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Reset Password</h3>
+          <p class="google-modal-subtitle">Enter your registered email to receive a secure 6-digit verification code via email.</p>
+        </div>
+
+        <div id="forgotEmailError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label" for="forgotEmailInput">Account Email Address</label>
+          <input class="form-input" id="forgotEmailInput" type="email" placeholder="hello@example.com" autocomplete="email" required>
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnSendForgotOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnSendForgotOtpText">Send Verification Code</span>
+          <span id="btnSendForgotOtpSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+      </div>
+
+      <!-- Step 2: Enter 6-Digit OTP Code & New Password -->
+      <div id="forgotStepReset" class="google-modal-step" style="display: none;">
+        <div class="google-modal-header">
+          <div class="google-logo-pill" style="color: #10b981;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Set New Password</h3>
+          <p class="google-modal-subtitle">Enter the 6-digit code sent to <strong id="targetForgotEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong> and choose a new password.</p>
+        </div>
+
+        <div id="forgotResetNotice" class="google-alert google-alert-info" style="display: none;"></div>
+        <div id="forgotResetError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <label class="form-label" style="text-align: center; display: block; margin-bottom: 4px;">6-Digit Security Code</label>
+        <div class="otp-inputs-wrapper" style="margin: 8px 0 16px;">
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autofocus>
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+          <label class="form-label" for="forgotNewPassword">New Password (at least 8 characters)</label>
+          <input class="form-input" id="forgotNewPassword" type="password" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnSubmitPasswordReset" style="width:100%; margin-top: 16px; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnSubmitPasswordResetText">Reset Password & Login</span>
+          <span id="btnSubmitPasswordResetSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+
+        <div class="google-modal-footer" style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: #64748b;">
+          <span>Didn't receive code? </span>
+          <button type="button" id="btnResendForgotOtp" style="background:none; border:none; color:#4f46e5; font-weight:700; cursor:pointer; text-decoration:underline;">Resend code</button>
+          <span id="forgotResendCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
+          <div style="margin-top: 10px;">
+            <button type="button" id="btnBackToForgotEmail" style="background:none; border:none; color:#64748b; font-size: 0.8rem; cursor:pointer;">&larr; Change email address</button>
           </div>
         </div>
       </div>
@@ -721,6 +799,283 @@
       btnVerifyOtp.addEventListener('click', handleVerifyOtp);
       btnResend.addEventListener('click', handleSendOtp);
       btnBackToEmail.addEventListener('click', showStepEmail);
+
+      // ================= REMEMBER ME LOCAL STORAGE LOGIC =================
+      const loginEmailInput = document.getElementById('login-email');
+      const rememberCheckbox = document.getElementById('remember-me');
+      const signInForm = document.getElementById('signInForm');
+
+      if (loginEmailInput) {
+        const savedEmail = localStorage.getItem('careerforge_remember_email');
+        if (savedEmail && !loginEmailInput.value) {
+          loginEmailInput.value = savedEmail;
+          if (rememberCheckbox) rememberCheckbox.checked = true;
+        }
+      }
+
+      if (signInForm) {
+        signInForm.addEventListener('submit', () => {
+          if (rememberCheckbox && rememberCheckbox.checked && loginEmailInput) {
+            localStorage.setItem('careerforge_remember_email', loginEmailInput.value.trim());
+          } else {
+            localStorage.removeItem('careerforge_remember_email');
+          }
+        });
+      }
+
+      // ================= FORGOT PASSWORD MODAL LOGIC =================
+      const forgotBackdrop = document.getElementById('forgotModalBackdrop');
+      const forgotCloseBtn = document.getElementById('forgotModalClose');
+      const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+      const forgotStepEmail = document.getElementById('forgotStepEmail');
+      const forgotStepReset = document.getElementById('forgotStepReset');
+      const forgotEmailInput = document.getElementById('forgotEmailInput');
+      const btnSendForgotOtp = document.getElementById('btnSendForgotOtp');
+      const btnSendForgotOtpText = document.getElementById('btnSendForgotOtpText');
+      const btnSendForgotOtpSpinner = document.getElementById('btnSendForgotOtpSpinner');
+      const forgotEmailError = document.getElementById('forgotEmailError');
+
+      const targetForgotEmailDisplay = document.getElementById('targetForgotEmail');
+      const forgotResetNotice = document.getElementById('forgotResetNotice');
+      const forgotResetError = document.getElementById('forgotResetError');
+      const forgotNewPassword = document.getElementById('forgotNewPassword');
+      const btnSubmitPasswordReset = document.getElementById('btnSubmitPasswordReset');
+      const btnSubmitPasswordResetText = document.getElementById('btnSubmitPasswordResetText');
+      const btnSubmitPasswordResetSpinner = document.getElementById('btnSubmitPasswordResetSpinner');
+      const btnResendForgotOtp = document.getElementById('btnResendForgotOtp');
+      const forgotResendCountdown = document.getElementById('forgotResendCountdown');
+      const btnBackToForgotEmail = document.getElementById('btnBackToForgotEmail');
+      const forgotOtpDigits = document.querySelectorAll('.forgot-otp-digit');
+
+      let currentForgotEmail = '';
+      let forgotResendTimer = null;
+      let forgotResendSecondsLeft = 0;
+
+      function openForgotModal() {
+        forgotBackdrop.style.display = 'flex';
+        setTimeout(() => forgotBackdrop.classList.add('active'), 10);
+        showForgotStepEmail();
+        if (loginEmailInput && loginEmailInput.value.trim()) {
+          forgotEmailInput.value = loginEmailInput.value.trim();
+        }
+        forgotEmailInput.focus();
+      }
+
+      function closeForgotModal() {
+        forgotBackdrop.classList.remove('active');
+        setTimeout(() => {
+          forgotBackdrop.style.display = 'none';
+          resetForgotModalState();
+        }, 250);
+      }
+
+      function resetForgotModalState() {
+        currentForgotEmail = '';
+        if (forgotResendTimer) clearInterval(forgotResendTimer);
+        forgotResendSecondsLeft = 0;
+        forgotEmailInput.value = '';
+        forgotEmailError.style.display = 'none';
+        forgotResetError.style.display = 'none';
+        forgotResetNotice.style.display = 'none';
+        if (forgotNewPassword) forgotNewPassword.value = '';
+        forgotOtpDigits.forEach(d => d.value = '');
+        btnResendForgotOtp.style.display = 'inline';
+        forgotResendCountdown.style.display = 'none';
+        showForgotStepEmail();
+      }
+
+      function showForgotStepEmail() {
+        forgotStepEmail.style.display = 'block';
+        forgotStepReset.style.display = 'none';
+        forgotEmailError.style.display = 'none';
+        setTimeout(() => forgotEmailInput.focus(), 50);
+      }
+
+      function showForgotStepReset(email, noticeText) {
+        currentForgotEmail = email;
+        targetForgotEmailDisplay.textContent = email;
+        forgotStepEmail.style.display = 'none';
+        forgotStepReset.style.display = 'block';
+        forgotResetError.style.display = 'none';
+
+        if (noticeText) {
+          forgotResetNotice.textContent = noticeText;
+          forgotResetNotice.style.display = 'flex';
+        } else {
+          forgotResetNotice.style.display = 'none';
+        }
+
+        forgotOtpDigits.forEach(d => d.value = '');
+        if (forgotNewPassword) forgotNewPassword.value = '';
+        setTimeout(() => forgotOtpDigits[0].focus(), 150);
+        startForgotResendTimer(60);
+      }
+
+      function startForgotResendTimer(seconds) {
+        if (forgotResendTimer) clearInterval(forgotResendTimer);
+        forgotResendSecondsLeft = seconds;
+        btnResendForgotOtp.style.display = 'none';
+        forgotResendCountdown.style.display = 'inline';
+        forgotResendCountdown.textContent = `(${forgotResendSecondsLeft}s)`;
+
+        forgotResendTimer = setInterval(() => {
+          forgotResendSecondsLeft -= 1;
+          if (forgotResendSecondsLeft <= 0) {
+            clearInterval(forgotResendTimer);
+            btnResendForgotOtp.style.display = 'inline';
+            forgotResendCountdown.style.display = 'none';
+          } else {
+            forgotResendCountdown.textContent = `(${forgotResendSecondsLeft}s)`;
+          }
+        }, 1000);
+      }
+
+      async function handleSendForgotOtp() {
+        const email = forgotEmailInput.value.trim().toLowerCase();
+        if (!email || !email.includes('@') || !email.includes('.')) {
+          forgotEmailError.textContent = 'Please enter a valid email address.';
+          forgotEmailError.style.display = 'flex';
+          forgotEmailInput.focus();
+          return;
+        }
+
+        forgotEmailError.style.display = 'none';
+        btnSendForgotOtp.disabled = true;
+        btnSendForgotOtpSpinner.style.display = 'inline-block';
+        btnSendForgotOtpText.textContent = 'Sending code...';
+
+        try {
+          const res = await postJsonWithFallback(['/forgot-password/send', '/auth/forgot-password/send'], { email });
+          const data = res.data;
+
+          if (res.ok && data && data.success) {
+            showForgotStepReset(email, data.message);
+          } else {
+            forgotEmailError.textContent = (data && data.message) || 'Failed to dispatch reset code. Please check your email.';
+            forgotEmailError.style.display = 'flex';
+          }
+        } catch (err) {
+          forgotEmailError.textContent = 'Network or server error (' + (err.message || 'connection failed') + '). Please try again.';
+          forgotEmailError.style.display = 'flex';
+        } finally {
+          btnSendForgotOtp.disabled = false;
+          btnSendForgotOtpSpinner.style.display = 'none';
+          btnSendForgotOtpText.textContent = 'Send Verification Code';
+        }
+      }
+
+      async function handleResetPassword() {
+        const enteredCode = Array.from(forgotOtpDigits).map(d => d.value.trim()).join('');
+        const newPassword = (forgotNewPassword ? forgotNewPassword.value : '').trim();
+
+        if (enteredCode.length !== 6) {
+          forgotResetError.textContent = 'Please enter all 6 digits of your reset code.';
+          forgotResetError.style.display = 'flex';
+          return;
+        }
+
+        if (!newPassword || newPassword.length < 8) {
+          forgotResetError.textContent = 'New password must be at least 8 characters long.';
+          forgotResetError.style.display = 'flex';
+          if (forgotNewPassword) forgotNewPassword.focus();
+          return;
+        }
+
+        forgotResetError.style.display = 'none';
+        btnSubmitPasswordReset.disabled = true;
+        btnSubmitPasswordResetSpinner.style.display = 'inline-block';
+        btnSubmitPasswordResetText.textContent = 'Updating password...';
+
+        try {
+          const res = await postJsonWithFallback(['/forgot-password/reset', '/auth/forgot-password/reset'], {
+            email: currentForgotEmail,
+            otp: enteredCode,
+            password: newPassword
+          });
+          const data = res.data;
+
+          if (res.ok && data && data.success) {
+            forgotResetNotice.className = 'google-alert google-alert-success';
+            forgotResetNotice.textContent = '✓ ' + (data.message || 'Password reset successfully! Redirecting...');
+            forgotResetNotice.style.display = 'flex';
+            if (loginEmailInput) {
+              localStorage.setItem('careerforge_remember_email', currentForgotEmail);
+            }
+            setTimeout(() => {
+              window.location.href = data.redirect_url || '/dashboard';
+            }, 700);
+          } else {
+            forgotResetError.textContent = (data && data.message) || 'Invalid or expired code. Please try again.';
+            forgotResetError.style.display = 'flex';
+          }
+        } catch (err) {
+          forgotResetError.textContent = 'Network or server error during password reset. Please try again.';
+          forgotResetError.style.display = 'flex';
+        } finally {
+          btnSubmitPasswordReset.disabled = false;
+          btnSubmitPasswordResetSpinner.style.display = 'none';
+          btnSubmitPasswordResetText.textContent = 'Reset Password & Login';
+        }
+      }
+
+      // 6-digit Forgot Password OTP input navigation
+      forgotOtpDigits.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+          const val = e.target.value.replace(/[^0-9]/g, '');
+          e.target.value = val ? val.slice(-1) : '';
+          if (e.target.value && idx < forgotOtpDigits.length - 1) {
+            forgotOtpDigits[idx + 1].focus();
+          } else if (e.target.value && idx === forgotOtpDigits.length - 1 && forgotNewPassword) {
+            forgotNewPassword.focus();
+          }
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !input.value && idx > 0) {
+            forgotOtpDigits[idx - 1].focus();
+          } else if (e.key === 'Enter') {
+            handleResetPassword();
+          }
+        });
+
+        input.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+          if (text) {
+            text.split('').forEach((char, i) => {
+              if (forgotOtpDigits[i]) forgotOtpDigits[i].value = char;
+            });
+            if (text.length === 6 && forgotNewPassword) {
+              forgotNewPassword.focus();
+            } else {
+              const nextIdx = Math.min(text.length, forgotOtpDigits.length - 1);
+              forgotOtpDigits[nextIdx].focus();
+            }
+          }
+        });
+      });
+
+      if (forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openForgotModal();
+      });
+      if (forgotCloseBtn) forgotCloseBtn.addEventListener('click', closeForgotModal);
+      if (forgotBackdrop) forgotBackdrop.addEventListener('click', (e) => {
+        if (e.target === forgotBackdrop) closeForgotModal();
+      });
+
+      if (btnSendForgotOtp) btnSendForgotOtp.addEventListener('click', handleSendForgotOtp);
+      if (forgotEmailInput) forgotEmailInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleSendForgotOtp();
+      });
+
+      if (btnSubmitPasswordReset) btnSubmitPasswordReset.addEventListener('click', handleResetPassword);
+      if (forgotNewPassword) forgotNewPassword.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleResetPassword();
+      });
+      if (btnResendForgotOtp) btnResendForgotOtp.addEventListener('click', handleSendForgotOtp);
+      if (btnBackToForgotEmail) btnBackToForgotEmail.addEventListener('click', showForgotStepEmail);
     });
   </script>
 </body>

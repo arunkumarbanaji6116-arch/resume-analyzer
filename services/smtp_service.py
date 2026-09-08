@@ -270,3 +270,51 @@ def send_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
         f"Generated test PIN for '{recipient}' is: {clean_code}"
     )
     return True, "dev_mode"
+
+
+def send_password_reset_email(to_email: str, otp_code: str) -> tuple[bool, str]:
+    """Sends a 6-digit password reset PIN via Resend or SMTP."""
+    recipient = to_email.strip().lower()
+    clean_code = str(otp_code).strip()
+    subject = f"{clean_code} is your CareerForge.AI Password Reset code"
+    plain_text = f"""CareerForge.AI · Career Development Platform
+Password Reset Request
+
+Use the following 6-digit code to reset your password:
+
+{clean_code}
+
+This code expires in 10 minutes. If you did not request a password reset, you can safely ignore this email.
+
+— The CareerForge.AI Team
+"""
+    html_content = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Password Reset · CareerForge.AI</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0b0f19; color: #f1f5f9; margin: 0; padding: 32px 16px;">
+  <div style="max-width: 520px; margin: 0 auto; background: #111827; border-radius: 16px; padding: 32px 28px; border: 1px solid rgba(255,255,255,0.08);">
+    <div style="font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 20px;">
+      CareerForge.<span style="color: #6d5dfc;">AI</span>
+    </div>
+    <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #f8fafc;">Reset Your Password</h1>
+    <p style="font-size: 14px; line-height: 1.6; color: #94a3b8; margin: 0 0 24px;">You requested to reset your password on CareerForge.AI. Use the verification code below to set a new password:</p>
+    <div style="background: rgba(109, 93, 252, 0.12); border: 1px solid rgba(109, 93, 252, 0.35); border-radius: 12px; padding: 18px 24px; text-align: center; margin: 20px 0;">
+      <span style="font-family: monospace; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #a5b4fc;">{clean_code}</span>
+    </div>
+    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+    <p style="font-size: 12px; color: #64748b; margin-top: 16px;">If you did not initiate this request, you can safely ignore this email.</p>
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #64748b; text-align: center;">
+      Sent by CareerForge.AI &bull; Career Development Platform
+    </div>
+  </div>
+</body>
+</html>"""
+    if is_resend_configured():
+        return send_via_resend(recipient, subject, html_content, plain_text)
+    if is_smtp_configured():
+        return send_via_smtp(recipient, subject, html_content, plain_text)
+    return True, "dev_mode"
+
