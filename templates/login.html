@@ -3,75 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sign In · CareerForge.AI — Career Development Platform</title>
+  <title>Sign In · CareerForge.AI · Career Development Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script>
-    (function() {
-      const savedTheme = localStorage.getItem('careerforge_theme');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    })();
-  </script>
   <style>
-    /* Floating Paths Background (Exclusive to Login Page) */
-    .floating-paths-container {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .floating-paths-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      color: rgba(15, 23, 42, 0.72); /* text-slate-950 */
-    }
-
-    .dark .floating-paths-svg {
-      color: rgba(255, 255, 255, 0.72); /* dark:text-white */
-    }
-
-    .floating-path-element {
-      animation-name: floatPathFlow;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      will-change: stroke-dashoffset, opacity, stroke-dasharray;
-    }
-
-    @keyframes floatPathFlow {
-      0% {
-        stroke-dashoffset: 0;
-        stroke-dasharray: 30 70;
-        opacity: 0.3;
-      }
-      50% {
-        stroke-dashoffset: -100;
-        stroke-dasharray: 85 15;
-        opacity: 0.65;
-      }
-      100% {
-        stroke-dashoffset: 0;
-        stroke-dasharray: 30 70;
-        opacity: 0.3;
-      }
-    }
-
-    .auth-header,
-    .auth-wrapper {
-      position: relative;
-      z-index: 5;
-    }
     .google-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -272,13 +209,10 @@
   </style>
 </head>
 <body class="auth-body">
-  <!-- Floating Paths Background (Exclusive to Login Page) -->
-  <div class="floating-paths-container" id="floatingPathsContainer" aria-hidden="true"></div>
-
   <!-- Minimalist Brand Header -->
   <header class="auth-header">
-    <a class="brand auth-brand" href="/">
-      CareerForge<span>.AI</span>
+    <a class="brand auth-brand" href="/" title="CareerForge.AI · Career Development Platform">
+      CareerForge.<span>AI</span>
     </a>
   </header>
 
@@ -794,53 +728,6 @@
       btnVerifyOtp.addEventListener('click', handleVerifyOtp);
       btnResend.addEventListener('click', handleSendOtp);
       btnBackToEmail.addEventListener('click', showStepEmail);
-
-      // ================= FLOATING PATHS BACKGROUND (Exclusive to Login Page) =================
-      (function initFloatingPaths() {
-        const container = document.getElementById('floatingPathsContainer');
-        if (!container) return;
-
-        function renderFloatingPaths(position) {
-          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-          svg.setAttribute('class', 'floating-paths-svg');
-          svg.setAttribute('viewBox', '0 0 696 316');
-          svg.setAttribute('fill', 'none');
-          svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-
-          for (let i = 0; i < 36; i++) {
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            const p1 = 380 - i * 5 * position;
-            const p2 = 189 + i * 6;
-            const p3 = 312 - i * 5 * position;
-            const p4 = 216 - i * 6;
-            const p5 = 152 - i * 5 * position;
-            const p6 = 343 - i * 6;
-            const p7 = 616 - i * 5 * position;
-            const p8 = 470 - i * 6;
-            const p9 = 684 - i * 5 * position;
-            const p10 = 875 - i * 6;
-
-            const d = `M-${p1} -${p2}C-${p1} -${p2} -${p3} ${p4} ${p5} ${p6}C${p7} ${p8} ${p9} ${p10} ${p9} ${p10}`;
-            path.setAttribute('d', d);
-            path.setAttribute('stroke', 'currentColor');
-            path.setAttribute('stroke-width', (0.5 + i * 0.03).toFixed(2));
-            path.setAttribute('stroke-opacity', (0.1 + i * 0.03).toFixed(2));
-            path.setAttribute('pathLength', '100');
-            path.classList.add('floating-path-element');
-
-            const duration = 20 + Math.random() * 10;
-            const delay = -Math.random() * duration;
-            path.style.animationDuration = `${duration.toFixed(2)}s`;
-            path.style.animationDelay = `${delay.toFixed(2)}s`;
-
-            svg.appendChild(path);
-          }
-          container.appendChild(svg);
-        }
-
-        renderFloatingPaths(1);
-        renderFloatingPaths(-1);
-      })();
     });
   </script>
 </body>
