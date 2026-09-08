@@ -17,6 +17,15 @@ class Config:
     ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
     ELEVENLABS_DEFAULT_VOICE = os.getenv("ELEVENLABS_DEFAULT_VOICE", "21m00Tcm4TlvDq8ikWAM")
 
+    # SMTP Configuration (defaults to Google/Gmail SMTP)
+    SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+    SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+    SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").strip().lower() in ("true", "1", "yes")
+    SMTP_USER = os.getenv("SMTP_USER", "").strip()
+    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
+    SMTP_FROM_EMAIL = os.getenv("SMTP_FROM_EMAIL", "").strip() or os.getenv("SMTP_USER", "").strip() or "noreply@careerforge.ai"
+    SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "CareerForge AI").strip()
+
     if IS_VERCEL:
         _tmp = Path(tempfile.gettempdir())
         DATABASE = _tmp / "careerforge.db"

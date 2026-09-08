@@ -8,6 +8,205 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .google-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .google-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .google-modal {
+      position: relative;
+      background: #ffffff;
+      color: #0f172a;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dark .google-modal {
+      background: #111827;
+      color: #f8fafc;
+      border-color: #1f2937;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .google-modal-backdrop.active .google-modal {
+      transform: scale(1);
+    }
+    .google-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: #f1f5f9;
+      border: none;
+      font-size: 20px;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .dark .google-modal-close {
+      background: #1e293b;
+      color: #94a3b8;
+    }
+    .google-modal-close:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .dark .google-modal-close:hover {
+      background: #334155;
+      color: #f8fafc;
+    }
+    .google-modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .google-logo-pill {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .dark .google-logo-pill {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+    .google-modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px 0;
+      color: #0f172a;
+    }
+    .dark .google-modal-title {
+      color: #ffffff;
+    }
+    .google-modal-subtitle {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.45;
+    }
+    .dark .google-modal-subtitle {
+      color: #94a3b8;
+    }
+    .google-alert {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .google-alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+    }
+    .dark .google-alert-error {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+    .google-alert-info {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #3730a3;
+    }
+    .dark .google-alert-info {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #c7d2fe;
+    }
+    .google-alert-success {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+    .dark .google-alert-success {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+    }
+    .otp-inputs-wrapper {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .google-otp-digit {
+      width: 46px;
+      height: 54px;
+      font-size: 1.45rem;
+      font-weight: 800;
+      text-align: center;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    .dark .google-otp-digit {
+      background: #1e293b;
+      border-color: #334155;
+      color: #ffffff;
+    }
+    .google-otp-digit:focus {
+      border-color: #4f46e5;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+    }
+    .dark .google-otp-digit:focus {
+      border-color: #6366f1;
+      background: #0f172a;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+    }
+    .spinner-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body class="auth-body">
   <!-- Minimalist Brand Header -->
@@ -59,7 +258,7 @@
           </div>
 
           <div class="social-login-row">
-            <button type="button" class="social-btn" aria-label="Sign up with Google">
+            <button type="button" class="social-btn google-auth-trigger" aria-label="Sign up with Google">
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z"/>
@@ -124,7 +323,7 @@
           </div>
 
           <div class="social-login-row">
-            <button type="button" class="social-btn" aria-label="Login with Google">
+            <button type="button" class="social-btn google-auth-trigger" aria-label="Login with Google">
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z"/>
@@ -171,6 +370,83 @@
     </div>
   </main>
 
+  <!-- ================= GOOGLE SMTP VERIFICATION MODAL ================= -->
+  <div class="google-modal-backdrop" id="googleModalBackdrop" style="display: none;">
+    <div class="google-modal" id="googleModal">
+      <button type="button" class="google-modal-close" id="googleModalClose" aria-label="Close modal">&times;</button>
+      
+      <!-- Step 1: Input Google Email -->
+      <div id="googleStepEmail" class="google-modal-step">
+        <div class="google-modal-header">
+          <div class="google-logo-pill">
+            <svg width="22" height="22" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.26c-.25-.72-.38-1.49-.38-2.26s.13-1.54.38-2.26V6.59H1.24C.45 8.16 0 9.92 0 12s.45 3.84 1.24 5.41l4.04-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.24 6.59l4.04 3.15c.95-2.84 3.6-4.99 6.72-4.99z"/>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Continue with Google</h3>
+          <p class="google-modal-subtitle">Enter your Google / Gmail account to receive a secure login code via SMTP.</p>
+        </div>
+
+        <div id="googleEmailError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label" for="googleEmailInput">Google Email Address</label>
+          <input class="form-input" id="googleEmailInput" type="email" placeholder="username@gmail.com" autocomplete="email" required>
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnSendGoogleOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnSendGoogleOtpText">Send Verification Code</span>
+          <span id="btnSendGoogleOtpSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+      </div>
+
+      <!-- Step 2: Enter 6-Digit OTP Code -->
+      <div id="googleStepOtp" class="google-modal-step" style="display: none;">
+        <div class="google-modal-header">
+          <div class="google-logo-pill">
+            <svg width="22" height="22" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.26c-.25-.72-.38-1.49-.38-2.26s.13-1.54.38-2.26V6.59H1.24C.45 8.16 0 9.92 0 12s.45 3.84 1.24 5.41l4.04-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.24 6.59l4.04 3.15c.95-2.84 3.6-4.99 6.72-4.99z"/>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Enter Verification Code</h3>
+          <p class="google-modal-subtitle">We sent a 6-digit security PIN via SMTP to <strong id="targetGoogleEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>.</p>
+        </div>
+
+        <div id="googleOtpNotice" class="google-alert google-alert-info" style="display: none;"></div>
+        <div id="googleOtpError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <div class="otp-inputs-wrapper">
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autofocus>
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnVerifyGoogleOtp" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnVerifyGoogleOtpText">Verify & Sign In</span>
+          <span id="btnVerifyGoogleOtpSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+
+        <div class="google-modal-footer" style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: #64748b;">
+          <span>Didn't receive the email? </span>
+          <button type="button" id="btnResendGoogleOtp" style="background:none; border:none; color:#4f46e5; font-weight:700; cursor:pointer; text-decoration:underline;">Resend code</button>
+          <span id="resendCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
+          <div style="margin-top: 10px;">
+            <button type="button" id="btnBackToEmail" style="background:none; border:none; color:#64748b; font-size: 0.8rem; cursor:pointer;">&larr; Use a different Google email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('authContainer');
@@ -197,6 +473,252 @@
       if (params.get('mode') === 'signup' || params.get('mode') === 'register') {
         container.classList.add('right-panel-active');
       }
+
+      // ================= GOOGLE SMTP VERIFICATION MODAL LOGIC =================
+      const backdrop = document.getElementById('googleModalBackdrop');
+      const closeBtn = document.getElementById('googleModalClose');
+      const googleTriggers = document.querySelectorAll('.google-auth-trigger');
+
+      const stepEmail = document.getElementById('googleStepEmail');
+      const stepOtp = document.getElementById('googleStepOtp');
+      const emailInput = document.getElementById('googleEmailInput');
+      const btnSendOtp = document.getElementById('btnSendGoogleOtp');
+      const btnSendOtpText = document.getElementById('btnSendGoogleOtpText');
+      const btnSendOtpSpinner = document.getElementById('btnSendGoogleOtpSpinner');
+      const emailError = document.getElementById('googleEmailError');
+
+      const targetEmailDisplay = document.getElementById('targetGoogleEmail');
+      const otpNotice = document.getElementById('googleOtpNotice');
+      const otpError = document.getElementById('googleOtpError');
+      const btnVerifyOtp = document.getElementById('btnVerifyGoogleOtp');
+      const btnVerifyOtpText = document.getElementById('btnVerifyGoogleOtpText');
+      const btnVerifyOtpSpinner = document.getElementById('btnVerifyGoogleOtpSpinner');
+      const btnResend = document.getElementById('btnResendGoogleOtp');
+      const resendCountdown = document.getElementById('resendCountdown');
+      const btnBackToEmail = document.getElementById('btnBackToEmail');
+      const otpDigits = document.querySelectorAll('.google-otp-digit');
+
+      let currentEmail = '';
+      let resendTimer = null;
+      let resendSecondsLeft = 0;
+
+      function openGoogleModal() {
+        backdrop.style.display = 'flex';
+        setTimeout(() => backdrop.classList.add('active'), 10);
+        showStepEmail();
+        emailInput.focus();
+      }
+
+      function closeGoogleModal() {
+        backdrop.classList.remove('active');
+        setTimeout(() => {
+          backdrop.style.display = 'none';
+          resetModal();
+        }, 250);
+      }
+
+      function resetModal() {
+        emailInput.value = '';
+        emailError.style.display = 'none';
+        emailError.textContent = '';
+        otpNotice.style.display = 'none';
+        otpNotice.textContent = '';
+        otpNotice.className = 'google-alert google-alert-info';
+        otpError.style.display = 'none';
+        otpError.textContent = '';
+        otpDigits.forEach(d => d.value = '');
+        if (resendTimer) clearInterval(resendTimer);
+        resendSecondsLeft = 0;
+        resendCountdown.style.display = 'none';
+        btnResend.disabled = false;
+        btnResend.style.opacity = '1';
+        btnSendOtp.disabled = false;
+        btnSendOtpSpinner.style.display = 'none';
+        btnSendOtpText.textContent = 'Send Verification Code';
+        btnVerifyOtp.disabled = false;
+        btnVerifyOtpSpinner.style.display = 'none';
+        btnVerifyOtpText.textContent = 'Verify & Sign In';
+      }
+
+      function showStepEmail() {
+        stepEmail.style.display = 'block';
+        stepOtp.style.display = 'none';
+        emailError.style.display = 'none';
+      }
+
+      function showStepOtp(email, noticeText) {
+        currentEmail = email;
+        targetEmailDisplay.textContent = email;
+        stepEmail.style.display = 'none';
+        stepOtp.style.display = 'block';
+        otpError.style.display = 'none';
+
+        if (noticeText) {
+          otpNotice.textContent = noticeText;
+          otpNotice.style.display = 'flex';
+        } else {
+          otpNotice.style.display = 'none';
+        }
+
+        otpDigits.forEach(d => d.value = '');
+        setTimeout(() => otpDigits[0].focus(), 50);
+        startResendTimer(60);
+      }
+
+      function startResendTimer(seconds) {
+        if (resendTimer) clearInterval(resendTimer);
+        resendSecondsLeft = seconds;
+        btnResend.disabled = true;
+        btnResend.style.opacity = '0.5';
+        resendCountdown.style.display = 'inline';
+        resendCountdown.textContent = `(${resendSecondsLeft}s)`;
+
+        resendTimer = setInterval(() => {
+          resendSecondsLeft--;
+          if (resendSecondsLeft <= 0) {
+            clearInterval(resendTimer);
+            btnResend.disabled = false;
+            btnResend.style.opacity = '1';
+            resendCountdown.style.display = 'none';
+          } else {
+            resendCountdown.textContent = `(${resendSecondsLeft}s)`;
+          }
+        }, 1000);
+      }
+
+      async function handleSendOtp() {
+        const email = emailInput.value.trim();
+        if (!email || !email.includes('@') || !email.includes('.')) {
+          emailError.textContent = 'Please enter a valid Google email address.';
+          emailError.style.display = 'flex';
+          emailInput.focus();
+          return;
+        }
+
+        emailError.style.display = 'none';
+        btnSendOtp.disabled = true;
+        btnSendOtpSpinner.style.display = 'inline-block';
+        btnSendOtpText.textContent = 'Sending code...';
+
+        try {
+          const resp = await fetch('/auth/google-otp/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+          const data = await resp.json();
+
+          if (resp.ok && data.success) {
+            showStepOtp(email, data.message);
+          } else {
+            emailError.textContent = data.message || 'Failed to dispatch verification code. Please check your email.';
+            emailError.style.display = 'flex';
+          }
+        } catch (err) {
+          emailError.textContent = 'Network or server error. Please try again.';
+          emailError.style.display = 'flex';
+        } finally {
+          btnSendOtp.disabled = false;
+          btnSendOtpSpinner.style.display = 'none';
+          btnSendOtpText.textContent = 'Send Verification Code';
+        }
+      }
+
+      async function handleVerifyOtp() {
+        const enteredCode = Array.from(otpDigits).map(d => d.value.trim()).join('');
+        if (enteredCode.length !== 6) {
+          otpError.textContent = 'Please enter all 6 digits of your verification code.';
+          otpError.style.display = 'flex';
+          return;
+        }
+
+        otpError.style.display = 'none';
+        btnVerifyOtp.disabled = true;
+        btnVerifyOtpSpinner.style.display = 'inline-block';
+        btnVerifyOtpText.textContent = 'Verifying...';
+
+        try {
+          const resp = await fetch('/auth/google-otp/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: currentEmail, otp: enteredCode })
+          });
+          const data = await resp.json();
+
+          if (resp.ok && data.success) {
+            otpNotice.className = 'google-alert google-alert-success';
+            otpNotice.textContent = '✓ Verified successfully! Redirecting to your dashboard...';
+            otpNotice.style.display = 'flex';
+            setTimeout(() => {
+              window.location.href = data.redirect_url || '/dashboard';
+            }, 600);
+          } else {
+            otpError.textContent = data.message || 'Invalid or expired code. Please try again.';
+            otpError.style.display = 'flex';
+            otpDigits.forEach(d => d.value = '');
+            otpDigits[0].focus();
+          }
+        } catch (err) {
+          otpError.textContent = 'Network or server error during verification. Please try again.';
+          otpError.style.display = 'flex';
+        } finally {
+          btnVerifyOtp.disabled = false;
+          btnVerifyOtpSpinner.style.display = 'none';
+          btnVerifyOtpText.textContent = 'Verify & Sign In';
+        }
+      }
+
+      // 6-digit OTP input auto-advance, backspace, and paste support
+      otpDigits.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+          const val = e.target.value.replace(/[^0-9]/g, '');
+          e.target.value = val ? val.slice(-1) : '';
+          if (e.target.value && idx < otpDigits.length - 1) {
+            otpDigits[idx + 1].focus();
+          }
+          if (Array.from(otpDigits).every(d => d.value.length === 1)) {
+            handleVerifyOtp();
+          }
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !input.value && idx > 0) {
+            otpDigits[idx - 1].focus();
+          } else if (e.key === 'Enter') {
+            handleVerifyOtp();
+          }
+        });
+
+        input.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+          if (text) {
+            text.split('').forEach((char, i) => {
+              if (otpDigits[i]) otpDigits[i].value = char;
+            });
+            const nextIdx = Math.min(text.length, otpDigits.length - 1);
+            otpDigits[nextIdx].focus();
+            if (text.length === 6) {
+              handleVerifyOtp();
+            }
+          }
+        });
+      });
+
+      googleTriggers.forEach(btn => btn.addEventListener('click', openGoogleModal));
+      closeBtn.addEventListener('click', closeGoogleModal);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeGoogleModal();
+      });
+
+      btnSendOtp.addEventListener('click', handleSendOtp);
+      emailInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleSendOtp();
+      });
+
+      btnVerifyOtp.addEventListener('click', handleVerifyOtp);
+      btnResend.addEventListener('click', handleSendOtp);
+      btnBackToEmail.addEventListener('click', showStepEmail);
     });
   </script>
 </body>

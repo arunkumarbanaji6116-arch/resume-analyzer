@@ -1,0 +1,191 @@
+import logging
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formataddr
+
+from config import Config
+
+logger = logging.getLogger("careerforge.smtp")
+
+
+def is_smtp_configured() -> bool:
+    """Check if valid SMTP authentication credentials are provided."""
+    return bool(Config.SMTP_USER and Config.SMTP_PASSWORD)
+
+
+def send_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
+    """
+    Sends a 6-digit one-time verification password (OTP) via SMTP (e.g. Gmail).
+    If SMTP credentials are not configured, falls back to dev mode and logs the code.
+    Returns: (success: bool, status_message: str)
+    """
+    recipient = to_email.strip().lower()
+    clean_code = str(otp_code).strip()
+
+    # If SMTP is not yet configured with real user/password, log and allow dev testing
+    if not is_smtp_configured():
+        logger.warning(
+            f"[SMTP DEV MODE] SMTP credentials not set in .env. "
+            f"Generated code for '{recipient}' is: {clean_code}"
+        )
+        return True, "dev_mode"
+
+    msg = MIMEMultipart("alternative")
+    subject = f"{clean_code} is your CareerForge AI Google verification code"
+    msg["Subject"] = subject
+    msg["From"] = formataddr((Config.SMTP_FROM_NAME, Config.SMTP_FROM_EMAIL))
+    msg["To"] = recipient
+
+    # Plain text version
+    plain_text = f"""CareerForge AI · Continue with Google
+--------------------------------------------------
+Your one-time verification code is: {clean_code}
+
+This code is valid for 10 minutes. Enter this code on the sign-in screen to complete your Google authentication.
+
+If you did not request this login code, you can safely ignore this email.
+--------------------------------------------------
+CareerForge AI Team
+"""
+
+    # Rich HTML version
+    html_content = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareerForge AI Verification</title>
+  <style>
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 32px 16px;
+    }}
+    .wrapper {{
+      max-width: 520px;
+      margin: 0 auto;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 36px 28px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }}
+    .brand {{
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }}
+    .brand span {{
+      color: #4f46e5;
+    }}
+    .google-badge {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #1e293b;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 16px;
+    }}
+    h1 {{
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 10px 0;
+    }}
+    p {{
+      font-size: 14px;
+      line-height: 1.6;
+      color: #94a3b8;
+      margin: 0 0 20px 0;
+    }}
+    .otp-box {{
+      background: #1e1b4b;
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 18px 24px;
+      text-align: center;
+      margin: 24px 0;
+    }}
+    .otp-code {{
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      color: #a5b4fc;
+      margin: 0;
+    }}
+    .footer {{
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid #1f2937;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+    }}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="brand">
+      CareerForge<span>AI</span>
+    </div>
+    <div class="google-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z"/>
+        <path fill="#FBBC05" d="M5.28 14.26c-.25-.72-.38-1.49-.38-2.26s.13-1.54.38-2.26V6.59H1.24C.45 8.16 0 9.92 0 12s.45 3.84 1.24 5.41l4.04-3.15z"/>
+        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.24 6.59l4.04 3.15c.95-2.84 3.6-4.99 6.72-4.99z"/>
+      </svg>
+      <span>Google Verification</span>
+    </div>
+    <h1>Verify your Google Account</h1>
+    <p>You requested to continue with Google on CareerForge AI. Use the verification code below to securely complete your sign-in:</p>
+    
+    <div class="otp-box">
+      <div class="otp-code">{clean_code}</div>
+    </div>
+    
+    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+    <p style="font-size: 12px; color: #64748b;">If you did not initiate this request, you can safely ignore this email.</p>
+    
+    <div class="footer">
+      Sent by CareerForge AI via secure SMTP delivery &bull; Automated security notification
+    </div>
+  </div>
+</body>
+</html>
+"""
+
+    msg.attach(MIMEText(plain_text, "plain"))
+    msg.attach(MIMEText(html_content, "html"))
+
+    try:
+        if Config.SMTP_PORT == 465:
+            # SSL connection
+            server = smtplib.SMTP_SSL(Config.SMTP_SERVER, Config.SMTP_PORT, timeout=12)
+        else:
+            # STARTTLS connection (standard for port 587)
+            server = smtplib.SMTP(Config.SMTP_SERVER, Config.SMTP_PORT, timeout=12)
+            if Config.SMTP_USE_TLS:
+                server.starttls()
+
+        server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+        server.sendmail(Config.SMTP_FROM_EMAIL, [recipient], msg.as_string())
+        server.quit()
+        logger.info(f"[SMTP SUCCESS] Verification code successfully sent to {recipient}")
+        return True, "Email sent successfully."
+    except Exception as exc:
+        logger.error(f"[SMTP ERROR] Failed to send email to {recipient}: {exc}")
+        return False, str(exc)
