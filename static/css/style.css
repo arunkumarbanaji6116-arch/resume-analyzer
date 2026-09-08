@@ -110,6 +110,55 @@ nav:hover {
   box-shadow: var(--spatial-shadow-lg);
 }
 
+/* ==========================================================================
+   Top Bar Options & Micro-Interactions (Popping Animations)
+   ========================================================================== */
+
+@keyframes topBarOptionPop {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  38% {
+    transform: scale(1.13) translateY(-3.5px);
+  }
+  70% {
+    transform: scale(1.05) translateY(-1px);
+  }
+  100% {
+    transform: scale(1.08) translateY(-2px);
+  }
+}
+
+@keyframes topBarBrandPop {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  40% {
+    transform: scale(1.09) translateY(-2.5px);
+  }
+  70% {
+    transform: scale(1.03) translateY(-1px);
+  }
+  100% {
+    transform: scale(1.05) translateY(-1.5px);
+  }
+}
+
+@keyframes topBarBtnPop {
+  0% {
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+  38% {
+    transform: scale(1.2) translateY(-3.5px) rotate(12deg);
+  }
+  70% {
+    transform: scale(1.08) translateY(-1.5px) rotate(4deg);
+  }
+  100% {
+    transform: scale(1.12) translateY(-2px) rotate(8deg);
+  }
+}
+
 .brand {
   font-size: 1.3rem;
   font-weight: 850;
@@ -118,6 +167,20 @@ nav:hover {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  transform-origin: left center;
+  will-change: transform;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+}
+
+.brand:hover {
+  animation: topBarBrandPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  filter: drop-shadow(0 6px 16px rgba(109, 93, 252, 0.35));
+}
+
+.brand:active {
+  animation: none;
+  transform: scale(0.96) translateY(0);
+  transition: transform 0.08s ease;
 }
 
 .brand span {
@@ -125,27 +188,72 @@ nav:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 900;
+  transition: filter 0.2s ease;
+}
+
+.brand:hover span {
+  filter: drop-shadow(0 0 10px rgba(109, 93, 252, 0.45));
 }
 
 nav div {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
 nav a:not(.brand) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
   font-size: 0.92rem;
   font-weight: 600;
   padding: 8px 16px;
   border-radius: 9999px;
-  transition: all 0.22s ease;
+  border: 1px solid transparent;
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.25s ease,
+              border-color 0.2s ease;
 }
 
+/* Popping hover animation on top bar nav options */
 nav a:not(.brand):hover {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  animation: topBarOptionPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  color: var(--accent-dark);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(109, 93, 252, 0.25);
+  box-shadow: 0 10px 24px -4px rgba(109, 93, 252, 0.26),
+              0 3px 8px -2px rgba(15, 23, 42, 0.05),
+              0 0 0 1px rgba(109, 93, 252, 0.15) inset;
+  z-index: 5;
+}
+
+/* Tactile press response */
+nav a:not(.brand):active {
+  animation: none;
+  transform: scale(0.94) translateY(0);
+  box-shadow: 0 2px 6px rgba(109, 93, 252, 0.2);
+  transition: transform 0.08s ease;
+}
+
+/* Currently active tab */
+nav a.nav-active {
+  color: var(--accent-dark) !important;
+  background: rgba(109, 93, 252, 0.09);
+  border: 1px solid rgba(109, 93, 252, 0.25);
+  box-shadow: 0 2px 8px rgba(109, 93, 252, 0.12);
+}
+
+nav a.nav-active:hover {
+  animation: topBarOptionPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  background: rgba(109, 93, 252, 0.16) !important;
+  border-color: rgba(109, 93, 252, 0.45) !important;
+  box-shadow: 0 12px 28px -4px rgba(109, 93, 252, 0.35) !important;
 }
 
 /* ==========================================================================
@@ -2043,8 +2151,28 @@ hr {
 }
 
 .dark nav a:not(.brand):hover {
-  color: #f8fafc;
-  background: rgba(255, 255, 255, 0.08);
+  animation: topBarOptionPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  color: #c7d2fe;
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(129, 140, 248, 0.4);
+  box-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.45),
+              0 0 14px rgba(129, 140, 248, 0.22),
+              0 0 0 1px rgba(165, 180, 252, 0.25) inset;
+  z-index: 5;
+}
+
+.dark nav a.nav-active {
+  color: #c7d2fe !important;
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(165, 180, 252, 0.35);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+}
+
+.dark nav a.nav-active:hover {
+  animation: topBarOptionPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  background: rgba(99, 102, 241, 0.32) !important;
+  border-color: rgba(165, 180, 252, 0.55) !important;
+  box-shadow: 0 14px 32px -4px rgba(129, 140, 248, 0.5) !important;
 }
 
 .dark .top-header-btn {
@@ -2054,8 +2182,13 @@ hr {
 }
 
 .dark .top-header-btn:hover {
+  animation: topBarBtnPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   background: rgba(30, 41, 59, 0.95);
-  color: #ffffff;
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.45);
+  box-shadow: 0 10px 26px -4px rgba(251, 191, 36, 0.32),
+              0 0 16px rgba(251, 191, 36, 0.25);
+  z-index: 5;
 }
 
 .dark input, .dark textarea, .dark select {
@@ -2707,7 +2840,13 @@ hr {
   justify-content: center;
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.25s ease,
+              border-color 0.2s ease;
   position: relative;
   box-shadow: var(--spatial-shadow-sm);
   padding: 0;
@@ -2715,10 +2854,19 @@ hr {
 }
 
 .top-header-btn:hover {
+  animation: topBarBtnPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   background: #ffffff;
-  color: var(--ink);
-  transform: translateY(-2px);
-  box-shadow: var(--spatial-shadow-md);
+  color: var(--accent-dark);
+  border-color: rgba(109, 93, 252, 0.35);
+  box-shadow: 0 10px 24px -4px rgba(109, 93, 252, 0.32),
+              0 0 0 1.5px rgba(109, 93, 252, 0.2);
+  z-index: 5;
+}
+
+.top-header-btn:active {
+  animation: none;
+  transform: scale(0.92) translateY(0) rotate(-6deg);
+  transition: transform 0.08s ease;
 }
 
 .notif-ping {
