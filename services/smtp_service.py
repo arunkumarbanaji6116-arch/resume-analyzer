@@ -24,7 +24,7 @@ def is_smtp_configured() -> bool:
 
 def _build_otp_templates(clean_code: str) -> tuple[str, str]:
     """Builds plain-text and rich HTML templates for Google OTP verification."""
-    plain_text = f"""CareerForge AI · Continue with Google
+    plain_text = f"""CareerForge.AI · Career Development Platform
 --------------------------------------------------
 Your one-time verification code is: {clean_code}
 
@@ -32,7 +32,7 @@ This code is valid for 10 minutes. Enter this code on the sign-in screen to comp
 
 If you did not request this login code, you can safely ignore this email.
 --------------------------------------------------
-CareerForge AI Team
+CareerForge.AI Team
 """
 
     html_content = f"""<!doctype html>
@@ -40,7 +40,7 @@ CareerForge AI Team
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CareerForge AI Verification</title>
+  <title>CareerForge.AI Verification</title>
   <style>
     body {{
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -124,7 +124,7 @@ CareerForge AI Team
 <body>
   <div class="wrapper">
     <div class="brand">
-      CareerForge<span>AI</span>
+      CareerForge<span>.AI</span>
     </div>
     <div class="google-badge">
       <svg width="14" height="14" viewBox="0 0 24 24">
@@ -136,7 +136,7 @@ CareerForge AI Team
       <span>Google Verification</span>
     </div>
     <h1>Verify your Google Account</h1>
-    <p>You requested to continue with Google on CareerForge AI. Use the verification code below to securely complete your sign-in:</p>
+    <p>You requested to continue with Google on CareerForge.AI. Use the verification code below to securely complete your sign-in:</p>
     
     <div class="otp-box">
       <div class="otp-code">{clean_code}</div>
@@ -146,7 +146,7 @@ CareerForge AI Team
     <p style="font-size: 12px; color: #64748b;">If you did not initiate this request, you can safely ignore this email.</p>
     
     <div class="footer">
-      Sent by CareerForge AI &bull; Automated security notification
+      Sent by CareerForge.AI &bull; Career Development Platform
     </div>
   </div>
 </body>

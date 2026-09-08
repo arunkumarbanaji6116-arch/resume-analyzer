@@ -23,7 +23,7 @@ class Config:
         or os.getenv("RESEND_KEY", "").strip()
         or os.getenv("RESEND_API", "").strip()
     )
-    RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "CareerForge AI <onboarding@resend.dev>").strip()
+    RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "CareerForge.AI <onboarding@resend.dev>").strip()
 
     # SMTP Configuration (fallback or custom SMTP)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
@@ -32,7 +32,7 @@ class Config:
     SMTP_USER = os.getenv("SMTP_USER", "").strip()
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
     SMTP_FROM_EMAIL = os.getenv("SMTP_FROM_EMAIL", "").strip() or os.getenv("SMTP_USER", "").strip() or "noreply@careerforge.ai"
-    SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "CareerForge AI").strip()
+    SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "CareerForge.AI").strip()
 
     if IS_VERCEL:
         _tmp = Path(tempfile.gettempdir())
