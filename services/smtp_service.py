@@ -155,7 +155,7 @@ This code expires in 10 minutes. If you did not request this code, please ignore
       <div class="otp-code">{clean_code}</div>
     </div>
     
-    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>30 minutes</strong>. Do not share this code with anyone.</p>
     <p style="font-size: 12px; color: #64748b;">If you did not initiate this request, you can safely ignore this email.</p>
     
     <div class="footer">
@@ -284,7 +284,7 @@ Use the following 6-digit code to reset your password:
 
 {clean_code}
 
-This code expires in 10 minutes. If you did not request a password reset, you can safely ignore this email.
+This code expires in 30 minutes. If you did not request a password reset, you can safely ignore this email.
 
 — The CareerForge.AI Team
 """
@@ -304,7 +304,7 @@ This code expires in 10 minutes. If you did not request a password reset, you ca
     <div style="background: rgba(109, 93, 252, 0.12); border: 1px solid rgba(109, 93, 252, 0.35); border-radius: 12px; padding: 18px 24px; text-align: center; margin: 20px 0;">
       <span style="font-family: monospace; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #a5b4fc;">{clean_code}</span>
     </div>
-    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+    <p style="font-size: 13px; color: #cbd5e1;">This code is valid for <strong>30 minutes</strong>. Do not share this code with anyone.</p>
     <p style="font-size: 12px; color: #64748b; margin-top: 16px;">If you did not initiate this request, you can safely ignore this email.</p>
     <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #64748b; text-align: center;">
       Sent by CareerForge.AI &bull; Career Development Platform
@@ -317,4 +317,55 @@ This code expires in 10 minutes. If you did not request a password reset, you ca
     if is_smtp_configured():
         return send_via_smtp(recipient, subject, html_content, plain_text)
     return True, "dev_mode"
+
+
+def send_github_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
+    """Sends a 6-digit GitHub verification PIN via Resend or SMTP."""
+    recipient = to_email.strip().lower()
+    clean_code = str(otp_code).strip()
+    subject = f"{clean_code} is your CareerForge.AI GitHub verification code"
+    plain_text = f"""CareerForge.AI · Career Development Platform
+GitHub Sign-In Verification
+
+Your 6-digit GitHub verification code is:
+
+{clean_code}
+
+This code expires in 30 minutes. If you did not request this sign-in, you can safely ignore this email.
+
+— The CareerForge.AI Team
+"""
+    html_content = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>GitHub Sign-In · CareerForge.AI</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 32px 16px;">
+  <div style="max-width: 520px; margin: 0 auto; background: #161b22; border-radius: 16px; padding: 32px 28px; border: 1px solid #30363d;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#f0f6fc">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+      <span style="font-size: 20px; font-weight: 800; color: #ffffff;">CareerForge.<span style="color: #6d5dfc;">AI</span></span>
+    </div>
+    <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #f0f6fc;">Verify Your GitHub Sign-In</h1>
+    <p style="font-size: 14px; line-height: 1.6; color: #8b949e; margin: 0 0 24px;">Use the 6-digit code below to securely sign in to CareerForge.AI with your GitHub account:</p>
+    <div style="background: rgba(35, 134, 54, 0.15); border: 1px solid rgba(46, 160, 67, 0.4); border-radius: 12px; padding: 18px 24px; text-align: center; margin: 20px 0;">
+      <span style="font-family: monospace; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #7ee787;">{clean_code}</span>
+    </div>
+    <p style="font-size: 13px; color: #8b949e;">This code is valid for <strong>30 minutes</strong>. Do not share this code with anyone.</p>
+    <p style="font-size: 12px; color: #484f58; margin-top: 16px;">If you did not initiate this request, you can safely ignore this email.</p>
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 12px; color: #484f58; text-align: center;">
+      Sent by CareerForge.AI &bull; Career Development Platform
+    </div>
+  </div>
+</body>
+</html>"""
+    if is_resend_configured():
+        return send_via_resend(recipient, subject, html_content, plain_text)
+    if is_smtp_configured():
+        return send_via_smtp(recipient, subject, html_content, plain_text)
+    return True, "dev_mode"
+
 

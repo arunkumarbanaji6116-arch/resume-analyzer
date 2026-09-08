@@ -206,6 +206,50 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    /* Explicit reset for modal footer text buttons */
+    .modal-text-btn,
+    .google-modal-footer button,
+    .google-modal-footer a {
+      display: inline !important;
+      background: none !important;
+      background-color: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      font: inherit !important;
+      font-size: 0.85rem !important;
+      color: #4f46e5 !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+      transform: none !important;
+      line-height: inherit !important;
+    }
+    .modal-text-btn:hover,
+    .google-modal-footer button:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      color: #4338ca !important;
+      text-decoration: underline !important;
+    }
+    .dark .modal-text-btn,
+    .dark .google-modal-footer button {
+      color: #818cf8 !important;
+    }
+    .dark .modal-text-btn:hover,
+    .dark .google-modal-footer button:hover {
+      color: #a5b4fc !important;
+    }
+    .modal-back-btn {
+      color: #64748b !important;
+      font-size: 0.82rem !important;
+      font-weight: 500 !important;
+    }
+    .dark .modal-back-btn {
+      color: #94a3b8 !important;
+    }
   </style>
 </head>
 <body class="auth-body">
@@ -267,11 +311,11 @@
               </svg>
               <span>Google</span>
             </button>
-            <button type="button" class="social-btn" aria-label="Sign up with Facebook">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            <button type="button" class="social-btn github-auth-trigger" aria-label="Sign up with GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
               </svg>
-              <span>Facebook</span>
+              <span>GitHub</span>
             </button>
           </div>
 
@@ -332,11 +376,11 @@
               </svg>
               <span>Google</span>
             </button>
-            <button type="button" class="social-btn" aria-label="Login with Facebook">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            <button type="button" class="social-btn github-auth-trigger" aria-label="Login with GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
               </svg>
-              <span>Facebook</span>
+              <span>GitHub</span>
             </button>
           </div>
 
@@ -437,10 +481,81 @@
 
         <div class="google-modal-footer" style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: #64748b;">
           <span>Didn't receive the email? </span>
-          <button type="button" id="btnResendGoogleOtp" style="background:none; border:none; color:#4f46e5; font-weight:700; cursor:pointer; text-decoration:underline;">Resend code</button>
+          <button type="button" class="modal-text-btn" id="btnResendGoogleOtp">Resend code</button>
           <span id="resendCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
           <div style="margin-top: 10px;">
-            <button type="button" id="btnBackToEmail" style="background:none; border:none; color:#64748b; font-size: 0.8rem; cursor:pointer;">&larr; Use a different Google email</button>
+            <button type="button" class="modal-text-btn modal-back-btn" id="btnBackToEmail">&larr; Use a different Google email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= GITHUB AUTH VERIFICATION MODAL ================= -->
+  <div class="google-modal-backdrop" id="githubModalBackdrop" style="display: none;">
+    <div class="google-modal" id="githubModal">
+      <button type="button" class="google-modal-close" id="githubModalClose" aria-label="Close modal">&times;</button>
+      
+      <!-- Step 1: Input GitHub Username or Email -->
+      <div id="githubStepEmail" class="google-modal-step">
+        <div class="google-modal-header">
+          <div class="google-logo-pill" style="background:#0d1117; color:#ffffff; border-color:#30363d;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Continue with GitHub</h3>
+          <p class="google-modal-subtitle">Enter your GitHub email address or username to receive a secure 6-digit verification code.</p>
+        </div>
+
+        <div id="githubEmailError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label" for="githubEmailInput">GitHub Email or Username</label>
+          <input class="form-input" id="githubEmailInput" type="text" placeholder="username or hello@example.com" autocomplete="username email" required>
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnSendGithubOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnSendGithubOtpText">Send Verification Code</span>
+          <span id="btnSendGithubOtpSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+      </div>
+
+      <!-- Step 2: Enter 6-Digit OTP Code -->
+      <div id="githubStepOtp" class="google-modal-step" style="display: none;">
+        <div class="google-modal-header">
+          <div class="google-logo-pill" style="background:#0d1117; color:#ffffff; border-color:#30363d;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </div>
+          <h3 class="google-modal-title">Enter GitHub Code</h3>
+          <p class="google-modal-subtitle">We sent a 6-digit code to <strong id="targetGithubEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox to enter your code.</p>
+        </div>
+
+        <div id="githubOtpNotice" class="google-alert google-alert-info" style="display: none;"></div>
+        <div id="githubOtpError" class="google-alert google-alert-error" style="display: none;"></div>
+
+        <div class="otp-inputs-wrapper">
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autofocus>
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+          <input type="text" class="github-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        </div>
+
+        <button type="button" class="auth-btn-primary" id="btnVerifyGithubOtp" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="btnVerifyGithubOtpText">Verify & Sign In</span>
+          <span id="btnVerifyGithubOtpSpinner" class="spinner-sm" style="display: none;"></span>
+        </button>
+
+        <div class="google-modal-footer" style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: #64748b;">
+          <span>Didn't receive code? </span>
+          <button type="button" class="modal-text-btn" id="btnResendGithubOtp">Resend code</button>
+          <span id="resendGithubCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
+          <div style="margin-top: 10px;">
+            <button type="button" class="modal-text-btn modal-back-btn" id="btnBackToGithubEmail">&larr; Use a different GitHub account</button>
           </div>
         </div>
       </div>
@@ -515,10 +630,10 @@
 
         <div class="google-modal-footer" style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: #64748b;">
           <span>Didn't receive code? </span>
-          <button type="button" id="btnResendForgotOtp" style="background:none; border:none; color:#4f46e5; font-weight:700; cursor:pointer; text-decoration:underline;">Resend code</button>
+          <button type="button" class="modal-text-btn" id="btnResendForgotOtp">Resend code</button>
           <span id="forgotResendCountdown" style="display:none; color:#94a3b8; font-weight:600; margin-left: 4px;"></span>
           <div style="margin-top: 10px;">
-            <button type="button" id="btnBackToForgotEmail" style="background:none; border:none; color:#64748b; font-size: 0.8rem; cursor:pointer;">&larr; Change email address</button>
+            <button type="button" class="modal-text-btn modal-back-btn" id="btnBackToForgotEmail">&larr; Change email address</button>
           </div>
         </div>
       </div>
@@ -672,36 +787,62 @@
       }
 
       async function handleSendOtp() {
-        const email = emailInput.value.trim();
+        const email = (currentEmail || emailInput.value).trim().toLowerCase();
         if (!email || !email.includes('@') || !email.includes('.')) {
-          emailError.textContent = 'Please enter a valid Google email address.';
-          emailError.style.display = 'flex';
-          emailInput.focus();
+          if (stepOtp.style.display !== 'none') {
+            otpError.textContent = 'Please enter a valid Google email address.';
+            otpError.style.display = 'flex';
+          } else {
+            emailError.textContent = 'Please enter a valid Google email address.';
+            emailError.style.display = 'flex';
+            emailInput.focus();
+          }
           return;
         }
 
         emailError.style.display = 'none';
+        otpError.style.display = 'none';
         btnSendOtp.disabled = true;
         btnSendOtpSpinner.style.display = 'inline-block';
         btnSendOtpText.textContent = 'Sending code...';
+        if (btnResend) {
+          btnResend.disabled = true;
+          btnResend.textContent = 'Sending...';
+        }
 
         try {
           const res = await postJsonWithFallback(['/google-otp/send', '/auth/google-otp/send'], { email });
           const data = res.data;
 
           if (res.ok && data && data.success) {
-            showStepOtp(email, data.message);
+            showStepOtp(email, data.message || `Verification code sent to ${email}. Check your inbox.`);
           } else {
-            emailError.textContent = (data && data.message) || 'Failed to dispatch verification code. Please check your email.';
-            emailError.style.display = 'flex';
+            const err = (data && data.message) || 'Failed to dispatch verification code. Please check your email.';
+            if (stepOtp.style.display !== 'none') {
+              otpError.textContent = err;
+              otpError.style.display = 'flex';
+            } else {
+              emailError.textContent = err;
+              emailError.style.display = 'flex';
+            }
           }
         } catch (err) {
-          emailError.textContent = 'Network or server error (' + (err.message || 'connection failed') + '). Please try again.';
-          emailError.style.display = 'flex';
+          const netMsg = 'Network or server error (' + (err.message || 'connection failed') + '). Please try again.';
+          if (stepOtp.style.display !== 'none') {
+            otpError.textContent = netMsg;
+            otpError.style.display = 'flex';
+          } else {
+            emailError.textContent = netMsg;
+            emailError.style.display = 'flex';
+          }
         } finally {
           btnSendOtp.disabled = false;
           btnSendOtpSpinner.style.display = 'none';
           btnSendOtpText.textContent = 'Send Verification Code';
+          if (btnResend) {
+            btnResend.disabled = false;
+            btnResend.textContent = 'Resend code';
+          }
         }
       }
 
@@ -799,6 +940,274 @@
       btnVerifyOtp.addEventListener('click', handleVerifyOtp);
       btnResend.addEventListener('click', handleSendOtp);
       btnBackToEmail.addEventListener('click', showStepEmail);
+
+      // ================= GITHUB AUTH VERIFICATION MODAL LOGIC =================
+      const ghBackdrop = document.getElementById('githubModalBackdrop');
+      const ghCloseBtn = document.getElementById('githubModalClose');
+      const githubTriggers = document.querySelectorAll('.github-auth-trigger');
+
+      const ghStepEmail = document.getElementById('githubStepEmail');
+      const ghStepOtp = document.getElementById('githubStepOtp');
+      const ghEmailInput = document.getElementById('githubEmailInput');
+      const btnSendGhOtp = document.getElementById('btnSendGithubOtp');
+      const btnSendGhOtpText = document.getElementById('btnSendGithubOtpText');
+      const btnSendGhOtpSpinner = document.getElementById('btnSendGithubOtpSpinner');
+      const ghEmailError = document.getElementById('githubEmailError');
+
+      const targetGhEmailDisplay = document.getElementById('targetGithubEmail');
+      const ghOtpNotice = document.getElementById('githubOtpNotice');
+      const ghOtpError = document.getElementById('githubOtpError');
+      const btnVerifyGhOtp = document.getElementById('btnVerifyGithubOtp');
+      const btnVerifyGhOtpText = document.getElementById('btnVerifyGithubOtpText');
+      const btnVerifyGhOtpSpinner = document.getElementById('btnVerifyGithubOtpSpinner');
+      const btnResendGhOtp = document.getElementById('btnResendGithubOtp');
+      const resendGhCountdown = document.getElementById('resendGithubCountdown');
+      const btnBackToGhEmail = document.getElementById('btnBackToGithubEmail');
+      const ghOtpDigits = document.querySelectorAll('.github-otp-digit');
+
+      let currentGhEmail = '';
+      let ghResendTimer = null;
+      let ghResendSecondsLeft = 0;
+
+      function openGithubModal() {
+        ghBackdrop.style.display = 'flex';
+        setTimeout(() => ghBackdrop.classList.add('active'), 10);
+        showGhStepEmail();
+        ghEmailInput.focus();
+      }
+
+      function closeGithubModal() {
+        ghBackdrop.classList.remove('active');
+        setTimeout(() => {
+          ghBackdrop.style.display = 'none';
+          resetGhModal();
+        }, 250);
+      }
+
+      function resetGhModal() {
+        currentGhEmail = '';
+        if (ghResendTimer) clearInterval(ghResendTimer);
+        ghResendSecondsLeft = 0;
+        ghEmailInput.value = '';
+        ghEmailError.style.display = 'none';
+        ghOtpError.style.display = 'none';
+        ghOtpNotice.style.display = 'none';
+        ghOtpDigits.forEach(d => d.value = '');
+        btnResendGhOtp.style.display = 'inline';
+        resendGhCountdown.style.display = 'none';
+        showGhStepEmail();
+      }
+
+      function showGhStepEmail() {
+        ghStepEmail.style.display = 'block';
+        ghStepOtp.style.display = 'none';
+        ghEmailError.style.display = 'none';
+        setTimeout(() => ghEmailInput.focus(), 50);
+      }
+
+      function showGhStepOtp(email, noticeText) {
+        currentGhEmail = email;
+        targetGhEmailDisplay.textContent = email;
+        ghStepEmail.style.display = 'none';
+        ghStepOtp.style.display = 'block';
+        ghOtpError.style.display = 'none';
+
+        if (noticeText) {
+          ghOtpNotice.textContent = noticeText;
+          ghOtpNotice.style.display = 'flex';
+        } else {
+          ghOtpNotice.style.display = 'none';
+        }
+
+        ghOtpDigits.forEach(d => d.value = '');
+        setTimeout(() => ghOtpDigits[0].focus(), 150);
+        startGhResendTimer(60);
+      }
+
+      function startGhResendTimer(seconds) {
+        if (ghResendTimer) clearInterval(ghResendTimer);
+        ghResendSecondsLeft = seconds;
+        btnResendGhOtp.style.display = 'none';
+        resendGhCountdown.style.display = 'inline';
+        resendGhCountdown.textContent = `(${ghResendSecondsLeft}s)`;
+
+        ghResendTimer = setInterval(() => {
+          ghResendSecondsLeft -= 1;
+          if (ghResendSecondsLeft <= 0) {
+            clearInterval(ghResendTimer);
+            btnResendGhOtp.style.display = 'inline';
+            resendGhCountdown.style.display = 'none';
+          } else {
+            resendGhCountdown.textContent = `(${ghResendSecondsLeft}s)`;
+          }
+        }, 1000);
+      }
+
+      async function handleSendGhOtp() {
+        const identifier = (currentGhEmail || ghEmailInput.value).trim();
+        if (!identifier) {
+          if (ghStepOtp.style.display !== 'none') {
+            ghOtpError.textContent = 'Please enter your GitHub email or username.';
+            ghOtpError.style.display = 'flex';
+          } else {
+            ghEmailError.textContent = 'Please enter your GitHub email or username.';
+            ghEmailError.style.display = 'flex';
+            ghEmailInput.focus();
+          }
+          return;
+        }
+
+        ghEmailError.style.display = 'none';
+        ghOtpError.style.display = 'none';
+        btnSendGhOtp.disabled = true;
+        btnSendGhOtpSpinner.style.display = 'inline-block';
+        btnSendGhOtpText.textContent = 'Sending code...';
+        if (btnResendGhOtp) {
+          btnResendGhOtp.disabled = true;
+          btnResendGhOtp.textContent = 'Sending...';
+        }
+
+        try {
+          const res = await postJsonWithFallback(['/github-otp/send', '/auth/github-otp/send'], { identifier });
+          const data = res.data;
+
+          if (res.ok && data && data.success) {
+            showGhStepOtp(data.email || identifier, data.message || `Verification code sent to ${data.email || identifier}. Check your inbox.`);
+          } else if (data && data.need_email) {
+            ghEmailError.textContent = data.message;
+            ghEmailError.style.display = 'flex';
+            ghEmailInput.placeholder = 'Enter your GitHub email address';
+            ghEmailInput.focus();
+          } else {
+            const err = (data && data.message) || 'Failed to dispatch GitHub verification code. Please check your email.';
+            if (ghStepOtp.style.display !== 'none') {
+              ghOtpError.textContent = err;
+              ghOtpError.style.display = 'flex';
+            } else {
+              ghEmailError.textContent = err;
+              ghEmailError.style.display = 'flex';
+            }
+          }
+        } catch (err) {
+          const netMsg = 'Network or server error (' + (err.message || 'connection failed') + '). Please try again.';
+          if (ghStepOtp.style.display !== 'none') {
+            ghOtpError.textContent = netMsg;
+            ghOtpError.style.display = 'flex';
+          } else {
+            ghEmailError.textContent = netMsg;
+            ghEmailError.style.display = 'flex';
+          }
+        } finally {
+          btnSendGhOtp.disabled = false;
+          btnSendGhOtpSpinner.style.display = 'none';
+          btnSendGhOtpText.textContent = 'Send Verification Code';
+          if (btnResendGhOtp) {
+            btnResendGhOtp.disabled = false;
+            btnResendGhOtp.textContent = 'Resend code';
+          }
+        }
+      }
+
+      async function handleVerifyGhOtp() {
+        const enteredCode = Array.from(ghOtpDigits).map(d => d.value.trim()).join('');
+        if (enteredCode.length !== 6) {
+          ghOtpError.textContent = 'Please enter all 6 digits of your verification code.';
+          ghOtpError.style.display = 'flex';
+          return;
+        }
+
+        ghOtpError.style.display = 'none';
+        btnVerifyGhOtp.disabled = true;
+        btnVerifyGhOtpSpinner.style.display = 'inline-block';
+        btnVerifyGhOtpText.textContent = 'Verifying...';
+
+        try {
+          const res = await postJsonWithFallback(['/github-otp/verify', '/auth/github-otp/verify'], {
+            email: currentGhEmail,
+            otp: enteredCode
+          });
+          const data = res.data;
+
+          if (res.ok && data && data.success) {
+            ghOtpNotice.className = 'google-alert google-alert-success';
+            ghOtpNotice.textContent = '✓ Verified successfully! Redirecting to your dashboard...';
+            ghOtpNotice.style.display = 'flex';
+            setTimeout(() => {
+              window.location.href = data.redirect_url || '/dashboard';
+            }, 600);
+          } else {
+            ghOtpError.textContent = (data && data.message) || 'Invalid or expired code. Please try again.';
+            ghOtpError.style.display = 'flex';
+            ghOtpDigits.forEach(d => d.value = '');
+            ghOtpDigits[0].focus();
+          }
+        } catch (err) {
+          ghOtpError.textContent = 'Network or server error during verification. Please try again.';
+          ghOtpError.style.display = 'flex';
+        } finally {
+          btnVerifyGhOtp.disabled = false;
+          btnVerifyGhOtpSpinner.style.display = 'none';
+          btnVerifyGhOtpText.textContent = 'Verify & Sign In';
+        }
+      }
+
+      ghOtpDigits.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+          const val = e.target.value.replace(/[^0-9]/g, '');
+          e.target.value = val ? val.slice(-1) : '';
+          if (e.target.value && idx < ghOtpDigits.length - 1) {
+            ghOtpDigits[idx + 1].focus();
+          }
+          if (Array.from(ghOtpDigits).every(d => d.value.length === 1)) {
+            handleVerifyGhOtp();
+          }
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !input.value && idx > 0) {
+            ghOtpDigits[idx - 1].focus();
+          } else if (e.key === 'Enter') {
+            handleVerifyGhOtp();
+          }
+        });
+
+        input.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+          if (text) {
+            text.split('').forEach((char, i) => {
+              if (ghOtpDigits[i]) ghOtpDigits[i].value = char;
+            });
+            const nextIdx = Math.min(text.length, ghOtpDigits.length - 1);
+            ghOtpDigits[nextIdx].focus();
+            if (text.length === 6) {
+              handleVerifyGhOtp();
+            }
+          }
+        });
+      });
+
+      githubTriggers.forEach(btn => btn.addEventListener('click', openGithubModal));
+      ghCloseBtn.addEventListener('click', closeGithubModal);
+      ghBackdrop.addEventListener('click', (e) => {
+        if (e.target === ghBackdrop) closeGithubModal();
+      });
+
+      btnSendGhOtp.addEventListener('click', handleSendGhOtp);
+      ghEmailInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleSendGhOtp();
+      });
+
+      btnVerifyGhOtp.addEventListener('click', handleVerifyGhOtp);
+      btnResendGhOtp.addEventListener('click', handleSendGhOtp);
+      btnBackToGhEmail.addEventListener('click', showGhStepEmail);
+
+      // Support ?trigger=google or ?trigger=github query params
+      if (params.get('trigger') === 'google') {
+        openGoogleModal();
+      } else if (params.get('trigger') === 'github') {
+        openGithubModal();
+      }
 
       // ================= REMEMBER ME LOCAL STORAGE LOGIC =================
       const loginEmailInput = document.getElementById('login-email');
