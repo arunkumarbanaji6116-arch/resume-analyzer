@@ -17,7 +17,15 @@ class Config:
     ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
     ELEVENLABS_DEFAULT_VOICE = os.getenv("ELEVENLABS_DEFAULT_VOICE", "21m00Tcm4TlvDq8ikWAM")
 
-    # SMTP Configuration (defaults to Google/Gmail SMTP)
+    # Resend API Configuration (https://resend.com)
+    RESEND_API_KEY = (
+        os.getenv("RESEND_API_KEY", "").strip()
+        or os.getenv("RESEND_KEY", "").strip()
+        or os.getenv("RESEND_API", "").strip()
+    )
+    RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "CareerForge AI <onboarding@resend.dev>").strip()
+
+    # SMTP Configuration (fallback or custom SMTP)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
     SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").strip().lower() in ("true", "1", "yes")

@@ -1,12 +1,20 @@
+import json
 import logging
 import smtplib
+import urllib.error
+import urllib.request
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 
 from config import Config
 
-logger = logging.getLogger("careerforge.smtp")
+logger = logging.getLogger("careerforge.email")
+
+
+def is_resend_configured() -> bool:
+    """Check if Resend API key is configured."""
+    return bool(Config.RESEND_API_KEY)
 
 
 def is_smtp_configured() -> bool:
@@ -14,30 +22,8 @@ def is_smtp_configured() -> bool:
     return bool(Config.SMTP_USER and Config.SMTP_PASSWORD)
 
 
-def send_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
-    """
-    Sends a 6-digit one-time verification password (OTP) via SMTP (e.g. Gmail).
-    If SMTP credentials are not configured, falls back to dev mode and logs the code.
-    Returns: (success: bool, status_message: str)
-    """
-    recipient = to_email.strip().lower()
-    clean_code = str(otp_code).strip()
-
-    # If SMTP is not yet configured with real user/password, log and allow dev testing
-    if not is_smtp_configured():
-        logger.warning(
-            f"[SMTP DEV MODE] SMTP credentials not set in .env. "
-            f"Generated code for '{recipient}' is: {clean_code}"
-        )
-        return True, "dev_mode"
-
-    msg = MIMEMultipart("alternative")
-    subject = f"{clean_code} is your CareerForge AI Google verification code"
-    msg["Subject"] = subject
-    msg["From"] = formataddr((Config.SMTP_FROM_NAME, Config.SMTP_FROM_EMAIL))
-    msg["To"] = recipient
-
-    # Plain text version
+def _build_otp_templates(clean_code: str) -> tuple[str, str]:
+    """Builds plain-text and rich HTML templates for Google OTP verification."""
     plain_text = f"""CareerForge AI · Continue with Google
 --------------------------------------------------
 Your one-time verification code is: {clean_code}
@@ -49,7 +35,6 @@ If you did not request this login code, you can safely ignore this email.
 CareerForge AI Team
 """
 
-    # Rich HTML version
     html_content = f"""<!doctype html>
 <html>
 <head>
@@ -161,22 +146,76 @@ CareerForge AI Team
     <p style="font-size: 12px; color: #64748b;">If you did not initiate this request, you can safely ignore this email.</p>
     
     <div class="footer">
-      Sent by CareerForge AI via secure SMTP delivery &bull; Automated security notification
+      Sent by CareerForge AI &bull; Automated security notification
     </div>
   </div>
 </body>
 </html>
 """
+    return plain_text, html_content
+
+
+def send_via_resend(recipient: str, subject: str, html_content: str, plain_text: str) -> tuple[bool, str]:
+    """
+    Sends an email using Resend's REST API (https://api.resend.com/emails).
+    """
+    api_key = Config.RESEND_API_KEY.strip()
+    from_email = Config.RESEND_FROM_EMAIL or "CareerForge AI <onboarding@resend.dev>"
+
+    payload = {
+        "from": from_email,
+        "to": [recipient],
+        "subject": subject,
+        "html": html_content,
+        "text": plain_text,
+    }
+
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "CareerForge-AI/1.0",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            resp_body = resp.read().decode("utf-8")
+            logger.info(f"[RESEND SUCCESS] Email dispatched to {recipient}: {resp_body}")
+            return True, "Email sent successfully via Resend."
+    except urllib.error.HTTPError as err:
+        raw = err.read().decode("utf-8")
+        logger.error(f"[RESEND HTTP ERROR] {err.code}: {raw}")
+        try:
+            err_json = json.loads(raw)
+            clean_msg = err_json.get("message") or raw
+        except Exception:
+            clean_msg = raw
+        return False, f"Resend ({err.code}): {clean_msg}"
+    except Exception as exc:
+        logger.error(f"[RESEND ERROR] {exc}")
+        return False, f"Resend connection failed: {exc}"
+
+
+def send_via_smtp(recipient: str, subject: str, html_content: str, plain_text: str) -> tuple[bool, str]:
+    """
+    Sends an email using standard SMTP (e.g. Gmail SMTP).
+    """
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = formataddr((Config.SMTP_FROM_NAME, Config.SMTP_FROM_EMAIL))
+    msg["To"] = recipient
 
     msg.attach(MIMEText(plain_text, "plain"))
     msg.attach(MIMEText(html_content, "html"))
 
     try:
         if Config.SMTP_PORT == 465:
-            # SSL connection
             server = smtplib.SMTP_SSL(Config.SMTP_SERVER, Config.SMTP_PORT, timeout=12)
         else:
-            # STARTTLS connection (standard for port 587)
             server = smtplib.SMTP(Config.SMTP_SERVER, Config.SMTP_PORT, timeout=12)
             if Config.SMTP_USE_TLS:
                 server.starttls()
@@ -185,7 +224,36 @@ CareerForge AI Team
         server.sendmail(Config.SMTP_FROM_EMAIL, [recipient], msg.as_string())
         server.quit()
         logger.info(f"[SMTP SUCCESS] Verification code successfully sent to {recipient}")
-        return True, "Email sent successfully."
+        return True, "Email sent successfully via SMTP."
     except Exception as exc:
         logger.error(f"[SMTP ERROR] Failed to send email to {recipient}: {exc}")
         return False, str(exc)
+
+
+def send_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
+    """
+    Sends a 6-digit verification code using Resend (priority) or SMTP.
+    If neither is configured, falls back to dev mode and logs the code.
+    Returns: (success: bool, status_message: str)
+    """
+    recipient = to_email.strip().lower()
+    clean_code = str(otp_code).strip()
+    subject = f"{clean_code} is your CareerForge AI Google verification code"
+    plain_text, html_content = _build_otp_templates(clean_code)
+
+    # 1. Primary: Resend API
+    if is_resend_configured():
+        logger.info(f"[EMAIL] Delivering via Resend API to {recipient}...")
+        return send_via_resend(recipient, subject, html_content, plain_text)
+
+    # 2. Secondary: SMTP Server
+    if is_smtp_configured():
+        logger.info(f"[EMAIL] Delivering via SMTP to {recipient}...")
+        return send_via_smtp(recipient, subject, html_content, plain_text)
+
+    # 3. Fallback: Safe dev mode
+    logger.warning(
+        f"[EMAIL DEV MODE] Neither Resend nor SMTP configured in .env. "
+        f"Generated test PIN for '{recipient}' is: {clean_code}"
+    )
+    return True, "dev_mode"
