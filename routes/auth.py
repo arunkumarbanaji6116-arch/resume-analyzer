@@ -82,7 +82,7 @@ def send_google_otp():
             "success": True,
             "is_dev_mode": True,
             "dev_code": otp_code,
-            "message": f"SMTP not configured in .env. Test PIN is: {otp_code}",
+            "message": f"Email service not configured in .env. Test PIN is: {otp_code}",
         })
     elif sent:
         return jsonify({
@@ -95,7 +95,7 @@ def send_google_otp():
             "success": True,
             "is_dev_mode": True,
             "dev_code": otp_code,
-            "message": f"SMTP send attempt failed ({status_or_msg}). For testing, your PIN is: {otp_code}",
+            "message": f"Email delivery failed ({status_or_msg}). For testing, your PIN is: {otp_code}",
         })
 
 

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import smtplib
 import urllib.error
 import urllib.request
@@ -12,9 +13,20 @@ from config import Config
 logger = logging.getLogger("careerforge.email")
 
 
+def _get_resend_key() -> str:
+    """Dynamically get Resend API key from environment or config."""
+    import os
+    return (
+        os.getenv("RESEND_API_KEY", "").strip()
+        or os.getenv("RESEND_KEY", "").strip()
+        or os.getenv("RESEND_API", "").strip()
+        or getattr(Config, "RESEND_API_KEY", "")
+    ).strip()
+
+
 def is_resend_configured() -> bool:
     """Check if Resend API key is configured."""
-    return bool(Config.RESEND_API_KEY)
+    return bool(_get_resend_key())
 
 
 def is_smtp_configured() -> bool:
@@ -160,8 +172,8 @@ def send_via_resend(recipient: str, subject: str, html_content: str, plain_text:
     """
     Sends an email using Resend's REST API (https://api.resend.com/emails).
     """
-    api_key = Config.RESEND_API_KEY.strip()
-    from_email = Config.RESEND_FROM_EMAIL or "CareerForge AI <onboarding@resend.dev>"
+    api_key = _get_resend_key()
+    from_email = os.getenv("RESEND_FROM_EMAIL", "").strip() or Config.RESEND_FROM_EMAIL or "CareerForge.AI <onboarding@resend.dev>"
 
     payload = {
         "from": from_email,
@@ -239,7 +251,7 @@ def send_otp_email(to_email: str, otp_code: str) -> tuple[bool, str]:
     """
     recipient = to_email.strip().lower()
     clean_code = str(otp_code).strip()
-    subject = f"{clean_code} is your CareerForge AI Google verification code"
+    subject = f"{clean_code} is your CareerForge.AI Google verification code"
     plain_text, html_content = _build_otp_templates(clean_code)
 
     # 1. Primary: Resend API
