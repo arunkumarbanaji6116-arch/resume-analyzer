@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, redirect, render_template, request, sessio
 from config import Config
 from ai.interview_ai import assess_answer, questions_for, mcq_questions_for
 from ai.voice_ai import generate_speech, VOICES
-from db import get_db
+from db import get_db, record_activity
 from flask import Response
 
 interview_bp = Blueprint("interview", __name__)
@@ -116,10 +116,10 @@ def complete():
     role = session.get("interview_role", "General")
     count = payload.get("question_count", session.get("interview_count", 5))
 
-    db = get_db()
-    db.execute(
-        "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
-        (session["user_id"], "interview", f"Mock interview ({count} questions): {role}", overall_score, datetime.now(timezone.utc).isoformat())
+    record_activity(
+        session["user_id"],
+        "interview",
+        f"Mock interview ({count} questions): {role}",
+        overall_score,
     )
-    db.commit()
     return jsonify({"success": True, "score": overall_score})

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, redirect, render_template, request, session, url_for
 
 from ai.career_ai import coach_response
-from db import get_db
+from db import get_db, record_activity
 
 career_bp = Blueprint("career", __name__)
 
@@ -21,12 +21,7 @@ def career():
 
         if goal:
             advice = coach_response(goal, background, level, timeline)
-            db = get_db()
-            db.execute(
-                "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
-                (session["user_id"], "career", f"Career roadmap: {goal[:30]}", advice["readiness_score"], datetime.now(timezone.utc).isoformat())
-            )
-            db.commit()
+            record_activity(session["user_id"], "career", f"Career roadmap: {goal[:30]}", advice["readiness_score"])
 
     return render_template(
         "career_coach.html",

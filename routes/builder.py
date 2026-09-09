@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from ai.gemini_client import gemini_build_resume_from_scratch
-from db import get_db
+from db import get_db, record_activity
 
 builder_bp = Blueprint("builder", __name__)
 
@@ -50,18 +50,12 @@ def generate_resume():
 
     generated = gemini_build_resume_from_scratch(data, strategy=strategy, variation_seed=variation_seed)
 
-    db = get_db()
-    db.execute(
-        "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
-        (
-            session["user_id"],
-            "resume_builder",
-            f"Resume Builder: {data['target_role']} (Gen #{variation_seed} · {generated.get('strategy_title', strategy)})",
-            generated.get("ats_score", 97),
-            datetime.now(timezone.utc).isoformat(),
-        ),
+    record_activity(
+        session["user_id"],
+        "resume_builder",
+        f"Resume Builder: {data['target_role']} (Gen #{variation_seed} · {generated.get('strategy_title', strategy)})",
+        generated.get("ats_score", 97),
     )
-    db.commit()
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
         return {"status": "ok", "resume": generated}

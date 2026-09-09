@@ -42,3 +42,38 @@ def init_db():
     )
     db.commit()
     db.close()
+
+    # Attempt automatic synchronization to Supabase if credentials are provided
+    try:
+        from services.supabase_service import is_supabase_configured, migrate_local_db_to_supabase
+        if is_supabase_configured():
+            migrate_local_db_to_supabase()
+    except Exception:
+        pass
+
+
+def record_activity(user_id, kind, title, score=None, created_at=None):
+    """
+    Records an activity locally in SQLite and synchronizes to Supabase (if configured).
+    """
+    from datetime import datetime, timezone
+    now_iso = created_at or datetime.now(timezone.utc).isoformat()
+
+    # 1. Local SQLite record
+    try:
+        db = get_db()
+        db.execute(
+            "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
+            (user_id, kind, title, score, now_iso),
+        )
+        db.commit()
+    except Exception:
+        pass
+
+    # 2. Supabase Cloud Sync
+    try:
+        from services.supabase_service import supabase_save_activity
+        supabase_save_activity(user_id, kind, title, score, now_iso)
+    except Exception:
+        pass
+

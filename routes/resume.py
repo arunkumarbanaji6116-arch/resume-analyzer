@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from ai.resume_ai import ResumeImageError, analyze_resume, extract_text_from_resume_image
-from db import get_db
+from db import get_db, record_activity
 
 resume_bp = Blueprint("resume", __name__)
 
@@ -31,12 +31,7 @@ def resume():
                     analysis["source"] = f"uploaded file ({resume_image.filename})"
                     analysis["raw_text"] = text
                     analysis["target_role"] = role
-                    db = get_db()
-                    db.execute(
-                        "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
-                        (session["user_id"], "resume", f"Resume review: {role or 'General'}", analysis["score"], datetime.now(timezone.utc).isoformat())
-                    )
-                    db.commit()
+                    record_activity(session["user_id"], "resume", f"Resume review: {role or 'General'}", analysis["score"])
                 except ResumeImageError as error:
                     flash(str(error))
     return render_template("resume.html", analysis=analysis)
@@ -62,18 +57,12 @@ def improve():
     from ai.gemini_client import gemini_improve_resume
     improved_data = gemini_improve_resume(text, role, initial_score, notes, variation_index)
 
-    db = get_db()
-    db.execute(
-        "INSERT INTO activity (user_id, kind, title, score, created_at) VALUES (?, ?, ?, ?, ?)",
-        (
-            session["user_id"],
-            "resume_boost",
-            f"Resume Boost: {role or 'General'} (+{improved_data.get('score_boost', 25)} pts)",
-            improved_data["improved_score"],
-            datetime.now(timezone.utc).isoformat(),
-        ),
+    record_activity(
+        session["user_id"],
+        "resume_boost",
+        f"Resume Boost: {role or 'General'} (+{improved_data.get('score_boost', 25)} pts)",
+        improved_data["improved_score"],
     )
-    db.commit()
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
         return {"status": "ok", "improved": improved_data}

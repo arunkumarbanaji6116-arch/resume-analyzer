@@ -39,6 +39,14 @@ def create_app():
             "SELECT kind, title, score, created_at FROM activity WHERE user_id = ? ORDER BY id DESC LIMIT 6",
             (session["user_id"],),
         ).fetchall()
+        if not rows:
+            try:
+                from services.supabase_service import supabase_get_activities
+                sb_rows = supabase_get_activities(session["user_id"], limit=6)
+                if sb_rows:
+                    rows = sb_rows
+            except Exception:
+                pass
         return render_template("dashboard.html", activities=rows)
 
     from routes.auth import auth_bp

@@ -15,6 +15,14 @@ from services.smtp_service import (
     send_otp_email,
     send_password_reset_email,
 )
+from services.supabase_service import (
+    supabase_create_user,
+    supabase_get_user_by_email,
+    supabase_update_password,
+    supabase_save_otp,
+    supabase_verify_otp,
+    supabase_delete_otps,
+)
 
 logger = logging.getLogger(__name__)
 auth_bp = Blueprint("auth", __name__)
@@ -28,6 +36,21 @@ def login():
         remember = bool(request.form.get("remember"))
 
         user = get_db().execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+        if not user:
+            # Fallback check against Supabase
+            sb_user = supabase_get_user_by_email(email)
+            if sb_user:
+                try:
+                    db = get_db()
+                    db.execute(
+                        "INSERT OR IGNORE INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+                        (sb_user.get("id"), sb_user.get("name"), sb_user.get("email"), sb_user.get("password_hash"), sb_user.get("created_at")),
+                    )
+                    db.commit()
+                    user = get_db().execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone() or sb_user
+                except Exception:
+                    user = sb_user
+
         if user and check_password_hash(user["password_hash"], password):
             session.permanent = bool(remember)
             session["user_id"] = user["id"]
@@ -63,13 +86,22 @@ def register():
         return redirect(url_for("auth.login", mode="signup"))
     try:
         db = get_db()
+        now_iso = datetime.now(timezone.utc).isoformat()
+        pwd_hash = generate_password_hash(password)
         cursor = db.execute(
             "INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
-            (name, email, generate_password_hash(password), datetime.now(timezone.utc).isoformat()),
+            (name, email, pwd_hash, now_iso),
         )
         db.commit()
+        user_id = cursor.lastrowid
+
+        # Sync user to Supabase
+        sb_user = supabase_create_user(name, email, pwd_hash, now_iso)
+        if sb_user and sb_user.get("id"):
+            user_id = sb_user["id"]
+
         session.permanent = True
-        session["user_id"] = cursor.lastrowid
+        session["user_id"] = user_id
         session["user"] = name
         resp = redirect(url_for("dashboard"))
         resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
@@ -114,6 +146,7 @@ def send_google_otp():
             (email, otp_code, expires_at, now_iso),
         )
         db.commit()
+        supabase_save_otp(email, otp_code, expires_at, now_iso)
     except Exception as exc:
         return jsonify({"success": False, "message": f"Database error storing OTP: {exc}"}), 500
 
@@ -155,7 +188,11 @@ def verify_google_otp():
         (email, clean_otp, now_iso),
     ).fetchone()
 
+    sb_valid = False
     if not record:
+        sb_valid = supabase_verify_otp(email, clean_otp)
+
+    if not record and not sb_valid:
         # Check if the code expired
         expired_record = db.execute(
             "SELECT * FROM email_otps WHERE email = ? AND otp_code = ?",
@@ -183,11 +220,17 @@ def verify_google_otp():
             "message": "No active verification code found for this email. Please click 'Resend code'.",
         }), 400
 
-    # Verification successful: clear all OTPs for this email
+    # Verification successful: clear all OTPs for this email locally & in Supabase
     db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
     db.commit()
+    supabase_delete_otps(email)
 
     user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    if not user:
+        sb_user = supabase_get_user_by_email(email)
+        if sb_user:
+            user = sb_user
+
     if not user:
         local_part = email.split("@")[0]
         tokens = [t.capitalize() for t in re.split(r"[._-]+", local_part) if t]
@@ -200,6 +243,10 @@ def verify_google_otp():
         db.commit()
         user_id = cursor.lastrowid
         user_name = name
+
+        sb_created = supabase_create_user(name, email, "google_smtp_verified", now_dt)
+        if sb_created and sb_created.get("id"):
+            user_id = sb_created["id"]
     else:
         user_id = user["id"]
         user_name = user["name"]
@@ -270,6 +317,7 @@ def send_github_otp():
             (target_email, otp_code, expires_at, now_iso),
         )
         db.commit()
+        supabase_save_otp(target_email, otp_code, expires_at, now_iso)
     except Exception as exc:
         return jsonify({"success": False, "message": f"Database error storing OTP: {exc}"}), 500
 
@@ -309,7 +357,11 @@ def verify_github_otp():
         (email, clean_otp, now_iso),
     ).fetchone()
 
+    sb_valid = False
     if not record:
+        sb_valid = supabase_verify_otp(email, clean_otp)
+
+    if not record and not sb_valid:
         expired_record = db.execute(
             "SELECT * FROM email_otps WHERE email = ? AND otp_code = ?",
             (email, clean_otp),
@@ -337,8 +389,14 @@ def verify_github_otp():
 
     db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
     db.commit()
+    supabase_delete_otps(email)
 
     user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    if not user:
+        sb_user = supabase_get_user_by_email(email)
+        if sb_user:
+            user = sb_user
+
     if not user:
         name = session.get("github_auth_name")
         if not name:
@@ -353,6 +411,10 @@ def verify_github_otp():
         db.commit()
         user_id = cursor.lastrowid
         user_name = name
+
+        sb_created = supabase_create_user(name, email, "github_verified", now_dt)
+        if sb_created and sb_created.get("id"):
+            user_id = sb_created["id"]
     else:
         user_id = user["id"]
         user_name = user["name"]
@@ -475,6 +537,8 @@ def send_forgot_password_otp():
     db = get_db()
     user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
     if not user:
+        user = supabase_get_user_by_email(email)
+    if not user:
         return jsonify({"success": False, "message": "No account found with that email address. Please check your email or sign up."}), 404
 
     otp_code = f"{secrets.randbelow(900000) + 100000}"
@@ -489,6 +553,7 @@ def send_forgot_password_otp():
             (email, otp_code, expires_at, now_iso),
         )
         db.commit()
+        supabase_save_otp(email, otp_code, expires_at, now_iso)
     except Exception as exc:
         return jsonify({"success": False, "message": f"Database error: {exc}"}), 500
 
@@ -526,7 +591,11 @@ def reset_forgot_password():
         (email, otp_code, now_iso),
     ).fetchone()
 
+    sb_valid = False
     if not record:
+        sb_valid = supabase_verify_otp(email, otp_code)
+
+    if not record and not sb_valid:
         return jsonify({
             "success": False,
             "message": "Invalid or expired verification code. Please check the code or request a new one.",
@@ -534,11 +603,16 @@ def reset_forgot_password():
 
     user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
     if not user:
+        user = supabase_get_user_by_email(email)
+    if not user:
         return jsonify({"success": False, "message": "User account not found."}), 404
 
-    db.execute("UPDATE users SET password_hash = ? WHERE email = ?", (generate_password_hash(new_password), email))
+    pwd_hash = generate_password_hash(new_password)
+    db.execute("UPDATE users SET password_hash = ? WHERE email = ?", (pwd_hash, email))
     db.execute("DELETE FROM email_otps WHERE email = ?", (email,))
     db.commit()
+    supabase_update_password(email, pwd_hash)
+    supabase_delete_otps(email)
 
     session.permanent = True
     session["user_id"] = user["id"]
