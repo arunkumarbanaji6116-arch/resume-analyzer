@@ -303,9 +303,109 @@
     .dark .password-toggle-btn:hover {
       color: #a5b4fc !important;
     }
+
+    /* ================= LOGIN PATTERN BACKGROUND (Login Page Only) ================= */
+    .login-pattern-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .login-pattern-bg .login-pattern-container {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, #777777 2px, transparent 2px),
+        radial-gradient(circle, #eaeaea 10px, transparent 32px),
+        linear-gradient(
+          -45deg,
+          #eaeaea 0%,
+          transparent 49%,
+          transparent 50%,
+          transparent 51%,
+          #eaeaea 100%
+        ),
+        linear-gradient(
+          45deg,
+          #eaeaea 0%,
+          transparent 49%,
+          #777777 50%,
+          transparent 51%,
+          #eaeaea 100%
+        ),
+        linear-gradient(-45deg, transparent 49%, #777777 50%, transparent 51%);
+      background-size: 8rem 8rem;
+      background-repeat: repeat;
+    }
+
+    .login-pattern-bg .login-pattern-paper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      filter: url(#void-texture);
+      background: linear-gradient(
+        to bottom,
+        rgba(194, 167, 87, 0.241) 0%,
+        rgba(162, 125, 55, 0.255) 100%
+      );
+      background-size: cover;
+    }
+
+    .auth-header,
+    .auth-wrapper {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body class="auth-body">
+  <!-- ================= VOID PATTERN BACKGROUND (Login Page Only) ================= -->
+  <div class="login-pattern-bg" aria-hidden="true">
+    <div class="login-pattern-container"></div>
+    <div class="login-pattern-paper">
+      <span class="orbit-overlay"></span>
+      <svg class="texture-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+        <defs>
+          <filter id="void-texture">
+            <feTurbulence seed="5" result="noise1" numOctaves="8" baseFrequency="0.015" type="fractalNoise"></feTurbulence>
+            <feTurbulence seed="2" result="noise2" numOctaves="8" baseFrequency="0.015" type="fractalNoise"></feTurbulence>
+            <feMerge result="noise">
+              <feMergeNode in="noise1"></feMergeNode>
+              <feMergeNode in="noise1"></feMergeNode>
+              <feMergeNode in="noise2"></feMergeNode>
+            </feMerge>
+            <feGaussianBlur result="blur" stdDeviation="0" in="noise"></feGaussianBlur>
+            <feSpecularLighting result="specular" lightingColor="#ffffff" specularExponent="20" specularConstant="1" surfaceScale="3" in="blur">
+              <feDistantLight elevation="45" azimuth="90"></feDistantLight>
+            </feSpecularLighting>
+            <feComposite result="lit" operator="over" in2="SourceGraphic" in="specular"></feComposite>
+            <feBlend mode="screen" in2="lit" in="SourceGraphic"></feBlend>
+          </filter>
+          <filter id="alt-void-texture">
+            <feTurbulence repeatCount="indefinite" dur="6s" values="0.015; 0.02; 0.015" attributeName="baseFrequency" seed="2" result="noise1" numOctaves="8" baseFrequency="0.015" type="fractalNoise"></feTurbulence>
+            <feTurbulence repeatCount="indefinite" dur="6s" values="0.015; 0.02; 0.015" attributeName="baseFrequency" seed="1" result="noise2" numOctaves="8" baseFrequency="0.015" type="fractalNoise"></feTurbulence>
+            <feMerge result="noise">
+              <feMergeNode in="noise1"></feMergeNode>
+              <feMergeNode in="noise1"></feMergeNode>
+              <feMergeNode in="noise2"></feMergeNode>
+            </feMerge>
+            <feGaussianBlur result="blur" stdDeviation="0" in="noise"></feGaussianBlur>
+            <feSpecularLighting result="specular" lightingColor="#ffeeff" specularExponent="20" specularConstant="1" surfaceScale="3" in="blur">
+              <feDistantLight elevation="45" azimuth="90"></feDistantLight>
+            </feSpecularLighting>
+            <feComposite result="lit" operator="over" in2="SourceGraphic" in="specular"></feComposite>
+            <feBlend mode="screen" in2="lit" in="SourceGraphic"></feBlend>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
   <!-- Minimalist Brand Header -->
   <header class="auth-header">
     <a class="brand auth-brand" href="/" title="CareerForge.AI · Career Development Platform">
