@@ -256,17 +256,17 @@
       color: #94a3b8 !important;
     }
 
-    /* ================= SHADCN / ORIGINUI INPUT FOCUS & SHADOW ANIMATION (Login Page Only) ================= */
+    /* ================= SHADCN / ORIGINUI INPUT FOCUS & FLOATING LABEL ANIMATION (Login Page Only) ================= */
     .auth-container .form-input,
     .google-modal .form-input {
       display: flex;
-      height: 42px;
+      height: 48px !important;
       width: 100%;
-      border-radius: 8px !important; /* rounded-lg */
+      border-radius: 10px !important; /* rounded-lg */
       border: 1px solid #e2e8f0 !important; /* border border-input */
       background-color: #ffffff !important; /* bg-background */
-      padding: 8px 12px !important; /* px-3 py-2 */
-      font-size: 0.875rem !important; /* text-sm */
+      padding: 12px 14px !important; /* px-3.5 py-3 */
+      font-size: 0.92rem !important; /* text-sm */
       color: #0f172a !important; /* text-foreground */
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; /* shadow-sm shadow-black/5 */
       transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
@@ -279,7 +279,7 @@
 
     .auth-container .form-input::placeholder,
     .google-modal .form-input::placeholder {
-      color: rgba(148, 163, 184, 0.7) !important; /* placeholder:text-muted-foreground/70 */
+      color: transparent !important; /* Keep transparent so floating label acts as resting placeholder */
       font-size: 0.875rem;
     }
 
@@ -296,14 +296,14 @@
     .google-modal .form-input:focus-visible {
       outline: none !important;
       border-color: #8e2de2 !important; /* focus-visible:border-ring */
-      box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.22), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; /* focus-visible:ring-[3px] focus-visible:ring-ring/20 */
+      box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.22), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
       background-color: #ffffff !important;
     }
 
     .auth-container .form-input:disabled,
     .google-modal .form-input:disabled {
-      cursor: not-allowed !important; /* disabled:cursor-not-allowed */
-      opacity: 0.5 !important; /* disabled:opacity-50 */
+      cursor: not-allowed !important;
+      opacity: 0.5 !important;
     }
 
     /* OTP Digits input animation */
@@ -321,6 +321,83 @@
       box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.22), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
     }
 
+    /* ================= OUTLINE FLOATING LABEL ANIMATION ================= */
+    .floating-form-group {
+      position: relative !important;
+      margin-bottom: 20px !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .password-input-container {
+      position: relative !important;
+      width: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .password-input-container .form-input {
+      width: 100% !important;
+      padding-right: 44px !important;
+    }
+
+    .floating-label {
+      position: absolute !important;
+      left: 14px !important;
+      top: 50% !important;
+      transform: translateY(-50%) scale(1) !important;
+      transform-origin: left center !important;
+      font-size: 0.90rem !important;
+      font-weight: 500 !important;
+      color: #94a3b8 !important;
+      pointer-events: none !important;
+      transition: top 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  padding 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      z-index: 4 !important;
+      padding: 0 4px !important;
+      background-color: transparent !important;
+      border-radius: 4px !important;
+      line-height: 1 !important;
+      user-select: none !important;
+      white-space: nowrap !important;
+    }
+
+    /* Floating up to the box head when focused or when input has content */
+    .floating-form-group .form-input:focus ~ .floating-label,
+    .password-input-container .form-input:focus ~ .floating-label,
+    .floating-form-group .form-input:not(:placeholder-shown) ~ .floating-label,
+    .password-input-container .form-input:not(:placeholder-shown) ~ .floating-label,
+    .floating-form-group.is-floating .floating-label,
+    .password-input-container.is-floating .floating-label {
+      top: 0% !important;
+      transform: translateY(-50%) scale(0.82) !important;
+      font-weight: 700 !important;
+      color: #8e2de2 !important;
+      background-color: #ffffff !important;
+      padding: 0 6px !important;
+      z-index: 5 !important;
+    }
+
+    /* Resting at box head when filled but blurred */
+    .floating-form-group .form-input:not(:focus):not(:placeholder-shown) ~ .floating-label,
+    .password-input-container .form-input:not(:focus):not(:placeholder-shown) ~ .floating-label,
+    .floating-form-group.is-floating:not(.is-focused) .floating-label,
+    .password-input-container.is-floating:not(.is-focused) .floating-label {
+      color: #64748b !important;
+      font-weight: 600 !important;
+      background-color: #ffffff !important;
+    }
+
+    /* Subtle hover effect on label when resting inside */
+    .floating-form-group:hover .form-input:placeholder-shown:not(:focus) ~ .floating-label,
+    .password-input-container:hover .form-input:placeholder-shown:not(:focus) ~ .floating-label {
+      color: #64748b !important;
+    }
+
     /* Dark Mode Variant */
     .dark .auth-container .form-input,
     .dark .google-modal .form-input {
@@ -328,11 +405,6 @@
       border-color: #374151 !important;
       color: #f9fafb !important;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
-    }
-
-    .dark .auth-container .form-input::placeholder,
-    .dark .google-modal .form-input::placeholder {
-      color: rgba(156, 163, 175, 0.6) !important;
     }
 
     .dark .auth-container .form-input:focus,
@@ -345,17 +417,30 @@
       background-color: #111827 !important;
     }
 
+    .dark .floating-label {
+      color: #94a3af !important;
+      background-color: transparent !important;
+    }
+
+    .dark .floating-form-group .form-input:focus ~ .floating-label,
+    .dark .password-input-container .form-input:focus ~ .floating-label,
+    .dark .floating-form-group .form-input:not(:placeholder-shown) ~ .floating-label,
+    .dark .password-input-container .form-input:not(:placeholder-shown) ~ .floating-label,
+    .dark .floating-form-group.is-floating .floating-label,
+    .dark .password-input-container.is-floating .floating-label {
+      background-color: #111827 !important;
+      color: #a855f7 !important;
+    }
+
+    .dark .floating-form-group .form-input:not(:focus):not(:placeholder-shown) ~ .floating-label,
+    .dark .password-input-container .form-input:not(:focus):not(:placeholder-shown) ~ .floating-label,
+    .dark .floating-form-group.is-floating:not(.is-focused) .floating-label,
+    .dark .password-input-container.is-floating:not(.is-focused) .floating-label {
+      background-color: #111827 !important;
+      color: #cbd5e1 !important;
+    }
+
     /* Show/Hide Password Toggle */
-    .password-input-container {
-      position: relative;
-      width: 100%;
-      display: flex;
-      align-items: center;
-    }
-    .password-input-container .form-input {
-      width: 100%;
-      padding-right: 44px !important;
-    }
     .password-toggle-btn {
       position: absolute;
       right: 12px;
@@ -371,7 +456,7 @@
       align-items: center;
       justify-content: center;
       transition: color 0.18s ease, transform 0.18s ease;
-      z-index: 5;
+      z-index: 6;
       box-shadow: none !important;
       border-radius: 6px;
       line-height: 1;
@@ -635,20 +720,20 @@
             {% endif %}
           {% endwith %}
 
-          <div class="form-group">
-            <label class="form-label" for="reg-name">Full Name</label>
-            <input class="form-input" id="reg-name" name="name" type="text" placeholder="John Doe" autocomplete="name" required>
+          <div class="form-group floating-form-group">
+            <input class="form-input floating-input" id="reg-name" name="name" type="text" placeholder=" " autocomplete="name" required>
+            <label class="floating-label" for="reg-name">Full Name</label>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reg-email">Email</label>
-            <input class="form-input" id="reg-email" name="email" type="email" placeholder="hello@example.com" autocomplete="email" required>
+          <div class="form-group floating-form-group">
+            <input class="form-input floating-input" id="reg-email" name="email" type="email" placeholder=" " autocomplete="email" required>
+            <label class="floating-label" for="reg-email">Email</label>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reg-password">Password</label>
+          <div class="form-group floating-form-group">
             <div class="password-input-container">
-              <input class="form-input" id="reg-password" name="password" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
+              <input class="form-input floating-input" id="reg-password" name="password" type="password" placeholder=" " minlength="8" autocomplete="new-password" required>
+              <label class="floating-label" for="reg-password">Password (min 8 chars)</label>
               <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
                 <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -711,15 +796,15 @@
             {% endif %}
           {% endwith %}
 
-          <div class="form-group">
-            <label class="form-label" for="login-email">Email</label>
-            <input class="form-input" id="login-email" name="email" type="email" placeholder="hello@example.com" value="{{ email or '' }}" autocomplete="username email" required>
+          <div class="form-group floating-form-group">
+            <input class="form-input floating-input" id="login-email" name="email" type="email" placeholder=" " value="{{ email or '' }}" autocomplete="username email" required>
+            <label class="floating-label" for="login-email">Email</label>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="login-password">Password</label>
+          <div class="form-group floating-form-group">
             <div class="password-input-container">
-              <input class="form-input" id="login-password" name="password" type="password" placeholder="••••••••" value="{{ password or '' }}" autocomplete="current-password" required>
+              <input class="form-input floating-input" id="login-password" name="password" type="password" placeholder=" " value="{{ password or '' }}" autocomplete="current-password" required>
+              <label class="floating-label" for="login-password">Password</label>
               <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
                 <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -819,9 +904,9 @@
 
         <div id="googleEmailError" class="google-alert google-alert-error" style="display: none;"></div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label class="form-label" for="googleEmailInput">Google Email Address</label>
-          <input class="form-input" id="googleEmailInput" type="email" placeholder="username@gmail.com" autocomplete="email" required>
+        <div class="form-group floating-form-group" style="margin-top: 20px;">
+          <input class="form-input floating-input" id="googleEmailInput" type="email" placeholder=" " autocomplete="email" required>
+          <label class="floating-label" for="googleEmailInput">Google Email Address</label>
         </div>
 
         <button type="button" class="auth-btn-primary" id="btnSendGoogleOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -893,9 +978,9 @@
 
         <div id="githubEmailError" class="google-alert google-alert-error" style="display: none;"></div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label class="form-label" for="githubEmailInput">GitHub Email or Username</label>
-          <input class="form-input" id="githubEmailInput" type="text" placeholder="username or hello@example.com" autocomplete="username email" required>
+        <div class="form-group floating-form-group" style="margin-top: 20px;">
+          <input class="form-input floating-input" id="githubEmailInput" type="text" placeholder=" " autocomplete="username email" required>
+          <label class="floating-label" for="githubEmailInput">GitHub Email or Username</label>
         </div>
 
         <button type="button" class="auth-btn-primary" id="btnSendGithubOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -965,9 +1050,9 @@
 
         <div id="forgotEmailError" class="google-alert google-alert-error" style="display: none;"></div>
 
-        <div class="form-group" style="margin-top: 14px;">
-          <label class="form-label" for="forgotEmailInput">Account Email Address</label>
-          <input class="form-input" id="forgotEmailInput" type="email" placeholder="hello@example.com" autocomplete="email" required>
+        <div class="form-group floating-form-group" style="margin-top: 20px;">
+          <input class="form-input floating-input" id="forgotEmailInput" type="email" placeholder=" " autocomplete="email" required>
+          <label class="floating-label" for="forgotEmailInput">Account Email Address</label>
         </div>
 
         <button type="button" class="auth-btn-primary" id="btnSendForgotOtp" style="width:100%; margin-top: 14px; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -1001,10 +1086,10 @@
           <input type="text" class="forgot-otp-digit google-otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*">
         </div>
 
-        <div class="form-group" style="margin-top: 10px;">
-          <label class="form-label" for="forgotNewPassword">New Password (at least 8 characters)</label>
+        <div class="form-group floating-form-group" style="margin-top: 14px;">
           <div class="password-input-container">
-            <input class="form-input" id="forgotNewPassword" type="password" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+            <input class="form-input floating-input" id="forgotNewPassword" type="password" placeholder=" " minlength="8" autocomplete="new-password" required>
+            <label class="floating-label" for="forgotNewPassword">New Password (min 8 chars)</label>
             <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
               <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -1061,6 +1146,59 @@
       if (params.get('mode') === 'signup' || params.get('mode') === 'register') {
         container.classList.add('right-panel-active');
       }
+
+      // ================= FLOATING LABELS DYNAMIC STATE HANDLER =================
+      const floatingInputs = document.querySelectorAll('.floating-input');
+
+      function updateFloatingLabels() {
+        floatingInputs.forEach(input => {
+          const parentGroup = input.closest('.floating-form-group');
+          const pwdContainer = input.closest('.password-input-container');
+          const hasValue = Boolean(input.value && input.value.trim().length > 0);
+
+          if (hasValue) {
+            if (parentGroup) parentGroup.classList.add('is-floating');
+            if (pwdContainer) pwdContainer.classList.add('is-floating');
+          } else if (document.activeElement !== input) {
+            if (parentGroup) parentGroup.classList.remove('is-floating');
+            if (pwdContainer) pwdContainer.classList.remove('is-floating');
+          }
+        });
+      }
+
+      floatingInputs.forEach(input => {
+        const parentGroup = input.closest('.floating-form-group');
+        const pwdContainer = input.closest('.password-input-container');
+
+        input.addEventListener('focus', () => {
+          if (parentGroup) {
+            parentGroup.classList.add('is-floating', 'is-focused');
+          }
+          if (pwdContainer) {
+            pwdContainer.classList.add('is-floating', 'is-focused');
+          }
+        });
+
+        input.addEventListener('blur', () => {
+          if (parentGroup) {
+            parentGroup.classList.remove('is-focused');
+            if (!input.value || !input.value.trim()) parentGroup.classList.remove('is-floating');
+          }
+          if (pwdContainer) {
+            pwdContainer.classList.remove('is-focused');
+            if (!input.value || !input.value.trim()) pwdContainer.classList.remove('is-floating');
+          }
+        });
+
+        input.addEventListener('input', updateFloatingLabels);
+        input.addEventListener('change', updateFloatingLabels);
+      });
+
+      // Synchronize floating state immediately and after browser autofill / remember me
+      updateFloatingLabels();
+      setTimeout(updateFloatingLabels, 60);
+      setTimeout(updateFloatingLabels, 250);
+      setTimeout(updateFloatingLabels, 650);
 
       // ================= GOOGLE SMTP VERIFICATION MODAL LOGIC =================
       const backdrop = document.getElementById('googleModalBackdrop');
@@ -1130,6 +1268,7 @@
         btnVerifyOtp.disabled = false;
         btnVerifyOtpSpinner.style.display = 'none';
         btnVerifyOtpText.textContent = 'Verify & Sign In';
+        updateFloatingLabels();
       }
 
       function showStepEmail() {
@@ -1430,6 +1569,7 @@
         ghOtpDigits.forEach(d => d.value = '');
         btnResendGhOtp.style.display = 'inline';
         resendGhCountdown.style.display = 'none';
+        updateFloatingLabels();
         showGhStepEmail();
       }
 
@@ -1713,6 +1853,7 @@
         if (isRememberActive || (savedEmail && savedPassRaw)) {
           if (rememberCheckbox) rememberCheckbox.checked = true;
         }
+        updateFloatingLabels();
       }
 
       // Save credentials on sign in
@@ -1781,6 +1922,7 @@
         if (loginEmailInput && loginEmailInput.value.trim()) {
           forgotEmailInput.value = loginEmailInput.value.trim();
         }
+        updateFloatingLabels();
         forgotEmailInput.focus();
       }
 
@@ -1804,6 +1946,7 @@
         forgotOtpDigits.forEach(d => d.value = '');
         btnResendForgotOtp.style.display = 'inline';
         forgotResendCountdown.style.display = 'none';
+        updateFloatingLabels();
         showForgotStepEmail();
       }
 
