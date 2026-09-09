@@ -210,7 +210,7 @@
     .modal-text-btn,
     .google-modal-footer button,
     .google-modal-footer a {
-      display: inline !important;
+      display: inline;
       background: none !important;
       background-color: transparent !important;
       border: none !important;
@@ -226,6 +226,11 @@
       text-decoration: underline !important;
       transform: none !important;
       line-height: inherit !important;
+    }
+    .modal-text-btn[style*="display: none"],
+    .google-modal-footer button[style*="display: none"],
+    .google-modal-footer [style*="display: none"] {
+      display: none !important;
     }
     .modal-text-btn:hover,
     .google-modal-footer button:hover {
@@ -459,7 +464,7 @@
             </svg>
           </div>
           <h3 class="google-modal-title">Enter Verification Code</h3>
-          <p class="google-modal-subtitle">We sent a 6-digit verification code to <strong id="targetGoogleEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox to enter your code.</p>
+          <p class="google-modal-subtitle">We sent a 6-digit verification code to <strong id="targetGoogleEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox (or <strong>Spam / Junk</strong> folder) to enter your code.</p>
         </div>
 
         <div id="googleOtpNotice" class="google-alert google-alert-info" style="display: none;"></div>
@@ -530,7 +535,7 @@
             </svg>
           </div>
           <h3 class="google-modal-title">Enter GitHub Code</h3>
-          <p class="google-modal-subtitle">We sent a 6-digit code to <strong id="targetGithubEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox to enter your code.</p>
+          <p class="google-modal-subtitle">We sent a 6-digit code to <strong id="targetGithubEmail" style="color:var(--text, #1e293b); font-weight:700;"></strong>. Check your inbox (or <strong>Spam / Junk</strong> folder) to enter your code.</p>
         </div>
 
         <div id="githubOtpNotice" class="google-alert google-alert-info" style="display: none;"></div>
@@ -771,7 +776,10 @@
       function startResendTimer(seconds) {
         if (resendTimer) clearInterval(resendTimer);
         resendSecondsLeft = seconds || 60;
-        if (btnResend) btnResend.style.display = 'none';
+        if (btnResend) {
+          btnResend.style.display = 'none';
+          btnResend.textContent = 'Resend code';
+        }
         if (resendCountdown) {
           resendCountdown.style.display = 'inline';
           resendCountdown.textContent = `(${resendSecondsLeft}s)`;
@@ -1065,7 +1073,10 @@
       function startGhResendTimer(seconds) {
         if (ghResendTimer) clearInterval(ghResendTimer);
         ghResendSecondsLeft = seconds;
-        btnResendGhOtp.style.display = 'none';
+        if (btnResendGhOtp) {
+          btnResendGhOtp.style.display = 'none';
+          btnResendGhOtp.textContent = 'Resend code';
+        }
         resendGhCountdown.style.display = 'inline';
         resendGhCountdown.textContent = `(${ghResendSecondsLeft}s)`;
 
