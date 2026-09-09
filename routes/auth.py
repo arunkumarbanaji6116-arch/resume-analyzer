@@ -45,7 +45,7 @@ def login():
         else:
             flash("Email or password is incorrect.", "error")
 
-        return render_template("login.html", email=email, remember=remember)
+        return render_template("login.html", email=email, password=password if remember else "", remember=remember)
 
     remember_email = request.cookies.get("remember_email", "")
     return render_template("login.html", email=remember_email, remember=bool(remember_email))

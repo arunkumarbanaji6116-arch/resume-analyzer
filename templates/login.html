@@ -255,6 +255,54 @@
     .dark .modal-back-btn {
       color: #94a3b8 !important;
     }
+
+    /* Show/Hide Password Toggle */
+    .password-input-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .password-input-container .form-input {
+      width: 100%;
+      padding-right: 44px !important;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent !important;
+      border: none !important;
+      padding: 6px !important;
+      margin: 0 !important;
+      cursor: pointer;
+      color: #94a3b8 !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.18s ease, transform 0.18s ease;
+      z-index: 5;
+      box-shadow: none !important;
+      border-radius: 6px;
+      line-height: 1;
+      text-decoration: none !important;
+    }
+    .password-toggle-btn:hover {
+      color: #4f46e5 !important;
+      transform: translateY(-50%) scale(1.1);
+      text-decoration: none !important;
+    }
+    .password-toggle-btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 1px;
+    }
+    .dark .password-toggle-btn {
+      color: #64748b !important;
+    }
+    .dark .password-toggle-btn:hover {
+      color: #a5b4fc !important;
+    }
   </style>
 </head>
 <body class="auth-body">
@@ -297,7 +345,19 @@
 
           <div class="form-group">
             <label class="form-label" for="reg-password">Password</label>
-            <input class="form-input" id="reg-password" name="password" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
+            <div class="password-input-container">
+              <input class="form-input" id="reg-password" name="password" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
+              <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
+                <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-off-icon" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <button type="submit" class="auth-btn-primary">SIGN UP</button>
@@ -354,7 +414,19 @@
 
           <div class="form-group">
             <label class="form-label" for="login-password">Password</label>
-            <input class="form-input" id="login-password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+            <div class="password-input-container">
+              <input class="form-input" id="login-password" name="password" type="password" placeholder="••••••••" value="{{ password or '' }}" autocomplete="current-password" required>
+              <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
+                <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-off-icon" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div class="auth-options-row">
@@ -625,7 +697,19 @@
 
         <div class="form-group" style="margin-top: 10px;">
           <label class="form-label" for="forgotNewPassword">New Password (at least 8 characters)</label>
-          <input class="form-input" id="forgotNewPassword" type="password" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+          <div class="password-input-container">
+            <input class="form-input" id="forgotNewPassword" type="password" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" title="Show or hide password" tabindex="-1">
+              <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="eye-off-icon" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button type="button" class="auth-btn-primary" id="btnSubmitPasswordReset" style="width:100%; margin-top: 16px; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -1259,25 +1343,98 @@
         openGithubModal();
       }
 
+      // ================= UNIVERSAL SHOW / HIDE PASSWORD TOGGLE =================
+      document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const container = btn.closest('.password-input-container');
+          if (!container) return;
+          const input = container.querySelector('input');
+          const eyeIcon = btn.querySelector('.eye-icon');
+          const eyeOffIcon = btn.querySelector('.eye-off-icon');
+          if (!input) return;
+
+          if (input.type === 'password') {
+            input.type = 'text';
+            if (eyeIcon) eyeIcon.style.display = 'none';
+            if (eyeOffIcon) eyeOffIcon.style.display = 'block';
+            btn.setAttribute('aria-label', 'Hide password');
+            btn.setAttribute('title', 'Hide password');
+          } else {
+            input.type = 'password';
+            if (eyeIcon) eyeIcon.style.display = 'block';
+            if (eyeOffIcon) eyeOffIcon.style.display = 'none';
+            btn.setAttribute('aria-label', 'Show password');
+            btn.setAttribute('title', 'Show password');
+          }
+        });
+      });
+
       // ================= REMEMBER ME LOCAL STORAGE LOGIC =================
       const loginEmailInput = document.getElementById('login-email');
+      const loginPasswordInput = document.getElementById('login-password');
       const rememberCheckbox = document.getElementById('remember-me');
       const signInForm = document.getElementById('signInForm');
 
+      function encodeSecret(str) {
+        try {
+          return btoa(encodeURIComponent(str));
+        } catch (e) {
+          return str;
+        }
+      }
+      function decodeSecret(str) {
+        try {
+          return decodeURIComponent(atob(str));
+        } catch (e) {
+          return str;
+        }
+      }
+
+      // Restore saved email & password
       if (loginEmailInput) {
+        const isRememberActive = localStorage.getItem('careerforge_remember_active') === 'true';
         const savedEmail = localStorage.getItem('careerforge_remember_email');
+        const savedPassRaw = localStorage.getItem('careerforge_remember_pass');
+
         if (savedEmail && !loginEmailInput.value) {
           loginEmailInput.value = savedEmail;
+        }
+        if (savedPassRaw && loginPasswordInput && !loginPasswordInput.value) {
+          loginPasswordInput.value = decodeSecret(savedPassRaw);
+        }
+        if (isRememberActive || (savedEmail && savedPassRaw)) {
           if (rememberCheckbox) rememberCheckbox.checked = true;
         }
       }
 
+      // Save credentials on sign in
       if (signInForm) {
         signInForm.addEventListener('submit', () => {
-          if (rememberCheckbox && rememberCheckbox.checked && loginEmailInput) {
-            localStorage.setItem('careerforge_remember_email', loginEmailInput.value.trim());
+          if (rememberCheckbox && rememberCheckbox.checked) {
+            if (loginEmailInput && loginEmailInput.value.trim()) {
+              localStorage.setItem('careerforge_remember_email', loginEmailInput.value.trim());
+            }
+            if (loginPasswordInput && loginPasswordInput.value) {
+              localStorage.setItem('careerforge_remember_pass', encodeSecret(loginPasswordInput.value));
+            }
+            localStorage.setItem('careerforge_remember_active', 'true');
           } else {
             localStorage.removeItem('careerforge_remember_email');
+            localStorage.removeItem('careerforge_remember_pass');
+            localStorage.removeItem('careerforge_remember_active');
+          }
+        });
+      }
+
+      // Clear credentials if user manually unchecks Remember Me
+      if (rememberCheckbox) {
+        rememberCheckbox.addEventListener('change', () => {
+          if (!rememberCheckbox.checked) {
+            localStorage.removeItem('careerforge_remember_email');
+            localStorage.removeItem('careerforge_remember_pass');
+            localStorage.removeItem('careerforge_remember_active');
           }
         });
       }
@@ -1460,6 +1617,8 @@
             forgotResetNotice.style.display = 'flex';
             if (loginEmailInput) {
               localStorage.setItem('careerforge_remember_email', currentForgotEmail);
+              localStorage.setItem('careerforge_remember_pass', encodeSecret(newPassword));
+              localStorage.setItem('careerforge_remember_active', 'true');
             }
             setTimeout(() => {
               window.location.href = data.redirect_url || '/dashboard';
