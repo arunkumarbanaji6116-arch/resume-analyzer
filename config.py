@@ -36,6 +36,18 @@ class Config:
     SMTP_FROM_EMAIL = os.getenv("SMTP_FROM_EMAIL", "").strip() or os.getenv("SMTP_USER", "").strip() or "noreply@careerforge.ai"
     SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "CareerForge.AI").strip()
 
+    # Supabase Configuration (https://supabase.com)
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
+    SUPABASE_ANON_KEY = (
+        os.getenv("SUPABASE_ANON_KEY", "").strip()
+        or os.getenv("SUPABASE_PUBLIC_KEY", "").strip()
+    )
+    SUPABASE_PUBLIC_KEY = (
+        os.getenv("SUPABASE_PUBLIC_KEY", "").strip()
+        or os.getenv("SUPABASE_ANON_KEY", "").strip()
+    )
+    SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+
     if IS_VERCEL:
         _tmp = Path(tempfile.gettempdir())
         DATABASE = _tmp / "careerforge.db"
