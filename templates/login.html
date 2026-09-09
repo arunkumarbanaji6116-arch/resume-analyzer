@@ -256,6 +256,95 @@
       color: #94a3b8 !important;
     }
 
+    /* ================= SHADCN / ORIGINUI INPUT FOCUS & SHADOW ANIMATION (Login Page Only) ================= */
+    .auth-container .form-input,
+    .google-modal .form-input {
+      display: flex;
+      height: 42px;
+      width: 100%;
+      border-radius: 8px !important; /* rounded-lg */
+      border: 1px solid #e2e8f0 !important; /* border border-input */
+      background-color: #ffffff !important; /* bg-background */
+      padding: 8px 12px !important; /* px-3 py-2 */
+      font-size: 0.875rem !important; /* text-sm */
+      color: #0f172a !important; /* text-foreground */
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; /* shadow-sm shadow-black/5 */
+      transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  background-color 0.2s ease !important; /* transition-shadow */
+      outline: none !important;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .auth-container .form-input::placeholder,
+    .google-modal .form-input::placeholder {
+      color: rgba(148, 163, 184, 0.7) !important; /* placeholder:text-muted-foreground/70 */
+      font-size: 0.875rem;
+    }
+
+    .auth-container .form-input:hover,
+    .google-modal .form-input:hover {
+      border-color: rgba(142, 45, 226, 0.45) !important;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07) !important;
+    }
+
+    /* Focus-visible ring animation: border-ring, outline-none, ring-[3px] ring-ring/20 */
+    .auth-container .form-input:focus,
+    .auth-container .form-input:focus-visible,
+    .google-modal .form-input:focus,
+    .google-modal .form-input:focus-visible {
+      outline: none !important;
+      border-color: #8e2de2 !important; /* focus-visible:border-ring */
+      box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.22), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; /* focus-visible:ring-[3px] focus-visible:ring-ring/20 */
+      background-color: #ffffff !important;
+    }
+
+    .auth-container .form-input:disabled,
+    .google-modal .form-input:disabled {
+      cursor: not-allowed !important; /* disabled:cursor-not-allowed */
+      opacity: 0.5 !important; /* disabled:opacity-50 */
+    }
+
+    /* OTP Digits input animation */
+    .otp-inputs-wrapper input.google-otp-digit {
+      border-radius: 8px !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+      transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .otp-inputs-wrapper input.google-otp-digit:focus {
+      outline: none !important;
+      border-color: #8e2de2 !important;
+      box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.22), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Dark Mode Variant */
+    .dark .auth-container .form-input,
+    .dark .google-modal .form-input {
+      background-color: #111827 !important;
+      border-color: #374151 !important;
+      color: #f9fafb !important;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .dark .auth-container .form-input::placeholder,
+    .dark .google-modal .form-input::placeholder {
+      color: rgba(156, 163, 175, 0.6) !important;
+    }
+
+    .dark .auth-container .form-input:focus,
+    .dark .auth-container .form-input:focus-visible,
+    .dark .google-modal .form-input:focus,
+    .dark .google-modal .form-input:focus-visible,
+    .dark .otp-inputs-wrapper input.google-otp-digit:focus {
+      border-color: #a855f7 !important;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.28), 0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
+      background-color: #111827 !important;
+    }
+
     /* Show/Hide Password Toggle */
     .password-input-container {
       position: relative;
