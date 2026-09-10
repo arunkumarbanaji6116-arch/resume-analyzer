@@ -358,7 +358,8 @@ def gemini_build_resume_from_scratch(data: dict, strategy: str = "metric_driven"
     exp_raw = data.get("experience_raw", "")
     edu_raw = data.get("education_raw", "")
     projects_raw = data.get("projects_raw", "")
-    contact = f"{data.get('email', '')} | {data.get('phone', '')} | {data.get('location', '')} | {data.get('linkedin', '')}".strip(" |")
+    contact_parts = [data.get(k, "").strip() for k in ("email", "phone", "location", "linkedin") if data.get(k, "").strip()]
+    contact = " | ".join(contact_parts)
 
     strategies = {
         "metric_driven": "Quantitative & ROI-Focused: Emphasize percentages, revenues, speedups, and measurable business outputs.",

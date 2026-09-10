@@ -272,7 +272,13 @@
     }
 
     /* ================= MULTI-TEMPLATE RESUME BUILDER STYLES ================= */
+    .preview-toolbar {
+      position: relative !important;
+      z-index: 500 !important;
+    }
     .template-selector-bar {
+      position: relative !important;
+      z-index: 10 !important;
       background: #ffffff;
       border: 1.5px solid #e2e8f0;
       border-radius: 14px;
@@ -424,62 +430,86 @@
       color: #34d399;
     }
 
-    /* Download Split Dropdown Button */
+    /* Seamless Split Download Button */
     .download-btn-group {
-      position: relative;
-      display: inline-flex;
+      position: relative !important;
+      display: inline-flex !important;
+      align-items: stretch !important;
       vertical-align: middle;
+      z-index: 600 !important;
     }
-    .download-btn-group .download-pdf-btn {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+    .download-btn-group .tool-btn.download-pdf-btn {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      border-right: none !important;
+      margin: 0 !important;
+      white-space: nowrap;
+      height: 38px !important;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
     }
     .download-dropdown-toggle {
-      background: var(--accent, #6d5dfc);
-      color: #ffffff;
-      border: 1px solid var(--accent, #6d5dfc);
-      border-left: 1px solid rgba(255, 255, 255, 0.3);
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-      padding: 0 9px;
+      background: #5b4be8 !important;
+      color: #ffffff !important;
+      border: 1px solid #5b4be8 !important;
+      border-left: 1px solid rgba(255, 255, 255, 0.28) !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-top-right-radius: 10px !important;
+      border-bottom-right-radius: 10px !important;
+      padding: 0 10px !important;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s ease;
-      height: 38px;
+      transition: all 0.2s ease;
+      height: 38px !important;
+      box-sizing: border-box;
+      margin: 0 !important;
+      box-shadow: 0 4px 12px rgba(109, 93, 252, 0.25);
     }
     .download-dropdown-toggle:hover {
-      background: var(--accent-dark, #4f46e5);
+      background: #4839d4 !important;
+      border-color: #4839d4 !important;
+    }
+    .download-dropdown-toggle svg {
+      transition: transform 0.2s ease;
+    }
+    .download-dropdown-toggle.active svg {
+      transform: rotate(180deg);
     }
     .dark .download-dropdown-toggle {
-      background: #6366f1;
-      border-color: #6366f1;
+      background: #4f46e5 !important;
+      border-color: #4f46e5 !important;
     }
     .dark .download-dropdown-toggle:hover {
-      background: #4f46e5;
+      background: #4338ca !important;
+      border-color: #4338ca !important;
     }
+
+    /* Completely Opaque Elevated Dropdown Menu */
     .download-dropdown-menu {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      z-index: 1000;
-      min-width: 290px;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 4px 10px rgba(15, 23, 42, 0.06);
-      padding: 6px;
+      position: absolute !important;
+      top: calc(100% + 8px) !important;
+      right: 0 !important;
+      z-index: 99999 !important;
+      min-width: 310px;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 14px;
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.22), 0 4px 14px rgba(15, 23, 42, 0.1) !important;
+      padding: 8px;
       display: none;
       animation: fadeIn 0.15s ease-out;
     }
     .download-dropdown-menu.show {
-      display: block;
+      display: block !important;
     }
     .dark .download-dropdown-menu {
-      background: #182238;
-      border-color: #2d3b55;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+      background: #151d2f !important;
+      border: 1.5px solid #2e3e5c !important;
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
     }
     .dropdown-header {
       font-size: 0.68rem;
@@ -496,41 +526,66 @@
       width: 100%;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      padding: 8px 10px;
-      border: none;
+      padding: 9px 12px;
+      border: 1px solid transparent;
       background: transparent;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
       text-align: left;
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
       color: #1e293b;
       box-sizing: border-box;
+      margin-bottom: 2px;
     }
     .dark .dropdown-item {
       color: #f1f5f9;
     }
     .dropdown-item:hover {
       background: #f1f5f9;
+      border-color: #e2e8f0;
     }
     .dark .dropdown-item:hover {
-      background: #24324d;
+      background: #1e293f;
+      border-color: #334155;
+    }
+    .dropdown-item.active-item {
+      background: rgba(109, 93, 252, 0.1);
+      border-color: rgba(109, 93, 252, 0.3);
+    }
+    .dark .dropdown-item.active-item {
+      background: rgba(99, 102, 241, 0.18);
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .dropdown-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
     }
     .dropdown-item-icon {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
     }
     .dropdown-item-text {
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
     .dropdown-item-text strong {
-      font-size: 0.8rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 750;
       color: #0f172a;
     }
     .dark .dropdown-item-text strong {
       color: #f8fafc;
+    }
+    .dropdown-item.active-item .dropdown-item-text strong {
+      color: var(--accent, #6d5dfc);
+    }
+    .dark .dropdown-item.active-item .dropdown-item-text strong {
+      color: #a5b4fc;
     }
     .dropdown-item-text small {
       font-size: 0.69rem;
@@ -539,27 +594,46 @@
     .dark .dropdown-item-text small {
       color: #94a3b8;
     }
+    .dropdown-active-pill {
+      font-size: 0.64rem;
+      font-weight: 700;
+      color: var(--accent, #6d5dfc);
+      background: rgba(109, 93, 252, 0.12);
+      border-radius: 6px;
+      padding: 2px 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+      display: none;
+    }
+    .dark .dropdown-active-pill {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.22);
+    }
+    .dropdown-item.active-item .dropdown-active-pill {
+      display: inline-block;
+    }
     .dropdown-divider {
       height: 1px;
       background: #e2e8f0;
-      margin: 4px 0;
+      margin: 6px 0;
     }
     .dark .dropdown-divider {
       background: #2b3954;
     }
     .dropdown-item-batch {
-      background: rgba(109, 93, 252, 0.06);
-      border: 1px dashed rgba(109, 93, 252, 0.3);
+      background: rgba(109, 93, 252, 0.07);
+      border: 1.5px dashed rgba(109, 93, 252, 0.35);
+      margin-top: 4px;
     }
     .dropdown-item-batch:hover {
-      background: rgba(109, 93, 252, 0.12);
+      background: rgba(109, 93, 252, 0.15);
+      border-color: var(--accent, #6d5dfc);
     }
     .dark .dropdown-item-batch {
-      background: rgba(99, 102, 241, 0.12);
-      border-color: rgba(99, 102, 241, 0.35);
+      background: rgba(99, 102, 241, 0.14);
+      border-color: rgba(99, 102, 241, 0.4);
     }
-    .dark .dropdown-item-batch:hover {
-      background: rgba(99, 102, 241, 0.2);
     }
 
     /* Template View Shared & Unique Styles */
@@ -1234,33 +1308,44 @@
                 </button>
                 <div class="download-dropdown-menu" id="download-dropdown-menu">
                   <div class="dropdown-header">DOWNLOAD TEMPLATE AS PDF</div>
-                  <button type="button" class="dropdown-item" data-download-template="classic">
-                    <span class="dropdown-item-icon">👔</span>
-                    <div class="dropdown-item-text">
-                      <strong>Classic Executive (PDF)</strong>
-                      <small>Traditional Single-Column ATS Layout</small>
+                  <button type="button" class="dropdown-item active-item" data-download-template="classic">
+                    <div class="dropdown-item-left">
+                      <span class="dropdown-item-icon">👔</span>
+                      <div class="dropdown-item-text">
+                        <strong>Classic Executive (PDF)</strong>
+                        <small>Traditional Single-Column ATS Layout</small>
+                      </div>
                     </div>
+                    <span class="dropdown-active-pill">Active</span>
                   </button>
                   <button type="button" class="dropdown-item" data-download-template="modern">
-                    <span class="dropdown-item-icon">💻</span>
-                    <div class="dropdown-item-text">
-                      <strong>Modern Two-Column (PDF)</strong>
-                      <small>Split Sidebar Grid Tech Layout</small>
+                    <div class="dropdown-item-left">
+                      <span class="dropdown-item-icon">💻</span>
+                      <div class="dropdown-item-text">
+                        <strong>Modern Two-Column (PDF)</strong>
+                        <small>Split Sidebar Grid Tech Layout</small>
+                      </div>
                     </div>
+                    <span class="dropdown-active-pill">Active</span>
                   </button>
                   <button type="button" class="dropdown-item" data-download-template="minimal">
-                    <span class="dropdown-item-icon">⚡</span>
-                    <div class="dropdown-item-text">
-                      <strong>Minimalist Silicon (PDF)</strong>
-                      <small>Compact Silicon Valley Tech Aesthetic</small>
+                    <div class="dropdown-item-left">
+                      <span class="dropdown-item-icon">⚡</span>
+                      <div class="dropdown-item-text">
+                        <strong>Minimalist Silicon (PDF)</strong>
+                        <small>Compact Silicon Valley Tech Aesthetic</small>
+                      </div>
                     </div>
+                    <span class="dropdown-active-pill">Active</span>
                   </button>
                   <div class="dropdown-divider"></div>
                   <button type="button" class="dropdown-item dropdown-item-batch" id="download-all-templates-btn">
-                    <span class="dropdown-item-icon">📦</span>
-                    <div class="dropdown-item-text">
-                      <strong>Download All 3 Templates</strong>
-                      <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
+                    <div class="dropdown-item-left">
+                      <span class="dropdown-item-icon">📦</span>
+                      <div class="dropdown-item-text">
+                        <strong>Download All 3 Templates</strong>
+                        <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
+                      </div>
                     </div>
                   </button>
                 </div>
@@ -1833,13 +1918,19 @@
           v.classList.toggle('active-view', v.id === `template-view-${tpl}`);
         });
 
+        // Update dropdown active highlight
+        templateDownloadBtns.forEach(btn => {
+          btn.classList.toggle('active-item', btn.dataset.downloadTemplate === tpl);
+        });
+
         // Update primary download label
         if (downloadPdfLabel) {
           downloadPdfLabel.textContent = `Download PDF (${templateTitles[tpl].split(' ')[0]})`;
         }
 
-        // Close dropdown
+        // Close dropdown & reset caret
         if (dropdownMenu) dropdownMenu.classList.remove('show');
+        if (dropdownToggle) dropdownToggle.classList.remove('active');
       }
 
       // Hook up template pill click handlers
@@ -1854,13 +1945,15 @@
       if (dropdownToggle && dropdownMenu) {
         dropdownToggle.addEventListener('click', (e) => {
           e.stopPropagation();
-          dropdownMenu.classList.toggle('show');
+          const isOpen = dropdownMenu.classList.toggle('show');
+          dropdownToggle.classList.toggle('active', isOpen);
         });
 
         // Close when clicking outside
         document.addEventListener('click', (e) => {
           if (!e.target.closest('.download-btn-group')) {
             dropdownMenu.classList.remove('show');
+            dropdownToggle.classList.remove('active');
           }
         });
       }
