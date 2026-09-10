@@ -275,6 +275,24 @@
     .preview-toolbar {
       position: relative !important;
       z-index: 500 !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      flex-wrap: wrap !important;
+      gap: 12px 16px !important;
+    }
+    .preview-toolbar-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-wrap: wrap !important;
+      min-width: 0 !important;
+    }
+    .preview-toolbar-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      flex-wrap: wrap !important;
     }
     .template-selector-bar {
       position: relative !important;
@@ -688,6 +706,114 @@
       background: #2563eb !important;
       border-color: #93c5fd !important;
       box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45) !important;
+    }
+
+    /* High-Contrast Luminous ATS Score Badge */
+    .ats-score-badge,
+    .ats-score-pill {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      white-space: nowrap !important;
+      padding: 5px 12px !important;
+      border-radius: 9999px !important;
+      font-size: 0.8rem !important;
+      font-weight: 650 !important;
+      letter-spacing: 0.02em !important;
+      background: #ecfdf5 !important;
+      color: #065f46 !important;
+      border: 1.5px solid #10b981 !important;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.18) !important;
+      margin: 0 !important;
+      user-select: none !important;
+      line-height: 1 !important;
+    }
+    .ats-score-badge .ats-icon-wrap,
+    .ats-score-pill .ats-icon-wrap {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 17px !important;
+      height: 17px !important;
+      border-radius: 50% !important;
+      background: #10b981 !important;
+      color: #ffffff !important;
+      box-shadow: 0 1px 4px rgba(16, 185, 129, 0.3) !important;
+      flex-shrink: 0 !important;
+    }
+    .ats-score-badge .ats-icon-wrap svg,
+    .ats-score-pill .ats-icon-wrap svg {
+      width: 10px !important;
+      height: 10px !important;
+      stroke-width: 3.2 !important;
+    }
+    .ats-score-badge .ats-score-label,
+    .ats-score-pill .ats-score-label {
+      font-size: 0.74rem !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.06em !important;
+      color: #065f46 !important;
+    }
+    .ats-score-badge .ats-score-divider,
+    .ats-score-pill .ats-score-divider {
+      width: 1.5px !important;
+      height: 13px !important;
+      background: rgba(16, 185, 129, 0.45) !important;
+      margin: 0 1px !important;
+      display: inline-block !important;
+    }
+    .ats-score-badge .ats-score-val,
+    .ats-score-pill .ats-score-val {
+      font-size: 0.95rem !important;
+      font-weight: 850 !important;
+      color: #047857 !important;
+      display: inline-flex !important;
+      align-items: baseline !important;
+      letter-spacing: -0.01em !important;
+    }
+    .ats-score-badge .ats-score-val .ats-score-max,
+    .ats-score-pill .ats-score-val .ats-score-max {
+      font-size: 0.72rem !important;
+      font-weight: 600 !important;
+      color: #059669 !important;
+      opacity: 0.8 !important;
+      margin-left: 1px !important;
+    }
+
+    /* Dark Mode: Super High-Contrast & Vibrant Glow */
+    .dark .ats-score-badge,
+    .dark .ats-score-pill {
+      background: rgba(6, 78, 59, 0.55) !important;
+      border: 1.5px solid #34d399 !important;
+      color: #f0fdf4 !important;
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.15) !important;
+    }
+    .dark .ats-score-badge .ats-icon-wrap,
+    .dark .ats-score-pill .ats-icon-wrap {
+      background: #34d399 !important;
+      color: #022c22 !important;
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.7) !important;
+    }
+    .dark .ats-score-badge .ats-score-label,
+    .dark .ats-score-pill .ats-score-label {
+      color: #f8fafc !important;
+      font-weight: 800 !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+    }
+    .dark .ats-score-badge .ats-score-divider,
+    .dark .ats-score-pill .ats-score-divider {
+      background: rgba(52, 211, 153, 0.6) !important;
+    }
+    .dark .ats-score-badge .ats-score-val,
+    .dark .ats-score-pill .ats-score-val {
+      color: #34d399 !important;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.65) !important;
+    }
+    .dark .ats-score-badge .ats-score-val .ats-score-max,
+    .dark .ats-score-pill .ats-score-val .ats-score-max {
+      color: #a7f3d0 !important;
+      opacity: 0.9 !important;
     }
 
     /* Template View Shared & Unique Styles - Display ONLY 1 at a time */
@@ -1339,9 +1465,18 @@
               Live AI Preview
             </span>
             {% if resume %}
-              <span class="ats-score-pill">
-                ATS Score: <strong>{{ resume.ats_score }}/100</strong>
-              </span>
+              <div class="ats-score-badge ats-score-pill" title="ATS Optimization Score: {{ resume.ats_score }}/100">
+                <span class="ats-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="ats-score-label">ATS Score</span>
+                <span class="ats-score-divider"></span>
+                <span class="ats-score-val">
+                  {{ resume.ats_score }}<span class="ats-score-max">/100</span>
+                </span>
+              </div>
             {% endif %}
           </div>
           <div class="preview-toolbar-actions">

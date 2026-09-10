@@ -3862,15 +3862,31 @@ hr {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
 }
 
-.ats-score-pill {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 600;
+.ats-score-pill,
+.ats-score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1.5px solid #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.18);
   margin-left: 10px;
+  user-select: none;
+}
+
+.dark .ats-score-pill,
+.dark .ats-score-badge {
+  background: rgba(6, 78, 59, 0.55);
+  border: 1.5px solid #34d399;
+  color: #f0fdf4;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.15);
 }
 
 .preview-toolbar-actions {
@@ -4811,10 +4827,5 @@ button.cssbuttons-io.auth-btn-uiverse:active {
 button.cssbuttons-io.auth-btn-uiverse span {
   padding: 13px 20px !important;
 }
-
-
-
-
-
 
 
