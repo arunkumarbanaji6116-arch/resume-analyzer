@@ -270,6 +270,729 @@
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ================= MULTI-TEMPLATE RESUME BUILDER STYLES ================= */
+    .template-selector-bar {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .dark .template-selector-bar {
+      background: #151d2f;
+      border-color: #28354d;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .template-selector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .template-selector-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      color: var(--accent, #6d5dfc);
+      text-transform: uppercase;
+    }
+    .dark .template-selector-title {
+      color: #a5b4fc;
+    }
+    .template-selector-hint {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+    .dark .template-selector-hint {
+      color: #94a3b8;
+    }
+    .template-pills-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 960px) {
+      .template-pills-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .template-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      user-select: none;
+    }
+    .dark .template-pill {
+      background: #192339;
+      border-color: #2e3d5b;
+    }
+    .template-pill:hover {
+      border-color: var(--accent, #6d5dfc);
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(109, 93, 252, 0.12);
+    }
+    .dark .template-pill:hover {
+      background: #202c48;
+      border-color: #818cf8;
+    }
+    .template-pill.active {
+      border-color: var(--accent, #6d5dfc);
+      background: rgba(109, 93, 252, 0.08);
+      box-shadow: 0 0 0 1.5px var(--accent, #6d5dfc), 0 4px 14px rgba(109, 93, 252, 0.15);
+    }
+    .dark .template-pill.active {
+      border-color: #818cf8;
+      background: rgba(99, 102, 241, 0.2);
+      box-shadow: 0 0 0 1.5px #818cf8, 0 4px 14px rgba(99, 102, 241, 0.3);
+    }
+    .template-pill-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .template-pill-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      flex-grow: 1;
+    }
+    .template-pill-name {
+      font-size: 0.82rem;
+      font-weight: 750;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .dark .template-pill-name {
+      color: #f8fafc;
+    }
+    .template-pill.active .template-pill-name {
+      color: var(--accent-dark, #4f46e5);
+    }
+    .dark .template-pill.active .template-pill-name {
+      color: #c7d2fe;
+    }
+    .template-pill-desc {
+      font-size: 0.68rem;
+      color: #64748b;
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+    .dark .template-pill-desc {
+      color: #94a3b8;
+    }
+    .template-pill-badge {
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+    .dark .template-pill-badge {
+      background: #2b3954;
+      color: #cbd5e1;
+    }
+    .template-pill.active .template-pill-badge {
+      background: var(--accent, #6d5dfc);
+      color: #ffffff;
+    }
+    .template-pill-badge.new-badge {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+    }
+    .dark .template-pill-badge.new-badge {
+      background: rgba(16, 185, 129, 0.22);
+      color: #34d399;
+    }
+
+    /* Download Split Dropdown Button */
+    .download-btn-group {
+      position: relative;
+      display: inline-flex;
+      vertical-align: middle;
+    }
+    .download-btn-group .download-pdf-btn {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .download-dropdown-toggle {
+      background: var(--accent, #6d5dfc);
+      color: #ffffff;
+      border: 1px solid var(--accent, #6d5dfc);
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      padding: 0 9px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      height: 38px;
+    }
+    .download-dropdown-toggle:hover {
+      background: var(--accent-dark, #4f46e5);
+    }
+    .dark .download-dropdown-toggle {
+      background: #6366f1;
+      border-color: #6366f1;
+    }
+    .dark .download-dropdown-toggle:hover {
+      background: #4f46e5;
+    }
+    .download-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 1000;
+      min-width: 290px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 4px 10px rgba(15, 23, 42, 0.06);
+      padding: 6px;
+      display: none;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .download-dropdown-menu.show {
+      display: block;
+    }
+    .dark .download-dropdown-menu {
+      background: #182238;
+      border-color: #2d3b55;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    }
+    .dropdown-header {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      padding: 6px 10px 4px;
+      text-transform: uppercase;
+    }
+    .dark .dropdown-header {
+      color: #64748b;
+    }
+    .dropdown-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease;
+      color: #1e293b;
+      box-sizing: border-box;
+    }
+    .dark .dropdown-item {
+      color: #f1f5f9;
+    }
+    .dropdown-item:hover {
+      background: #f1f5f9;
+    }
+    .dark .dropdown-item:hover {
+      background: #24324d;
+    }
+    .dropdown-item-icon {
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .dropdown-item-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .dropdown-item-text strong {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .dark .dropdown-item-text strong {
+      color: #f8fafc;
+    }
+    .dropdown-item-text small {
+      font-size: 0.69rem;
+      color: #64748b;
+    }
+    .dark .dropdown-item-text small {
+      color: #94a3b8;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 4px 0;
+    }
+    .dark .dropdown-divider {
+      background: #2b3954;
+    }
+    .dropdown-item-batch {
+      background: rgba(109, 93, 252, 0.06);
+      border: 1px dashed rgba(109, 93, 252, 0.3);
+    }
+    .dropdown-item-batch:hover {
+      background: rgba(109, 93, 252, 0.12);
+    }
+    .dark .dropdown-item-batch {
+      background: rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .dark .dropdown-item-batch:hover {
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    /* Template View Shared & Unique Styles */
+    .template-view {
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .template-view.active-view {
+      display: block;
+    }
+
+    /* --- Template 1: Classic Executive --- */
+    .classic-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .classic-candidate-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      margin: 0 0 2px;
+    }
+    .classic-target-role {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #4f46e5;
+      margin: 0 0 6px;
+    }
+    .classic-contact-line {
+      font-size: 0.82rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .classic-section-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 3px;
+      margin: 16px 0 10px;
+      text-transform: uppercase;
+    }
+    .classic-skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .classic-skill-category {
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .classic-skill-category strong {
+      color: #0f172a;
+    }
+    .classic-job-entry {
+      margin-bottom: 15px;
+    }
+    .classic-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+    }
+    .classic-job-title {
+      font-size: 0.94rem;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .classic-job-company {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+    }
+    .classic-job-meta {
+      font-size: 0.80rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .classic-bullets {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 0.84rem;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .classic-bullets li {
+      margin-bottom: 4px;
+    }
+    .classic-edu-entry, .classic-proj-entry {
+      font-size: 0.85rem;
+      color: #334155;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    /* --- Template 2: Modern Tech Two-Column --- */
+    .modern-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #e0e7ff;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .modern-candidate-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 850;
+      color: #1e1b4b;
+      letter-spacing: -0.02em;
+      margin: 0;
+      line-height: 1.1;
+    }
+    .modern-target-role-pill {
+      display: inline-block;
+      background: #ede9fe;
+      color: #4338ca;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-top: 5px;
+      letter-spacing: 0.02em;
+    }
+    .modern-contact-line {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .modern-grid-body {
+      display: flex;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .modern-sidebar-col {
+      width: 33%;
+      flex-shrink: 0;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 14px;
+      box-sizing: border-box;
+    }
+    .modern-main-col {
+      width: 67%;
+      flex-grow: 1;
+      min-width: 0;
+    }
+    .modern-side-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #4338ca;
+      text-transform: uppercase;
+      border-bottom: 2px solid #c7d2fe;
+      padding-bottom: 4px;
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modern-main-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.80rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #1e1b4b;
+      border-bottom: 2px solid #e0e7ff;
+      padding-bottom: 4px;
+      margin: 0 0 14px;
+      text-transform: uppercase;
+    }
+    .modern-skill-group {
+      margin-bottom: 12px;
+    }
+    .modern-skill-cat-title {
+      font-size: 0.75rem;
+      font-weight: 750;
+      color: #1e293b;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .modern-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .modern-skill-chip {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #334155;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+    .modern-edu-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    .modern-edu-degree {
+      font-size: 0.78rem;
+      font-weight: 750;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+    .modern-edu-inst {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #4f46e5;
+    }
+    .modern-edu-meta {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .modern-proj-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    .modern-proj-title {
+      font-size: 0.76rem;
+      font-weight: 750;
+      color: #0f172a;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .modern-proj-desc {
+      font-size: 0.71rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+    .modern-summary-box {
+      border-left: 3px solid #6366f1;
+      background: rgba(99, 102, 241, 0.03);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: #334155;
+    }
+    .modern-timeline-wrap {
+      position: relative;
+      padding-left: 14px;
+      border-left: 2px solid #e0e7ff;
+      margin-left: 6px;
+    }
+    .modern-timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .modern-timeline-node {
+      position: absolute;
+      left: -19px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6366f1;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1px #818cf8;
+    }
+    .modern-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .modern-job-role {
+      font-size: 0.90rem;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .modern-job-company {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4f46e5;
+    }
+    .modern-job-period-badge {
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 0.71rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 4px;
+    }
+    .modern-bullets {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.82rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .modern-bullets li {
+      margin-bottom: 4px;
+    }
+
+    /* --- Template 3: Minimalist Silicon Valley --- */
+    .minimal-header {
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #111827;
+      padding-bottom: 12px;
+    }
+    .minimal-candidate-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #111827;
+      margin: 0 0 4px;
+    }
+    .minimal-target-role {
+      font-size: 0.80rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #4b5563;
+      margin: 0 0 6px;
+    }
+    .minimal-contact-line {
+      font-size: 0.76rem;
+      color: #6b7280;
+      letter-spacing: 0.04em;
+    }
+    .minimal-section-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #111827;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 3px;
+      margin: 16px 0 8px;
+    }
+    .minimal-summary-text {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #374151;
+      margin: 0 0 14px;
+    }
+    .minimal-job-entry {
+      margin-bottom: 14px;
+    }
+    .minimal-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .minimal-job-title-company {
+      font-size: 0.86rem;
+      color: #111827;
+    }
+    .minimal-job-title-company strong {
+      font-weight: 750;
+    }
+    .minimal-job-meta {
+      font-size: 0.76rem;
+      color: #6b7280;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .minimal-bullets {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.80rem;
+      color: #374151;
+      line-height: 1.48;
+    }
+    .minimal-bullets li {
+      margin-bottom: 3px;
+    }
+    .minimal-skills-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .minimal-skill-item {
+      font-size: 0.79rem;
+      line-height: 1.45;
+      color: #374151;
+    }
+    .minimal-skill-item strong {
+      font-weight: 700;
+      color: #111827;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.74rem;
+      margin-right: 4px;
+    }
+    .minimal-edu-entry, .minimal-proj-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.80rem;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .minimal-edu-entry strong, .minimal-proj-entry strong {
+      font-weight: 700;
+      color: #111827;
+    }
+    .minimal-edu-meta, .minimal-proj-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
 <body>
@@ -499,105 +1222,341 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                 Copy Text
               </button>
-              <button type="button" class="tool-btn download-pdf-btn" id="download-resume-pdf-btn" title="Direct Download as PDF File">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span id="download-pdf-label">Download PDF</span>
-              </button>
+
+              <!-- Multi-Template Download Split Dropdown Button -->
+              <div class="download-btn-group">
+                <button type="button" class="tool-btn download-pdf-btn" id="download-resume-pdf-btn" title="Direct Download active template as PDF">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span id="download-pdf-label">Download PDF</span>
+                </button>
+                <button type="button" class="download-dropdown-toggle" id="download-dropdown-toggle" title="Download Options & Other Templates" aria-haspopup="true" aria-expanded="false">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="download-dropdown-menu" id="download-dropdown-menu">
+                  <div class="dropdown-header">DOWNLOAD TEMPLATE AS PDF</div>
+                  <button type="button" class="dropdown-item" data-download-template="classic">
+                    <span class="dropdown-item-icon">👔</span>
+                    <div class="dropdown-item-text">
+                      <strong>Classic Executive (PDF)</strong>
+                      <small>Traditional Single-Column ATS Layout</small>
+                    </div>
+                  </button>
+                  <button type="button" class="dropdown-item" data-download-template="modern">
+                    <span class="dropdown-item-icon">💻</span>
+                    <div class="dropdown-item-text">
+                      <strong>Modern Two-Column (PDF)</strong>
+                      <small>Split Sidebar Grid Tech Layout</small>
+                    </div>
+                  </button>
+                  <button type="button" class="dropdown-item" data-download-template="minimal">
+                    <span class="dropdown-item-icon">⚡</span>
+                    <div class="dropdown-item-text">
+                      <strong>Minimalist Silicon (PDF)</strong>
+                      <small>Compact Silicon Valley Tech Aesthetic</small>
+                    </div>
+                  </button>
+                  <div class="dropdown-divider"></div>
+                  <button type="button" class="dropdown-item dropdown-item-batch" id="download-all-templates-btn">
+                    <span class="dropdown-item-icon">📦</span>
+                    <div class="dropdown-item-text">
+                      <strong>Download All 3 Templates</strong>
+                      <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or System PDF">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
                 Print
               </button>
             {% endif %}
           </div>
         </div>
 
+        {% if resume %}
+          <!-- Interactive Template Switcher Bar -->
+          <div class="template-selector-bar no-print">
+            <div class="template-selector-header">
+              <span class="template-selector-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
+                RESUME TEMPLATE STYLES (3 AVAILABLE)
+              </span>
+              <span class="template-selector-hint">Click below to switch template instantly · Zero latency</span>
+            </div>
+            <div class="template-pills-row">
+              <button type="button" class="template-pill active" data-template="classic" id="pill-classic" title="Classic Single-Column ATS Layout">
+                <span class="template-pill-icon">👔</span>
+                <div class="template-pill-info">
+                  <strong class="template-pill-name">Classic Executive</strong>
+                  <span class="template-pill-desc">Single-column corporate ATS standard</span>
+                </div>
+                <span class="template-pill-badge">Standard</span>
+              </button>
+              <button type="button" class="template-pill" data-template="modern" id="pill-modern" title="Modern Split Two-Column Layout">
+                <span class="template-pill-icon">💻</span>
+                <div class="template-pill-info">
+                  <strong class="template-pill-name">Modern Two-Column</strong>
+                  <span class="template-pill-desc">Sidebar grid for tech & engineering</span>
+                </div>
+                <span class="template-pill-badge new-badge">Modern</span>
+              </button>
+              <button type="button" class="template-pill" data-template="minimal" id="pill-minimal" title="Minimalist Silicon Valley Layout">
+                <span class="template-pill-icon">⚡</span>
+                <div class="template-pill-info">
+                  <strong class="template-pill-name">Minimalist Silicon</strong>
+                  <span class="template-pill-desc">Clean linear 1-page compact tech style</span>
+                </div>
+                <span class="template-pill-badge new-badge">Compact</span>
+              </button>
+            </div>
+          </div>
+        {% endif %}
+
         <!-- Paper Sheet Container -->
         <div class="resume-paper-sheet" id="resume-sheet">
           {% if resume %}
-            <!-- Resume Header -->
-            <header class="sheet-header">
-              <h1 class="sheet-candidate-name">{{ resume.candidate_name }}</h1>
-              <p class="sheet-target-role">{{ resume.target_role }}</p>
-              <div class="sheet-contact-line">
-                {{ resume.contact_line }}
-              </div>
-            </header>
-
             <!-- Strategy Indicator Chip -->
-            <div class="sheet-strategy-banner">
+            <div class="sheet-strategy-banner no-print">
               <span class="sheet-strategy-tag">Generation #{{ resume.variation_seed or 1 }} · {{ resume.strategy_title }}</span>
               <span class="sheet-strategy-desc">{{ resume.strategy_description }}</span>
             </div>
 
-            <!-- Executive Summary -->
-            <section class="sheet-section">
-              <h2 class="sheet-section-heading">PROFESSIONAL SUMMARY</h2>
-              <p class="sheet-summary-text">{{ resume.executive_summary }}</p>
-            </section>
+            <!-- ================= TEMPLATE 1: CLASSIC EXECUTIVE ================= -->
+            <div class="template-view active-view" id="template-view-classic" data-template-name="Classic Executive">
+              <header class="classic-header">
+                <h1 class="classic-candidate-name">{{ resume.candidate_name }}</h1>
+                <p class="classic-target-role">{{ resume.target_role }}</p>
+                <div class="classic-contact-line">{{ resume.contact_line }}</div>
+              </header>
 
-            <!-- Core Skills -->
-            <section class="sheet-section">
-              <h2 class="sheet-section-heading">CORE COMPETENCIES & TECHNICAL EXPERTISE</h2>
-              <div class="sheet-skills-grid">
-                {% for skill_group in resume.skills %}
-                  <div class="sheet-skill-category">
-                    <strong>{{ skill_group.category }}:</strong>
-                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
-                  </div>
-                {% endfor %}
-              </div>
-            </section>
+              <section class="sheet-section">
+                <h2 class="classic-section-heading">PROFESSIONAL SUMMARY</h2>
+                <p class="sheet-summary-text">{{ resume.executive_summary }}</p>
+              </section>
 
-            <!-- Experience -->
-            <section class="sheet-section">
-              <h2 class="sheet-section-heading">PROFESSIONAL EXPERIENCE</h2>
-              {% for exp in resume.experience %}
-                <div class="sheet-job-entry">
-                  <div class="sheet-job-header">
-                    <div>
-                      <strong class="sheet-job-title">{{ exp.title }}</strong>
-                      <span class="sheet-job-company"> · {{ exp.company }}</span>
+              <section class="sheet-section">
+                <h2 class="classic-section-heading">CORE COMPETENCIES & TECHNICAL EXPERTISE</h2>
+                <div class="classic-skills-grid">
+                  {% for skill_group in resume.skills %}
+                    <div class="classic-skill-category">
+                      <strong>{{ skill_group.category }}:</strong>
+                      <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
                     </div>
-                    <div class="sheet-job-meta">
-                      <span>{{ exp.period }}</span>
-                      {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
-                    </div>
-                  </div>
-                  <ul class="sheet-bullets">
-                    {% for bullet in exp.bullets %}
-                      <li>{{ bullet }}</li>
-                    {% endfor %}
-                  </ul>
+                  {% endfor %}
                 </div>
-              {% endfor %}
-            </section>
+              </section>
 
-            <!-- Education -->
-            {% if resume.education %}
               <section class="sheet-section">
-                <h2 class="sheet-section-heading">EDUCATION</h2>
-                {% for edu in resume.education %}
-                  <div class="sheet-edu-entry">
-                    <div>
-                      <strong>{{ edu.degree }}</strong> — {{ edu.institution }}
+                <h2 class="classic-section-heading">PROFESSIONAL EXPERIENCE</h2>
+                {% for exp in resume.experience %}
+                  <div class="classic-job-entry">
+                    <div class="classic-job-header">
+                      <div>
+                        <strong class="classic-job-title">{{ exp.title }}</strong>
+                        <span class="classic-job-company"> · {{ exp.company }}</span>
+                      </div>
+                      <div class="classic-job-meta">
+                        <span>{{ exp.period }}</span>
+                        {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
+                      </div>
                     </div>
-                    <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                    <ul class="classic-bullets">
+                      {% for bullet in exp.bullets %}
+                        <li>{{ bullet }}</li>
+                      {% endfor %}
+                    </ul>
                   </div>
                 {% endfor %}
               </section>
-            {% endif %}
 
-            <!-- Projects or Certs -->
-            {% if resume.projects_or_certifications %}
+              {% if resume.education %}
+                <section class="sheet-section">
+                  <h2 class="classic-section-heading">EDUCATION</h2>
+                  {% for edu in resume.education %}
+                    <div class="classic-edu-entry">
+                      <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
+                      <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                    </div>
+                  {% endfor %}
+                </section>
+              {% endif %}
+
+              {% if resume.projects_or_certifications %}
+                <section class="sheet-section">
+                  <h2 class="classic-section-heading">PROJECTS & CERTIFICATIONS</h2>
+                  {% for proj in resume.projects_or_certifications %}
+                    <div class="classic-proj-entry">
+                      <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                    </div>
+                  {% endfor %}
+                </section>
+              {% endif %}
+            </div>
+
+            <!-- ================= TEMPLATE 2: MODERN TECH TWO-COLUMN ================= -->
+            <div class="template-view" id="template-view-modern" data-template-name="Modern Two-Column">
+              <header class="modern-header">
+                <div>
+                  <h1 class="modern-candidate-name">{{ resume.candidate_name }}</h1>
+                  <span class="modern-target-role-pill">{{ resume.target_role }}</span>
+                </div>
+                <div class="modern-contact-line">{{ resume.contact_line }}</div>
+              </header>
+
+              <div class="modern-grid-body">
+                <!-- Left Sidebar Column -->
+                <aside class="modern-sidebar-col">
+                  <div class="modern-side-heading">
+                    <span>⚡ CORE SKILLS</span>
+                  </div>
+                  {% for skill_group in resume.skills %}
+                    <div class="modern-skill-group">
+                      <span class="modern-skill-cat-title">{{ skill_group.category }}</span>
+                      <div class="modern-chips-wrap">
+                        {% if skill_group['items'] is iterable and skill_group['items'] is not string %}
+                          {% for item in skill_group['items'] %}
+                            <span class="modern-skill-chip">{{ item }}</span>
+                          {% endfor %}
+                        {% elif skill_group['items'] is string and ',' in skill_group['items'] %}
+                          {% for item in skill_group['items'].split(',') %}
+                            <span class="modern-skill-chip">{{ item.strip() }}</span>
+                          {% endfor %}
+                        {% else %}
+                          <span class="modern-skill-chip">{{ skill_group['items'] }}</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+
+                  {% if resume.education %}
+                    <div class="modern-side-heading" style="margin-top: 18px;">
+                      <span>🎓 EDUCATION</span>
+                    </div>
+                    {% for edu in resume.education %}
+                      <div class="modern-edu-card">
+                        <div class="modern-edu-degree">{{ edu.degree }}</div>
+                        <div class="modern-edu-inst">{{ edu.institution }}</div>
+                        <div class="modern-edu-meta">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                  {% if resume.projects_or_certifications %}
+                    <div class="modern-side-heading" style="margin-top: 18px;">
+                      <span>📜 CREDENTIALS & PROJECTS</span>
+                    </div>
+                    {% for proj in resume.projects_or_certifications %}
+                      <div class="modern-proj-card">
+                        <strong class="modern-proj-title">{{ proj.title }}</strong>
+                        <div class="modern-proj-desc">{{ proj.details }}</div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </aside>
+
+                <!-- Right Main Column -->
+                <main class="modern-main-col">
+                  <div class="modern-main-heading">PROFESSIONAL SUMMARY</div>
+                  <div class="modern-summary-box">
+                    {{ resume.executive_summary }}
+                  </div>
+
+                  <div class="modern-main-heading">WORK EXPERIENCE</div>
+                  <div class="modern-timeline-wrap">
+                    {% for exp in resume.experience %}
+                      <div class="modern-timeline-item">
+                        <div class="modern-timeline-node"></div>
+                        <div class="modern-job-header">
+                          <div>
+                            <strong class="modern-job-role">{{ exp.title }}</strong>
+                            <span class="modern-job-company"> · {{ exp.company }}</span>
+                          </div>
+                          <div class="modern-job-period-badge">
+                            {{ exp.period }}{% if exp.location %} | {{ exp.location }}{% endif %}
+                          </div>
+                        </div>
+                        <ul class="modern-bullets">
+                          {% for bullet in exp.bullets %}
+                            <li>{{ bullet }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </main>
+              </div>
+            </div>
+
+            <!-- ================= TEMPLATE 3: MINIMALIST SILICON VALLEY ================= -->
+            <div class="template-view" id="template-view-minimal" data-template-name="Minimalist Silicon">
+              <header class="minimal-header">
+                <h1 class="minimal-candidate-name">{{ resume.candidate_name }}</h1>
+                <p class="minimal-target-role">{{ resume.target_role }}</p>
+                <div class="minimal-contact-line">{{ resume.contact_line }}</div>
+              </header>
+
               <section class="sheet-section">
-                <h2 class="sheet-section-heading">PROJECTS & CERTIFICATIONS</h2>
-                {% for proj in resume.projects_or_certifications %}
-                  <div class="sheet-proj-entry">
-                    <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                <h2 class="minimal-section-heading">PROFILE SUMMARY</h2>
+                <p class="minimal-summary-text">{{ resume.executive_summary }}</p>
+              </section>
+
+              <section class="sheet-section">
+                <h2 class="minimal-section-heading">PROFESSIONAL EXPERIENCE</h2>
+                {% for exp in resume.experience %}
+                  <div class="minimal-job-entry">
+                    <div class="minimal-job-header">
+                      <div class="minimal-job-title-company">
+                        <strong>{{ exp.title }}</strong> · {{ exp.company }}
+                      </div>
+                      <div class="minimal-job-meta">
+                        {{ exp.period }}{% if exp.location %} · {{ exp.location }}{% endif %}
+                      </div>
+                    </div>
+                    <ul class="minimal-bullets">
+                      {% for bullet in exp.bullets %}
+                        <li>{{ bullet }}</li>
+                      {% endfor %}
+                    </ul>
                   </div>
                 {% endfor %}
               </section>
-            {% endif %}
+
+              <section class="sheet-section">
+                <h2 class="minimal-section-heading">TECHNICAL COMPETENCIES</h2>
+                <div class="minimal-skills-row">
+                  {% for skill_group in resume.skills %}
+                    <div class="minimal-skill-item">
+                      <strong>{{ skill_group.category }}:</strong>
+                      <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              </section>
+
+              {% if resume.education %}
+                <section class="sheet-section">
+                  <h2 class="minimal-section-heading">EDUCATION</h2>
+                  {% for edu in resume.education %}
+                    <div class="minimal-edu-entry">
+                      <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
+                      <div class="minimal-edu-meta">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                    </div>
+                  {% endfor %}
+                </section>
+              {% endif %}
+
+              {% if resume.projects_or_certifications %}
+                <section class="sheet-section">
+                  <h2 class="minimal-section-heading">PROJECTS & CERTIFICATIONS</h2>
+                  {% for proj in resume.projects_or_certifications %}
+                    <div class="minimal-proj-entry">
+                      <div><strong>{{ proj.title }}</strong>: {{ proj.details }}</div>
+                    </div>
+                  {% endfor %}
+                </section>
+              {% endif %}
+            </div>
 
           {% else %}
             <!-- Blank / Placeholder State Before Generation -->
@@ -837,45 +1796,111 @@
         }
       }
 
-      // Copy Markdown / Text
+      // ================= MULTI-TEMPLATE CONTROLLER & PDF EXPORTER =================
+      let activeTemplate = 'classic';
+      const templatePills = document.querySelectorAll('.template-pill');
+      const templateViews = document.querySelectorAll('.template-view');
+      const downloadPdfBtn = document.getElementById('download-resume-pdf-btn');
+      const downloadPdfLabel = document.getElementById('download-pdf-label');
+      const dropdownToggle = document.getElementById('download-dropdown-toggle');
+      const dropdownMenu = document.getElementById('download-dropdown-menu');
+      const templateDownloadBtns = document.querySelectorAll('[data-download-template]');
+      const downloadAllBtn = document.getElementById('download-all-templates-btn');
+
+      const templateTitles = {
+        classic: 'Classic Executive',
+        modern: 'Modern Two-Column',
+        minimal: 'Minimalist Silicon'
+      };
+
+      const templateFilenames = {
+        classic: 'Classic_Executive',
+        modern: 'Modern_Two_Column',
+        minimal: 'Minimalist_Silicon'
+      };
+
+      function setActiveTemplate(tpl) {
+        if (!templateTitles[tpl]) return;
+        activeTemplate = tpl;
+
+        // Update pills
+        templatePills.forEach(p => {
+          p.classList.toggle('active', p.dataset.template === tpl);
+        });
+
+        // Update active view
+        templateViews.forEach(v => {
+          v.classList.toggle('active-view', v.id === `template-view-${tpl}`);
+        });
+
+        // Update primary download label
+        if (downloadPdfLabel) {
+          downloadPdfLabel.textContent = `Download PDF (${templateTitles[tpl].split(' ')[0]})`;
+        }
+
+        // Close dropdown
+        if (dropdownMenu) dropdownMenu.classList.remove('show');
+      }
+
+      // Hook up template pill click handlers
+      templatePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const tpl = pill.dataset.template;
+          if (tpl) setActiveTemplate(tpl);
+        });
+      });
+
+      // Dropdown toggle
+      if (dropdownToggle && dropdownMenu) {
+        dropdownToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('show');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.download-btn-group')) {
+            dropdownMenu.classList.remove('show');
+          }
+        });
+      }
+
+      // Copy text of active template view
       if (copyBtn) {
         copyBtn.addEventListener('click', () => {
+          const activeViewEl = document.getElementById(`template-view-${activeTemplate}`);
           const sheet = document.getElementById('resume-sheet');
-          if (!sheet) return;
-          const text = sheet.innerText;
+          const el = activeViewEl || sheet;
+          if (!el) return;
+
+          const text = el.innerText;
           navigator.clipboard.writeText(text).then(() => {
-            const originalText = copyBtn.innerHTML;
+            const originalHtml = copyBtn.innerHTML;
             copyBtn.innerHTML = '✓ Copied!';
-            setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+            setTimeout(() => { copyBtn.innerHTML = originalHtml; }, 2000);
           }).catch(() => {
             alert('Copied to clipboard');
           });
         });
       }
 
-      // Direct PDF Download Handler
-      const downloadPdfBtn = document.getElementById('download-resume-pdf-btn');
-      const downloadPdfLabel = document.getElementById('download-pdf-label');
-
-      if (downloadPdfBtn) {
-        downloadPdfBtn.addEventListener('click', () => {
-          const sheet = document.getElementById('resume-sheet');
-          if (!sheet) {
+      // Reusable High-Fidelity PDF Exporter
+      function exportTemplateAsPdf(templateKey) {
+        return new Promise((resolve, reject) => {
+          const targetView = document.getElementById(`template-view-${templateKey}`);
+          if (!targetView) {
             alert('Please generate your resume first.');
-            return;
+            return resolve(false);
           }
 
           const originalText = downloadPdfLabel ? downloadPdfLabel.textContent : 'Download PDF';
-          if (downloadPdfLabel) downloadPdfLabel.textContent = 'Generating PDF...';
-          downloadPdfBtn.disabled = true;
+          if (downloadPdfLabel) downloadPdfLabel.textContent = `Generating ${templateTitles[templateKey]}...`;
+          if (downloadPdfBtn) downloadPdfBtn.disabled = true;
+          if (dropdownMenu) dropdownMenu.classList.remove('show');
 
-          // Clone sheet to avoid mutating the visible DOM
-          const clone = sheet.cloneNode(true);
-          // Strip strategy banner from downloaded PDF
-          const banner = clone.querySelector('.sheet-strategy-banner');
-          if (banner) banner.remove();
-
-          // Prepare clean styles for high-fidelity A4 PDF rendering (single page, no left cutoff)
+          // Clone target template view
+          const clone = targetView.cloneNode(true);
+          clone.style.display = 'block';
           clone.style.width = '794px';
           clone.style.maxWidth = '794px';
           clone.style.minHeight = 'auto';
@@ -890,14 +1915,14 @@
           clone.style.margin = '0';
           clone.style.fontFamily = "'Inter', -apple-system, sans-serif";
 
-          // Prevent page break splits inside sections
-          const sections = clone.querySelectorAll('.sheet-section, .sheet-job-entry, .sheet-header');
+          // Prevent pagebreak splits inside entries
+          const sections = clone.querySelectorAll('.sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry, header, .modern-sidebar-col, .modern-main-col');
           sections.forEach(s => {
             s.style.pageBreakInside = 'avoid';
             s.style.breakInside = 'avoid';
           });
 
-          // Create an invisible wrapper positioned safely at 0,0 behind viewport
+          // Create an off-screen wrapper safely at 0,0
           const wrapper = document.createElement('div');
           wrapper.style.position = 'fixed';
           wrapper.style.left = '0';
@@ -911,10 +1936,11 @@
           wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
 
-          // Build clean filename: Candidate_Name_Resume.pdf
+          // Clean filename
           let candidateName = "{% if resume %}{{ resume.candidate_name | e }}{% else %}Candidate{% endif %}";
           candidateName = candidateName.replace(/[^a-zA-Z0-9_\s-]/g, '').trim().replace(/\s+/g, '_') || 'My';
-          const filename = `${candidateName}_Resume.pdf`;
+          const suffix = templateFilenames[templateKey] || 'Resume';
+          const filename = `${candidateName}_Resume_${suffix}.pdf`;
 
           const opt = {
             margin:       [6, 8, 6, 8],
@@ -937,22 +1963,71 @@
               if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
               if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ Downloaded!';
               setTimeout(() => {
-                if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
-                downloadPdfBtn.disabled = false;
-              }, 2500);
+                if (downloadPdfLabel) downloadPdfLabel.textContent = `Download PDF (${templateTitles[activeTemplate].split(' ')[0]})`;
+                if (downloadPdfBtn) downloadPdfBtn.disabled = false;
+              }, 2200);
+              resolve(true);
             }).catch(err => {
-              console.error('PDF Generation failed, invoking print fallback:', err);
+              console.error(`PDF Generation failed for ${templateKey}:`, err);
               if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
               if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
-              downloadPdfBtn.disabled = false;
+              if (downloadPdfBtn) downloadPdfBtn.disabled = false;
               window.print();
+              resolve(false);
             });
           } else {
             if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
             if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
-            downloadPdfBtn.disabled = false;
+            if (downloadPdfBtn) downloadPdfBtn.disabled = false;
             window.print();
+            resolve(false);
           }
+        });
+      }
+
+      // Primary Download Button - downloads active template
+      if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+          exportTemplateAsPdf(activeTemplate);
+        });
+      }
+
+      // Specific Template Download Buttons in Dropdown
+      templateDownloadBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tpl = btn.dataset.downloadTemplate;
+          if (tpl) {
+            setActiveTemplate(tpl);
+            exportTemplateAsPdf(tpl);
+          }
+        });
+      });
+
+      // Batch Download: Export all 3 templates sequentially
+      if (downloadAllBtn) {
+        downloadAllBtn.addEventListener('click', async () => {
+          if (downloadPdfBtn) downloadPdfBtn.disabled = true;
+          if (downloadAllBtn) downloadAllBtn.disabled = true;
+          if (dropdownMenu) dropdownMenu.classList.remove('show');
+
+          const tpls = ['classic', 'modern', 'minimal'];
+          for (let i = 0; i < tpls.length; i++) {
+            const key = tpls[i];
+            if (downloadPdfLabel) {
+              downloadPdfLabel.textContent = `Exporting ${i + 1}/3: ${templateTitles[key]}...`;
+            }
+            setActiveTemplate(key);
+            await exportTemplateAsPdf(key);
+            // Brief pause between browser downloads
+            await new Promise(r => setTimeout(r, 1200));
+          }
+
+          if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ All 3 Templates Exported!';
+          setTimeout(() => {
+            if (downloadPdfLabel) downloadPdfLabel.textContent = `Download PDF (${templateTitles[activeTemplate].split(' ')[0]})`;
+            if (downloadPdfBtn) downloadPdfBtn.disabled = false;
+            if (downloadAllBtn) downloadAllBtn.disabled = false;
+          }, 3000);
         });
       }
     });
