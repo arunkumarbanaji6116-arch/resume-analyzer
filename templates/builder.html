@@ -634,15 +634,69 @@
       background: rgba(99, 102, 241, 0.14);
       border-color: rgba(99, 102, 241, 0.4);
     }
+
+    /* Vibrant Action Button Styling (Replacing dull grey buttons) */
+    .tool-btn#copy-markdown-btn {
+      background: #059669 !important;
+      color: #ffffff !important;
+      border: 1px solid #059669 !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25) !important;
+      font-weight: 700 !important;
+      transition: all 0.2s ease !important;
+    }
+    .tool-btn#copy-markdown-btn:hover {
+      background: #047857 !important;
+      border-color: #047857 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35) !important;
+    }
+    .dark .tool-btn#copy-markdown-btn {
+      background: #059669 !important;
+      color: #ffffff !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+    }
+    .dark .tool-btn#copy-markdown-btn:hover {
+      background: #10b981 !important;
+      border-color: #34d399 !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45) !important;
     }
 
-    /* Template View Shared & Unique Styles */
+    .tool-btn.print-btn {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      border: 1px solid #2563eb !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+      font-weight: 700 !important;
+      transition: all 0.2s ease !important;
+    }
+    .tool-btn.print-btn:hover {
+      background: #1d4ed8 !important;
+      border-color: #1d4ed8 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35) !important;
+    }
+    .dark .tool-btn.print-btn {
+      background: #3b82f6 !important;
+      color: #ffffff !important;
+      border-color: #60a5fa !important;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3) !important;
+    }
+    .dark .tool-btn.print-btn:hover {
+      background: #2563eb !important;
+      border-color: #93c5fd !important;
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45) !important;
+    }
+
+    /* Template View Shared & Unique Styles - Display ONLY 1 at a time */
     .template-view {
-      display: none;
+      display: none !important;
       animation: fadeIn 0.2s ease-out;
     }
     .template-view.active-view {
-      display: block;
+      display: block !important;
     }
 
     /* --- Template 1: Classic Executive --- */
@@ -1408,7 +1462,7 @@
             </div>
 
             <!-- ================= TEMPLATE 1: CLASSIC EXECUTIVE ================= -->
-            <div class="template-view active-view" id="template-view-classic" data-template-name="Classic Executive">
+            <div class="template-view active-view" id="template-view-classic" data-template-name="Classic Executive" style="display: block;">
               <header class="classic-header">
                 <h1 class="classic-candidate-name">{{ resume.candidate_name }}</h1>
                 <p class="classic-target-role">{{ resume.target_role }}</p>
@@ -1480,7 +1534,7 @@
             </div>
 
             <!-- ================= TEMPLATE 2: MODERN TECH TWO-COLUMN ================= -->
-            <div class="template-view" id="template-view-modern" data-template-name="Modern Two-Column">
+            <div class="template-view" id="template-view-modern" data-template-name="Modern Two-Column" style="display: none;">
               <header class="modern-header">
                 <div>
                   <h1 class="modern-candidate-name">{{ resume.candidate_name }}</h1>
@@ -1574,7 +1628,7 @@
             </div>
 
             <!-- ================= TEMPLATE 3: MINIMALIST SILICON VALLEY ================= -->
-            <div class="template-view" id="template-view-minimal" data-template-name="Minimalist Silicon">
+            <div class="template-view" id="template-view-minimal" data-template-name="Minimalist Silicon" style="display: none;">
               <header class="minimal-header">
                 <h1 class="minimal-candidate-name">{{ resume.candidate_name }}</h1>
                 <p class="minimal-target-role">{{ resume.target_role }}</p>
@@ -1913,9 +1967,11 @@
           p.classList.toggle('active', p.dataset.template === tpl);
         });
 
-        // Update active view
+        // Explicitly display ONLY the selected template view and hide the others
         templateViews.forEach(v => {
-          v.classList.toggle('active-view', v.id === `template-view-${tpl}`);
+          const isTarget = (v.id === `template-view-${tpl}`);
+          v.classList.toggle('active-view', isTarget);
+          v.style.display = isTarget ? 'block' : 'none';
         });
 
         // Update dropdown active highlight
