@@ -567,3 +567,104 @@ def gemini_extract_text_from_image_bytes(image_bytes: bytes, mime_type: str = "i
     return None
 
 
+def gemini_extract_certificate_info(text: str, filename: str = "") -> dict:
+    """Extract structured certificate title, issuing body, and date from certificate text or filename."""
+    if not text or not text.strip():
+        return _heuristic_certificate_info("", filename)
+
+    prompt = f"""
+You are an expert document and credential parsing specialist.
+Analyze the extracted text from an uploaded professional certificate, diploma, or credential file (Filename: "{filename}").
+
+Certificate Text Content:
+\"\"\"{text[:3000]}\"\"\"
+
+Extract the credential details and format them into a concise, professional resume bullet point.
+If the text is sparse or noisy, deduce the best certificate title using the filename and any keywords present.
+
+Respond ONLY with valid JSON matching this exact structure:
+{{
+  "title": "<exact name of the certification, e.g. AWS Certified Solutions Architect - Associate>",
+  "issuer": "<issuing organization, e.g. Amazon Web Services, Google, Coursera, Microsoft>",
+  "year": "<issue year or dates if found, else empty string>",
+  "formatted_entry": "<Concise resume-ready text, e.g. AWS Certified Solutions Architect - Associate (Amazon Web Services, 2024)>"
+}}
+"""
+    result = _call_gemini_json(prompt)
+    if result and result.get("title"):
+        if not result.get("formatted_entry"):
+            parts = [result["title"]]
+            sub = []
+            if result.get("issuer") and result["issuer"].lower() not in result["title"].lower():
+                sub.append(result["issuer"])
+            if result.get("year"):
+                sub.append(str(result["year"]))
+            if sub:
+                result["formatted_entry"] = f"{result['title']} ({', '.join(sub)})"
+            else:
+                result["formatted_entry"] = result["title"]
+        return result
+
+    return _heuristic_certificate_info(text, filename)
+
+
+def _heuristic_certificate_info(text: str, filename: str = "") -> dict:
+    cleaned_lines = [line.strip() for line in (text or "").splitlines() if len(line.strip()) > 3]
+    candidate_title = ""
+    candidate_issuer = ""
+    candidate_year = ""
+
+    # Check for years (2010 - 2029)
+    year_match = re.search(r"\b(20[1-2][0-9])\b", text or "")
+    if year_match:
+        candidate_year = year_match.group(1)
+
+    # Known certification issuers
+    issuers = [
+        "Amazon Web Services", "AWS", "Google Cloud", "Google", "Microsoft Azure", "Microsoft", "Azure",
+        "Cisco", "CompTIA", "Oracle", "IBM", "Meta", "Coursera", "Udemy", "edX",
+        "Scrum Alliance", "Scrum.org", "PMI", "Project Management Institute",
+        "Harvard", "Stanford", "MIT", "HackerRank", "LinkedIn Learning", "Salesforce"
+    ]
+    for iss in issuers:
+        if re.search(r"\b" + re.escape(iss) + r"\b", text or "", re.IGNORECASE) or re.search(r"\b" + re.escape(iss) + r"\b", filename or "", re.IGNORECASE):
+            candidate_issuer = iss
+            break
+
+    # Look for lines containing certification keywords
+    for line in cleaned_lines:
+        if re.search(r"(certificate|certified|certification|specialization|nanodegree|diploma|associate|professional|architect|practitioner|engineer|developer|administrator)", line, re.IGNORECASE):
+            candidate_title = line
+            break
+
+    if not candidate_title and cleaned_lines:
+        candidate_title = cleaned_lines[0]
+
+    if not candidate_title:
+        base_name = filename.rsplit(".", 1)[0].replace("_", " ").replace("-", " ").strip() if filename else ""
+        candidate_title = base_name.title() if base_name else "Professional Certification"
+
+    # Clean candidate title
+    candidate_title = re.sub(r"^(this is to certify that|this certifies that|certificate of completion for|awarded to|has successfully completed)\s*", "", candidate_title, flags=re.IGNORECASE).strip()
+    if len(candidate_title) > 80:
+        candidate_title = candidate_title[:80].rsplit(" ", 1)[0]
+
+    sub_parts = []
+    if candidate_issuer and candidate_issuer.lower() not in candidate_title.lower():
+        sub_parts.append(candidate_issuer)
+    if candidate_year and candidate_year not in candidate_title:
+        sub_parts.append(candidate_year)
+
+    if sub_parts:
+        formatted = f"{candidate_title} ({', '.join(sub_parts)})"
+    else:
+        formatted = candidate_title
+
+    return {
+        "title": candidate_title,
+        "issuer": candidate_issuer,
+        "year": candidate_year,
+        "formatted_entry": formatted
+    }
+
+

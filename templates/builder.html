@@ -83,6 +83,193 @@
     .dark .strategy-pill-card.active .strategy-pill-content p {
       color: #c7d2fe !important;
     }
+
+    /* Certificate Upload & Extraction Styles */
+    .cert-upload-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(109, 93, 252, 0.1);
+      color: var(--accent, #6d5dfc);
+      border: 1px solid rgba(109, 93, 252, 0.25);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+      margin: 0;
+      text-decoration: none;
+    }
+    .cert-upload-pill-btn:hover {
+      background: var(--accent, #6d5dfc);
+      color: #ffffff;
+      border-color: var(--accent, #6d5dfc);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(109, 93, 252, 0.25);
+    }
+    .dark .cert-upload-pill-btn {
+      background: rgba(99, 102, 241, 0.18);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .dark .cert-upload-pill-btn:hover {
+      background: #6366f1;
+      color: #ffffff;
+      border-color: #6366f1;
+    }
+    .cert-dropzone {
+      margin-top: 7px;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+    .cert-dropzone:hover, .cert-dropzone.dragover {
+      border-color: var(--accent, #6d5dfc);
+      background: rgba(109, 93, 252, 0.05);
+    }
+    .dark .cert-dropzone {
+      border-color: #334155;
+      background: #131b2e;
+    }
+    .dark .cert-dropzone:hover, .dark .cert-dropzone.dragover {
+      border-color: #818cf8;
+      background: rgba(99, 102, 241, 0.12);
+    }
+    .cert-dropzone-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #64748b;
+      font-size: 0.76rem;
+    }
+    .dark .cert-dropzone-inner {
+      color: #94a3b8;
+    }
+    .cert-dropzone-inner strong {
+      color: #475569;
+      font-weight: 600;
+    }
+    .dark .cert-dropzone-inner strong {
+      color: #cbd5e1;
+    }
+    .cert-dropzone-icon {
+      flex-shrink: 0;
+      color: var(--accent, #6d5dfc);
+    }
+    .dark .cert-dropzone-icon {
+      color: #818cf8;
+    }
+    .cert-loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent, #6d5dfc);
+      padding: 2px 0;
+    }
+    .dark .cert-loading-indicator {
+      color: #a5b4fc;
+    }
+    .uploaded-certs-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .cert-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      animation: fadeIn 0.25s ease-out;
+    }
+    .dark .cert-chip {
+      background: #182238;
+      border-color: #2b3954;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    .cert-chip-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .cert-chip-badge {
+      font-size: 0.95rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .cert-chip-details {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .cert-chip-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 210px;
+    }
+    .dark .cert-chip-title {
+      color: #f8fafc;
+    }
+    .cert-chip-sub {
+      font-size: 0.70rem;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+    .dark .cert-chip-sub {
+      color: #34d399;
+    }
+    .cert-chip-remove {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      margin-left: 6px;
+    }
+    .cert-chip-remove:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .spinner-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(109, 93, 252, 0.25);
+      border-top-color: var(--accent, #6d5dfc);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -130,7 +317,7 @@
 
       <!-- LEFT COLUMN: Candidate Inputs & Variation Controls -->
       <div class="panel builder-form-panel">
-        <form id="resume-builder-form" action="/builder/generate" method="post">
+        <form id="resume-builder-form" action="/builder/generate" method="post" enctype="multipart/form-data">
           <input type="hidden" name="variation_seed" id="variation_seed_input" value="{{ current_seed or 1 }}">
           
           <!-- Strategy Selector (Ensures distinct generations) -->
@@ -243,8 +430,39 @@
                 <input name="education_raw" value="{{ prefill.education_raw if prefill else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018">
               </div>
               <div>
-                <label>Projects & Certifications (Optional)</label>
-                <input name="projects_raw" value="{{ prefill.projects_raw if prefill else '' }}" placeholder="e.g. AWS Solutions Architect, Open Source Contributor">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                  <label style="margin-bottom: 0;">Projects & Certifications (Optional)</label>
+                  <button type="button" id="trigger-cert-upload-btn" class="cert-upload-pill-btn" title="Upload Certificate in PDF, Image, Word, or Text format">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Upload Certificate</span>
+                  </button>
+                </div>
+                <input id="projects-raw-input" name="projects_raw" value="{{ prefill.projects_raw if prefill else '' }}" placeholder="e.g. AWS Solutions Architect, Open Source Contributor">
+                <input type="file" id="certificate-file-input" name="certificate_files" multiple accept=".pdf,.docx,.doc,.txt,.rtf,image/png,image/jpeg,image/jpg,image/webp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain" style="display: none;">
+
+                <!-- Dropzone for Drag-and-Drop or Click Upload -->
+                <div class="cert-dropzone" id="cert-dropzone" title="Drag & drop or click to upload certificates in any eligible format">
+                  <div class="cert-dropzone-inner">
+                    <svg class="cert-dropzone-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="12" y1="18" x2="12" y2="12"/>
+                      <polyline points="9 15 12 12 15 15"/>
+                    </svg>
+                    <span class="cert-dropzone-text">Click or drop certificate (<strong>PDF, PNG, JPG, WEBP, DOCX, TXT</strong>)</span>
+                  </div>
+                  <div class="cert-loading-indicator" id="cert-uploading-spinner" style="display: none;">
+                    <span class="spinner-sm"></span>
+                    <span class="cert-spinner-text">Extracting certificate details...</span>
+                  </div>
+                </div>
+
+                <!-- Attached Certificate Chips -->
+                <div id="uploaded-certs-container" class="uploaded-certs-chips"></div>
               </div>
             </div>
           </div>
@@ -453,6 +671,170 @@
           // Submit form
           form.submit();
         });
+      }
+
+      // ================= CERTIFICATE UPLOAD & EXTRACTION HANDLER =================
+      const certFileInput = document.getElementById('certificate-file-input');
+      const triggerCertBtn = document.getElementById('trigger-cert-upload-btn');
+      const certDropzone = document.getElementById('cert-dropzone');
+      const certSpinner = document.getElementById('cert-uploading-spinner');
+      const certDropInner = certDropzone ? certDropzone.querySelector('.cert-dropzone-inner') : null;
+      const certsContainer = document.getElementById('uploaded-certs-container');
+      const projectsInput = document.getElementById('projects-raw-input');
+
+      let uploadedCertificates = [];
+
+      function triggerCertPicker() {
+        if (certFileInput) certFileInput.click();
+      }
+
+      if (triggerCertBtn) triggerCertBtn.addEventListener('click', triggerCertPicker);
+      if (certDropzone) certDropzone.addEventListener('click', (e) => {
+        if (!e.target.closest('.cert-chip-remove')) {
+          triggerCertPicker();
+        }
+      });
+
+      // Drag and drop handlers
+      if (certDropzone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+          certDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            certDropzone.classList.add('dragover');
+          }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          certDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            certDropzone.classList.remove('dragover');
+          }, false);
+        });
+
+        certDropzone.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          if (files && files.length > 0) {
+            handleCertFiles(files);
+          }
+        });
+      }
+
+      if (certFileInput) {
+        certFileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handleCertFiles(e.target.files);
+          }
+        });
+      }
+
+      async function handleCertFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+          await uploadSingleCertificate(files[i]);
+        }
+      }
+
+      async function uploadSingleCertificate(file) {
+        if (certSpinner) certSpinner.style.display = 'flex';
+        if (certDropInner) certDropInner.style.display = 'none';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const res = await fetch('/builder/upload-certificate', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            const entry = data.formatted_entry || data.certificate_name || file.name;
+            const certObj = {
+              filename: data.filename || file.name,
+              filesize: data.filesize || '',
+              certificate_name: data.certificate_name || file.name,
+              formatted_entry: entry
+            };
+            uploadedCertificates.push(certObj);
+            renderCertChips();
+
+            // Append or update in the projects_raw input
+            if (projectsInput) {
+              const currentVal = projectsInput.value.trim();
+              if (!currentVal) {
+                projectsInput.value = entry;
+              } else if (!currentVal.toLowerCase().includes(data.certificate_name.toLowerCase())) {
+                projectsInput.value = `${currentVal}, ${entry}`;
+              }
+              // Flash input with gentle green glow
+              projectsInput.style.borderColor = '#10b981';
+              projectsInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.2)';
+              setTimeout(() => {
+                projectsInput.style.borderColor = '';
+                projectsInput.style.boxShadow = '';
+              }, 1800);
+            }
+          } else {
+            alert(data.error || 'Could not extract certificate. Please ensure the file is in an eligible format (PDF, PNG, JPG, WEBP, DOCX, TXT).');
+          }
+        } catch (err) {
+          console.error('Certificate upload error:', err);
+          alert('Network or server error while processing certificate. Please try again.');
+        } finally {
+          if (certSpinner) certSpinner.style.display = 'none';
+          if (certDropInner) certDropInner.style.display = 'flex';
+          if (certFileInput) certFileInput.value = '';
+        }
+      }
+
+      function renderCertChips() {
+        if (!certsContainer) return;
+        certsContainer.innerHTML = '';
+
+        uploadedCertificates.forEach((c, idx) => {
+          const chip = document.createElement('div');
+          chip.className = 'cert-chip';
+          chip.innerHTML = `
+            <div class="cert-chip-left">
+              <span class="cert-chip-badge">📜</span>
+              <div class="cert-chip-details">
+                <span class="cert-chip-title" title="${c.formatted_entry}">${c.certificate_name}</span>
+                <span class="cert-chip-sub">✓ Extracted · ${c.filename} ${c.filesize ? '(' + c.filesize + ')' : ''}</span>
+              </div>
+            </div>
+            <button type="button" class="cert-chip-remove" title="Remove certificate" data-idx="${idx}">&times;</button>
+          `;
+
+          const removeBtn = chip.querySelector('.cert-chip-remove');
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeCertificate(idx);
+          });
+
+          certsContainer.appendChild(chip);
+        });
+      }
+
+      function removeCertificate(index) {
+        const removed = uploadedCertificates[index];
+        uploadedCertificates.splice(index, 1);
+        renderCertChips();
+
+        if (removed && projectsInput) {
+          let val = projectsInput.value;
+          val = val.replace(removed.formatted_entry, '')
+                   .replace(removed.certificate_name, '')
+                   .replace(/,\s*,/g, ',')
+                   .replace(/^,\s*|\s*,$/g, '')
+                   .trim();
+          projectsInput.value = val;
+        }
       }
 
       // Copy Markdown / Text
