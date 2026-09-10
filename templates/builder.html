@@ -816,6 +816,99 @@
       opacity: 0.9 !important;
     }
 
+    /* ================= BUILDER INPUT: PLACEHOLDER SHOWN ONLY ON HOVER / FOCUS ================= */
+    .builder-form-panel input::placeholder,
+    .builder-form-panel textarea::placeholder {
+      color: transparent !important;
+      opacity: 0 !important;
+      transition: color 0.2s ease, opacity 0.2s ease !important;
+    }
+    .builder-form-panel input::-webkit-input-placeholder,
+    .builder-form-panel textarea::-webkit-input-placeholder {
+      color: transparent !important;
+      opacity: 0 !important;
+      transition: color 0.2s ease, opacity 0.2s ease !important;
+    }
+
+    .builder-form-panel input:hover::placeholder,
+    .builder-form-panel input:focus::placeholder,
+    .builder-form-panel textarea:hover::placeholder,
+    .builder-form-panel textarea:focus::placeholder {
+      color: #94a3b8 !important;
+      opacity: 1 !important;
+    }
+    .builder-form-panel input:hover::-webkit-input-placeholder,
+    .builder-form-panel input:focus::-webkit-input-placeholder,
+    .builder-form-panel textarea:hover::-webkit-input-placeholder,
+    .builder-form-panel textarea:focus::-webkit-input-placeholder {
+      color: #94a3b8 !important;
+      opacity: 1 !important;
+    }
+
+    .dark .builder-form-panel input:hover::placeholder,
+    .dark .builder-form-panel input:focus::placeholder,
+    .dark .builder-form-panel textarea:hover::placeholder,
+    .dark .builder-form-panel textarea:focus::placeholder {
+      color: #64748b !important;
+      opacity: 1 !important;
+    }
+    .dark .builder-form-panel input:hover::-webkit-input-placeholder,
+    .dark .builder-form-panel input:focus::-webkit-input-placeholder,
+    .dark .builder-form-panel textarea:hover::-webkit-input-placeholder,
+    .dark .builder-form-panel textarea:focus::-webkit-input-placeholder {
+      color: #64748b !important;
+      opacity: 1 !important;
+    }
+
+    /* Last Entered Data Hover Tooltip / Chip */
+    .last-entered-hint {
+      position: absolute;
+      right: 4px;
+      top: -24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      color: var(--accent, #6d5dfc);
+      z-index: 30;
+      animation: fadeIn 0.15s ease-out;
+      pointer-events: auto;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      white-space: nowrap;
+    }
+    .dark .last-entered-hint {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: rgba(165, 180, 252, 0.45);
+      color: #c7d2fe;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+    .last-entered-hint strong {
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .dark .last-entered-hint strong {
+      color: #ffffff;
+    }
+    .last-entered-hint .use-last-btn {
+      background: var(--accent, #6d5dfc);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.2;
+      transition: background 0.15s ease;
+    }
+    .last-entered-hint .use-last-btn:hover {
+      background: var(--accent-dark, #5b4be8);
+    }
+
     /* Template View Shared & Unique Styles - Display ONLY 1 at a time */
     .template-view {
       display: none !important;
@@ -2313,6 +2406,110 @@
             if (downloadAllBtn) downloadAllBtn.disabled = false;
           }, 3000);
         });
+      }
+
+      // ================= LAST ENTERED DATA MEMORY & HOVER RESTORE =================
+      const BUILDER_STORAGE_KEY = 'careerforge_builder_last_data';
+      const builderForm = document.getElementById('resume-builder-form');
+
+      function getSavedBuilderData() {
+        try {
+          return JSON.parse(localStorage.getItem(BUILDER_STORAGE_KEY) || '{}');
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveBuilderField(name, val) {
+        if (!name) return;
+        const data = getSavedBuilderData();
+        if (val && val.trim()) {
+          data[name] = val.trim();
+        }
+        try {
+          localStorage.setItem(BUILDER_STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {}
+      }
+
+      if (builderForm) {
+        const formInputs = builderForm.querySelectorAll('input[name], textarea[name], select[name]');
+
+        // Seed storage with existing prefill values and bind input listeners
+        formInputs.forEach(field => {
+          if (field.value && field.value.trim()) {
+            saveBuilderField(field.name, field.value.trim());
+          }
+          field.addEventListener('input', () => {
+            saveBuilderField(field.name, field.value.trim());
+            hideFieldHint(field);
+          });
+          field.addEventListener('change', () => {
+            saveBuilderField(field.name, field.value.trim());
+          });
+        });
+
+        // Hover & Focus: show last entered data hint when mouse pointer enters an empty box
+        formInputs.forEach(field => {
+          if (field.type === 'hidden' || field.type === 'file' || field.type === 'radio') return;
+
+          field.addEventListener('mouseenter', () => checkAndShowHint(field));
+          field.addEventListener('focus', () => checkAndShowHint(field));
+          field.addEventListener('mouseleave', () => {
+            if (document.activeElement !== field) {
+              hideFieldHint(field);
+            }
+          });
+          field.addEventListener('blur', () => hideFieldHint(field));
+        });
+
+        function checkAndShowHint(field) {
+          if (field.value && field.value.trim()) return; // Don't show if user has already typed
+          const savedData = getSavedBuilderData();
+          const lastVal = savedData[field.name];
+          if (!lastVal || !lastVal.trim()) return;
+
+          showFieldHint(field, lastVal);
+        }
+
+        function showFieldHint(field, val) {
+          hideFieldHint(field);
+          const parent = field.parentElement;
+          if (!parent) return;
+
+          const hint = document.createElement('div');
+          hint.className = 'last-entered-hint';
+          hint.title = 'Click to restore last entered data into this field';
+          const displayVal = val.length > 30 ? val.substring(0, 28) + '…' : val;
+          hint.innerHTML = `<span>↩ Last entered: <strong>${escapeHtml(displayVal)}</strong></span> <button type="button" class="use-last-btn">Restore</button>`;
+
+          hint.querySelector('.use-last-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            field.value = val;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            hideFieldHint(field);
+          });
+
+          // Ensure parent has relative positioning for the hint
+          const prevPosition = window.getComputedStyle(parent).position;
+          if (prevPosition === 'static') {
+            parent.style.position = 'relative';
+          }
+          parent.appendChild(hint);
+        }
+
+        function hideFieldHint(field) {
+          const parent = field.parentElement;
+          if (!parent) return;
+          const hint = parent.querySelector('.last-entered-hint');
+          if (hint) hint.remove();
+        }
+
+        function escapeHtml(str) {
+          const div = document.createElement('div');
+          div.textContent = str;
+          return div.innerHTML;
+        }
       }
     });
   </script>
