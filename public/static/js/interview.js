@@ -78,6 +78,62 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedOptionId = null;
   let isAssessed = false;
 
+  // Custom Spatial Modal Dialog Elements
+  const interviewModal = document.getElementById('interview-modal');
+  const modalTitle = document.getElementById('interview-modal-title');
+  const modalDesc = document.getElementById('interview-modal-desc');
+  const modalIcon = document.getElementById('interview-modal-icon');
+  const modalConfirmBtn = document.getElementById('interview-modal-confirm-btn');
+  const modalCloseBtn = document.getElementById('interview-modal-close-btn');
+
+  function showInterviewModal({ title = 'Attention', message = '', icon = '🎯', onConfirm = null } = {}) {
+    if (!interviewModal) {
+      alert(message);
+      return;
+    }
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalDesc) modalDesc.textContent = message;
+    if (modalIcon) modalIcon.textContent = icon;
+
+    interviewModal.style.display = 'flex';
+    interviewModal.classList.remove('closing');
+
+    if (modalConfirmBtn) {
+      modalConfirmBtn.focus();
+      modalConfirmBtn.onclick = () => {
+        closeInterviewModal();
+        if (typeof onConfirm === 'function') onConfirm();
+      };
+    }
+  }
+
+  function closeInterviewModal() {
+    if (!interviewModal) return;
+    interviewModal.classList.add('closing');
+    setTimeout(() => {
+      interviewModal.style.display = 'none';
+      interviewModal.classList.remove('closing');
+    }, 180);
+  }
+
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', closeInterviewModal);
+  }
+
+  if (interviewModal) {
+    interviewModal.addEventListener('click', (e) => {
+      if (e.target === interviewModal) {
+        closeInterviewModal();
+      }
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && interviewModal && interviewModal.style.display === 'flex') {
+      closeInterviewModal();
+    }
+  });
+
   // Pre-load browser voices if available
   if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.onvoiceschanged = () => {
@@ -418,7 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (isMcq) {
         if (!selectedOptionId) {
-          alert('Please select one of the options (A, B, C, or D) before submitting.');
+          showInterviewModal({
+            title: 'Select an Option',
+            message: 'Please select one of the options (A, B, C, or D) before submitting.',
+            icon: '🎯'
+          });
           return;
         }
 
@@ -511,7 +571,11 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         } catch (err) {
-          alert('An error occurred during evaluation. Please try again.');
+          showInterviewModal({
+            title: 'Evaluation Notice',
+            message: 'An error occurred during evaluation. Please try again.',
+            icon: '⚠️'
+          });
         } finally {
           assessBtn.disabled = true;
           assessBtn.textContent = 'Answer Evaluated ✓';
@@ -521,8 +585,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // STAR Mode (Existing Flow)
         const answer = answerTextarea.value.trim();
         if (!answer) {
-          alert('Please write an answer before requesting feedback.');
-          answerTextarea.focus();
+          showInterviewModal({
+            title: 'Answer Required',
+            message: 'Please write or record an answer before requesting AI feedback.',
+            icon: '✍️',
+            onConfirm: () => {
+              if (answerTextarea) answerTextarea.focus();
+            }
+          });
           return;
         }
 
@@ -615,7 +685,11 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         } catch (err) {
-          alert('An error occurred during assessment. Please try again.');
+          showInterviewModal({
+            title: 'Assessment Notice',
+            message: 'An error occurred during assessment. Please try again.',
+            icon: '⚠️'
+          });
         } finally {
           assessBtn.disabled = false;
           assessBtn.textContent = 'Submit Answer for AI Review';
