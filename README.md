@@ -1,4 +1,4 @@
-﻿# Resume Analyzer & CareerForge AI 🚀
+# Resume Analyzer & CareerForge AI 🚀
 
 An AI-powered career platform designed to accelerate technical and professional job search success. Powered by **Google Gemini LLM** and high-accuracy in-memory OCR.
 
@@ -17,13 +17,6 @@ An AI-powered career platform designed to accelerate technical and professional 
   - Identification of matched competencies and missing required keywords.
   - Actionable resume tailoring recommendations for target roles.
   - Supports both direct text input and screenshot OCR uploads.
-
-- **🧭 Career Coach**:
-  - Dynamic 4-phase milestone execution roadmaps tailored to experience level and timeline.
-  - Weekly action sprint checklists.
-  - Top recognized industry certifications and credentials.
-  - High-converting LinkedIn networking & informational interview outreach scripts.
-  - Print/Save execution plans for offline tracking.
 
 - **🎙️ Interview Lab**:
   - Interactive mock interview simulator across 7 technical and professional tracks.

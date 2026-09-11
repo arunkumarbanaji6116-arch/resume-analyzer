@@ -5,10 +5,10 @@ import { Drawer } from "vaul";
 import useMeasure from "react-use-measure";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { X, FileText, Video, Compass, SearchCheck, ArrowRight } from "lucide-react";
+import { X, FileText, Video, SearchCheck, ArrowRight } from "lucide-react";
 
 interface WorkspaceTool {
-  id: "resume" | "interview" | "career" | "jobs";
+  id: "resume" | "interview" | "jobs";
   title: string;
   subtitle: string;
   description: string;
@@ -38,16 +38,6 @@ const WORKSPACE_TOOLS: Record<string, WorkspaceTool> = {
     href: "/interview",
     icon: Video,
     badgeColor: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-  },
-  career: {
-    id: "career",
-    title: "Career Coach",
-    subtitle: "Make a targeted plan",
-    description: "Turn your career goal into a thoughtful, focused plan with clear next steps.",
-    action: "Plan my path",
-    href: "/career",
-    icon: Compass,
-    badgeColor: "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400"
   },
   jobs: {
     id: "jobs",
@@ -82,8 +72,8 @@ export function CareerWorkspaceGrid() {
         </p>
       </div>
 
-      {/* 4 Workspace Boxes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 3 Workspace Boxes */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {Object.values(WORKSPACE_TOOLS).map((tool) => {
           const IconComponent = tool.icon;
           return (

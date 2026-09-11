@@ -52,14 +52,12 @@ def create_app():
     from routes.auth import auth_bp
     from routes.resume import resume_bp
     from routes.interview import interview_bp
-    from routes.career import career_bp
     from routes.jobs import jobs_bp
     from routes.builder import builder_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(resume_bp)
     app.register_blueprint(interview_bp)
-    app.register_blueprint(career_bp)
     app.register_blueprint(jobs_bp)
     app.register_blueprint(builder_bp)
     return app

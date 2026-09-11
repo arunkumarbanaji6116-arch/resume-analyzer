@@ -4,7 +4,6 @@ import {
   Home,
   FileText,
   Mic,
-  Compass,
   Briefcase,
   ChevronDown,
   ChevronsRight,
@@ -71,13 +70,6 @@ const Sidebar = () => {
         <Option
           Icon={Mic}
           title="Interview Lab"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={Compass}
-          title="Career Coach"
           selected={selected}
           setSelected={setSelected}
           open={open}

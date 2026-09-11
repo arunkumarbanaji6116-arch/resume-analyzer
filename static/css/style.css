@@ -435,12 +435,12 @@ h2 {
 }
 
 /* ==========================================================================
-   Workspace 3D Tool Cards (Dashboard 4 Boxes)
+   Workspace 3D Tool Cards (Dashboard 3 Boxes)
    ========================================================================== */
 
 .tool-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin: 32px 0 52px;
 }
