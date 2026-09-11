@@ -173,7 +173,7 @@ def send_via_resend(recipient: str, subject: str, html_content: str, plain_text:
     Sends an email using Resend's REST API (https://api.resend.com/emails).
     """
     api_key = _get_resend_key()
-    from_email = os.getenv("RESEND_FROM_EMAIL", "").strip() or Config.RESEND_FROM_EMAIL or "CareerForge.AI <onboarding@resend.dev>"
+    from_email = os.getenv("RESEND_FROM_EMAIL", "").strip() or Config.RESEND_FROM_EMAIL or "CareerForge.AI <auth@mycareerforge.in>"
 
     payload = {
         "from": from_email,

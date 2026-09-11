@@ -25,7 +25,7 @@ class Config:
         or os.getenv("RESEND_KEY", "").strip()
         or os.getenv("RESEND_API", "").strip()
     )
-    RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "CareerForge.AI <onboarding@resend.dev>").strip()
+    RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "CareerForge.AI <auth@mycareerforge.in>").strip()
 
     # SMTP Configuration (fallback or custom SMTP)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
