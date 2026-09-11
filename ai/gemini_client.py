@@ -702,6 +702,223 @@ def _heuristic_certificate_info(text: str, filename: str = "") -> dict:
     }
 
 
+_RESUME_BUILDER_PARSE_CACHE = {}
+
+
+def gemini_parse_resume_for_builder(resume_text: str, job_description: str = "", missing_keywords: list = None, matched_skills: list = None) -> dict:
+    """
+    Extracts ALL candidate details from a resume (contact info, target role, level, industry,
+    experience history, education, projects, skills + missing keywords) to populate Resume Builder.
+    """
+    missing_keywords = missing_keywords or []
+    matched_skills = matched_skills or []
+    cache_key = hashlib.md5((resume_text[:2000].strip() + "###" + job_description[:500].strip() + "###" + ",".join(missing_keywords)).encode("utf-8")).hexdigest()
+    if cache_key in _RESUME_BUILDER_PARSE_CACHE:
+        return dict(_RESUME_BUILDER_PARSE_CACHE[cache_key])
+
+    prompt = f"""
+You are an expert ATS resume extractor. Extract ALL candidate details from the following resume text into a clean structured format for an ATS resume builder.
+
+Job Description Context:
+{job_description[:1500]}
+
+Missing / Recommended Keywords to Incorporate:
+{", ".join(missing_keywords)}
+
+Resume Text:
+{resume_text[:5000]}
+
+Respond ONLY with valid JSON matching this exact structure:
+{{
+  "name": "<Candidate Full Name, or empty string if not found>",
+  "email": "<Candidate Email, or empty string if not found>",
+  "phone": "<Candidate Phone Number and City/Location, e.g. '+1 (555) 019-2834 · San Francisco, CA', or empty string>",
+  "linkedin": "<Candidate LinkedIn / GitHub / Portfolio URLs separated by ' · ', e.g. 'linkedin.com/in/username · github.com/username', or empty string>",
+  "target_role": "<Target Job Title extracted from Job Description or Resume Header/Recent Role>",
+  "experience_level": "<one of: 'Entry-Level / Early Career', 'Mid-Level (3-5 years)', 'Senior Level (5-9 years)', 'Staff / Principal / Director'>",
+  "industry": "<Industry domain, e.g. 'Technology & Software', 'FinTech', 'Healthcare', 'Marketing & Digital Strategy', etc.>",
+  "skills": "<Comma-separated list of candidate skills from resume PLUS any missing keywords listed above, deduplicated>",
+  "experience_raw": "<Past roles, companies, dates, and bullet points extracted from resume. Keep high-impact accomplishments, metrics, and responsibilities. Use format: • Role at Company (Dates): achievements...>",
+  "education_raw": "<Degrees, majors, colleges/universities, and graduation years, e.g. 'B.S. in Computer Science, State University, 2020'>",
+  "projects_raw": "<Key projects, certifications, and technical awards separated by ' · '>"
+}}
+"""
+    try:
+        data = _call_gemini_json(prompt)
+        if isinstance(data, dict) and data.get("name") is not None:
+            # Ensure skills contains both candidate skills and missing keywords
+            skills_val = data.get("skills", "")
+            if missing_keywords:
+                existing_parts = [s.strip() for s in skills_val.split(",") if s.strip()]
+                combined = list(dict.fromkeys(existing_parts + missing_keywords))
+                data["skills"] = ", ".join(combined)
+            _RESUME_BUILDER_PARSE_CACHE[cache_key] = data
+            return data
+    except Exception as e:
+        logger.warning(f"Gemini resume parse for builder failed: {e}")
+
+    # Heuristic fallback if Gemini call fails
+    fallback = _heuristic_parse_resume(resume_text, job_description, missing_keywords, matched_skills)
+    _RESUME_BUILDER_PARSE_CACHE[cache_key] = fallback
+    return fallback
+
+
+def _heuristic_parse_resume(resume_text: str, job_description: str = "", missing_keywords: list = None, matched_skills: list = None) -> dict:
+    missing_keywords = missing_keywords or []
+    matched_skills = matched_skills or []
+    lines = [l.strip() for l in (resume_text or "").splitlines() if l.strip()]
+
+    # 1. Email
+    email_m = re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", resume_text or "")
+    email = email_m.group(0).strip() if email_m else ""
+
+    # 2. Phone
+    phone_m = re.search(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,5}[-.\s]?\d{3,5}", resume_text or "")
+    phone_val = phone_m.group(0).strip() if phone_m else ""
+
+    # Location (look for city, state/country in header)
+    location_val = ""
+    for line in lines[:8]:
+        line_clean = re.sub(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "", line)
+        line_clean = re.sub(r"https?://\S+|www\.\S+|linkedin\.com\S+|github\.com\S+", "", line_clean)
+        line_clean = re.sub(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,5}[-.\s]?\d{3,5}", "", line_clean)
+        for part in re.split(r"[|·•,]", line_clean):
+            p = part.strip()
+            if 3 <= len(p) <= 40 and not any(k in p.lower() for k in ("resume", "cv", "developer", "engineer", "summary", "experience", "skills")):
+                if any(w in p.lower() for w in ("bangalore", "bengaluru", "mumbai", "delhi", "hyderabad", "pune", "chennai", "san francisco", "new york", "seattle", "austin", "chicago", "london", "toronto", "california", "india", "usa", "ca", "tx", "ny")):
+                    location_val = p
+                    break
+        if location_val:
+            break
+
+    phone_loc = " · ".join(filter(None, [phone_val, location_val]))
+
+    # 3. LinkedIn & URLs
+    links = []
+    for link in re.findall(r"(?:https?://)?(?:www\.)?((?:linkedin\.com/in/[\w-]+|github\.com/[\w-]+|[\w-]+\.(?:dev|io|me)))", resume_text or "", re.I):
+        links.append(link.strip())
+    linkedin = " · ".join(dict.fromkeys(links))
+
+    # 4. Candidate Name
+    name = ""
+    for line in lines[:6]:
+        line_clean = line.strip()
+        if len(line_clean) > 35 or len(line_clean) < 3:
+            continue
+        if any(x in line_clean.lower() for x in ("resume", "curriculum", "cv", "page", "@", "http", "phone", "email", "summary", "profile", "objective", "skills", "experience")):
+            continue
+        words = line_clean.split()
+        if 2 <= len(words) <= 4 and all(w[0].isupper() for w in words if w.isalpha()):
+            name = line_clean
+            break
+
+    # 5. Target Role
+    target_role = ""
+    if job_description:
+        first_line = job_description.strip().split("\n")[0][:80].strip()
+        clean_title = re.sub(r"^(job\s*title|role|position|we\s*are\s*hiring\s*a?|seeking\s*an?)\s*[:\-–]\s*", "", first_line, flags=re.I).strip()
+        if 3 <= len(clean_title) <= 50:
+            target_role = clean_title
+    if not target_role:
+        for line in lines[:10]:
+            if any(k in line.lower() for k in ("engineer", "developer", "manager", "architect", "designer", "analyst", "lead", "specialist")):
+                target_role = line.strip()
+                break
+
+    # 6. Experience Level
+    exp_lower = (resume_text or "").lower()
+    if any(k in exp_lower for k in ("director", "principal", "staff engineer", "10+ years", "12+ years")):
+        experience_level = "Staff / Principal / Director"
+    elif any(k in exp_lower for k in ("senior", "lead", "6+ years", "7+ years", "8+ years", "5+ years")):
+        experience_level = "Senior Level (5-9 years)"
+    elif any(k in exp_lower for k in ("intern", "junior", "graduate", "fresher", "entry-level")):
+        experience_level = "Entry-Level / Early Career"
+    else:
+        experience_level = "Mid-Level (3-5 years)"
+
+    # 7. Industry
+    industry = "Technology & Software"
+    if any(k in exp_lower for k in ("fintech", "banking", "finance", "payments")):
+        industry = "FinTech & Financial Services"
+    elif any(k in exp_lower for k in ("healthcare", "clinical", "hospital", "pharma")):
+        industry = "Healthcare & Life Sciences"
+    elif any(k in exp_lower for k in ("marketing", "seo", "sem", "content", "campaign")):
+        industry = "Marketing & Digital Strategy"
+
+    # 8. Skills
+    all_combined = list(dict.fromkeys(matched_skills + missing_keywords))
+    if not all_combined:
+        from ai.job_analyzer import extract_skills
+        res_skills = list(extract_skills(resume_text or ""))
+        all_combined = list(dict.fromkeys(res_skills + missing_keywords))
+    skills = ", ".join(all_combined)
+
+    # 9. Education
+    education_lines = []
+    in_edu = False
+    for line in lines:
+        if re.search(r"^(education|academic|qualifications)", line, re.I):
+            in_edu = True
+            continue
+        if in_edu:
+            if re.search(r"^(experience|projects|skills|certifications|awards)", line, re.I):
+                break
+            education_lines.append(line)
+    education_raw = " · ".join(education_lines[:3]) if education_lines else ""
+    if not education_raw:
+        edu_m = re.search(r"((?:bachelor|master|b\.tech|m\.tech|b\.s|m\.s|ph\.d|diploma)[^\n]+(?:\n[^\n]+)?)", resume_text or "", re.I)
+        if edu_m:
+            education_raw = " · ".join([l.strip() for l in edu_m.group(0).splitlines() if l.strip()])
+
+    # 10. Projects & Certifications
+    proj_lines = []
+    in_proj = False
+    for line in lines:
+        if re.search(r"^(projects|certifications|certificates|achievements)", line, re.I):
+            in_proj = True
+            continue
+        if in_proj:
+            if re.search(r"^(education|experience|skills)", line, re.I):
+                break
+            proj_lines.append(line.lstrip("-*• "))
+    projects_raw = " · ".join(proj_lines[:4]) if proj_lines else ""
+
+    # 11. Experience Raw
+    exp_lines = []
+    in_exp = False
+    for line in lines:
+        if re.search(r"^(professional\s+experience|work\s+experience|experience|employment)", line, re.I):
+            in_exp = True
+            continue
+        if in_exp:
+            if re.search(r"^(education|skills|projects|certifications)", line, re.I):
+                break
+            clean_l = line.strip()
+            if clean_l.startswith(("-", "*", "•")):
+                exp_lines.append(f"• {clean_l.lstrip('-*• ')}")
+            elif re.search(r"\b(20\d\d|19\d\d|present)\b", clean_l, re.I):
+                exp_lines.append(f"\n• {clean_l}:")
+            else:
+                exp_lines.append(clean_l)
+    experience_raw = "\n".join(exp_lines).strip()
+    if not experience_raw:
+        experience_raw = (resume_text or "")[:1200]
+
+    return {
+        "name": name,
+        "email": email,
+        "phone": phone_loc,
+        "linkedin": linkedin,
+        "target_role": target_role or "Software Engineer",
+        "experience_level": experience_level,
+        "industry": industry,
+        "skills": skills,
+        "experience_raw": experience_raw,
+        "education_raw": education_raw,
+        "projects_raw": projects_raw,
+    }
+
+
 def gemini_generate_interview_questions(role: str, interview_type: str = "star", count: int = 5, seen_questions: list = None) -> list | None:
     """Generate dynamic, challenging, non-repeating interview questions tailored to the role using Gemini AI."""
     seen_clause = ""

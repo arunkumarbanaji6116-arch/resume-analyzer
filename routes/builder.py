@@ -14,19 +14,47 @@ builder_bp = Blueprint("builder", __name__)
 ALLOWED_CERT_EXTENSIONS = {"pdf", "docx", "doc", "txt", "rtf", "png", "jpg", "jpeg", "webp"}
 
 
+_BUILDER_PREFILL_STORE = {}
+
+
+def set_builder_prefill(user_id, data: dict):
+    if user_id:
+        _BUILDER_PREFILL_STORE[user_id] = dict(data)
+
+
+def get_builder_prefill(user_id):
+    if user_id and user_id in _BUILDER_PREFILL_STORE:
+        return _BUILDER_PREFILL_STORE.pop(user_id, {})
+    return {}
+
+
 @builder_bp.get("/builder")
 def builder_view():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    
-    saved_prefill = session.pop("builder_prefill", None) or {}
+
+    user_id = session.get("user_id")
+    saved_prefill = session.pop("builder_prefill", None) or get_builder_prefill(user_id) or {}
+
+    current_user_obj = session.get("user")
+    user_name_fallback = ""
+    if isinstance(current_user_obj, dict):
+        user_name_fallback = current_user_obj.get("name", "")
+    elif isinstance(current_user_obj, str):
+        user_name_fallback = current_user_obj
 
     prefill = {
-        "name": saved_prefill.get("name") or session.get("user", ""),
+        "name": request.args.get("name") or saved_prefill.get("name") or user_name_fallback,
         "target_role": request.args.get("role") or saved_prefill.get("target_role", ""),
         "experience_level": request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level"),
+        "industry": request.args.get("industry") or saved_prefill.get("industry", "Technology & Software"),
+        "email": request.args.get("email") or saved_prefill.get("email", ""),
+        "phone": request.args.get("phone") or saved_prefill.get("phone", ""),
+        "linkedin": request.args.get("linkedin") or saved_prefill.get("linkedin", ""),
         "skills": request.args.get("skills") or saved_prefill.get("skills", ""),
         "experience_raw": saved_prefill.get("experience_raw", ""),
+        "education_raw": request.args.get("education") or saved_prefill.get("education_raw", ""),
+        "projects_raw": request.args.get("projects") or saved_prefill.get("projects_raw", ""),
         "missing_keywords": saved_prefill.get("missing_keywords", []),
         "from_job_analyzer": saved_prefill.get("from_job_analyzer", False),
     }

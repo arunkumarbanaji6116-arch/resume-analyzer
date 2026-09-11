@@ -172,8 +172,8 @@
               </div>
 
               <form action="/jobs/bridge-to-builder" method="POST" style="margin: 0;">
-                <input type="hidden" name="job_description" value="{{ job_description }}">
-                <input type="hidden" name="resume_text" value="{{ resume_text }}">
+                <textarea name="job_description" style="display:none;">{{ job_description }}</textarea>
+                <textarea name="resume_text" style="display:none;">{{ resume_text }}</textarea>
                 <input type="hidden" name="missing_keywords" value="{{ analysis.missing|join(', ') }}">
                 <input type="hidden" name="matched_skills" value="{{ analysis.matched|join(', ') }}">
                 <button type="submit" class="builder-bridge-btn">
