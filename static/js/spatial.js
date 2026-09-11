@@ -308,12 +308,17 @@ function initInstantFormFeedback() {
       const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
       if (submitBtn && !submitBtn.disabled) {
         submitBtn.dataset.originalHtml = submitBtn.innerHTML;
-        submitBtn.style.opacity = '0.88';
+        submitBtn.style.opacity = '0.92';
         submitBtn.style.pointerEvents = 'none';
         if (submitBtn.tagName.toLowerCase() === 'button') {
-          submitBtn.innerHTML = '<span style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">' +
-            '<svg style="animation: spin 0.8s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>' +
-            '⚡ Processing with AI...</span>';
+          const setBtnState = (text) => {
+            submitBtn.innerHTML = '<span style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">' +
+              '<svg style="animation: spin 0.75s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>' +
+              text + '</span>';
+          };
+          setBtnState('⚡ Reading & parsing document...');
+          setTimeout(() => setBtnState('⚡ Matching competencies & skills...'), 1100);
+          setTimeout(() => setBtnState('⚡ Synthesizing ATS score...'), 2400);
         }
       }
     });

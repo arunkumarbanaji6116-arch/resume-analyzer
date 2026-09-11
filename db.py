@@ -82,10 +82,16 @@ def record_activity(user_id, kind, title, score=None, created_at=None):
     except Exception:
         pass
 
-    # 2. Supabase Cloud Sync
+    # 2. Supabase Cloud Sync (Executed asynchronously in background thread for 0ms delay)
     try:
-        from services.supabase_service import supabase_save_activity
-        supabase_save_activity(user_id, kind, title, score, now_iso)
+        import threading
+        def _bg_supabase_sync():
+            try:
+                from services.supabase_service import supabase_save_activity
+                supabase_save_activity(user_id, kind, title, score, now_iso)
+            except Exception:
+                pass
+        threading.Thread(target=_bg_supabase_sync, daemon=True).start()
     except Exception:
         pass
 

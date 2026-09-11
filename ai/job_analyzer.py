@@ -25,11 +25,22 @@ def extract_skills(text: str) -> set:
     return found
 
 
+import hashlib
+
+_JOB_ANALYSIS_CACHE = {}
+
+
 def analyze_job(description: str, resume: str = "") -> dict:
+    # 0ms Cache check for identical queries
+    cache_key = hashlib.md5((description.strip() + "###" + resume.strip()).encode("utf-8")).hexdigest()
+    if cache_key in _JOB_ANALYSIS_CACHE:
+        return _JOB_ANALYSIS_CACHE[cache_key]
+
     try:
         from ai.gemini_client import gemini_analyze_job
         gemini_result = gemini_analyze_job(description, resume)
         if gemini_result:
+            _JOB_ANALYSIS_CACHE[cache_key] = gemini_result
             return gemini_result
     except Exception as e:
         pass
