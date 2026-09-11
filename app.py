@@ -5,12 +5,51 @@ from config import Config
 from db import get_db, init_db
 
 
+import gzip
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000
     Config.GENERATED_DIR.mkdir(parents=True, exist_ok=True)
     Config.DATABASE.parent.mkdir(parents=True, exist_ok=True)
     init_db()
+
+    @app.after_request
+    def apply_performance_headers(response):
+        # 1. Aggressive immutable caching for static assets
+        if request.path.startswith("/static/"):
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        elif response.status_code == 200 and request.method == "GET" and not request.path.startswith("/auth/"):
+            response.headers["Cache-Control"] = "public, max-age=0, must-revalidate"
+
+        # 2. Dynamic Gzip compression for textual responses over 400 bytes
+        accept_encoding = request.headers.get("Accept-Encoding", "")
+        if (
+            "gzip" in accept_encoding.lower()
+            and response.status_code == 200
+            and not response.direct_passthrough
+            and response.content_type
+            and any(t in response.content_type for t in ("text/html", "text/css", "application/javascript", "application/json", "image/svg+xml"))
+        ):
+            data = response.get_data()
+            if len(data) > 400:
+                compressed = gzip.compress(data, compresslevel=6)
+                if len(compressed) < len(data):
+                    response.set_data(compressed)
+                    response.headers["Content-Encoding"] = "gzip"
+                    response.headers["Content-Length"] = len(compressed)
+                    response.headers["Vary"] = "Accept-Encoding"
+
+        return response
+
+    @app.get("/sw.js")
+    def service_worker():
+        response = app.send_static_file("sw.js")
+        response.headers["Content-Type"] = "application/javascript; charset=utf-8"
+        response.headers["Service-Worker-Allowed"] = "/"
+        response.headers["Cache-Control"] = "no-cache"
+        return response
 
     @app.teardown_appcontext
     def close_db(_error=None):

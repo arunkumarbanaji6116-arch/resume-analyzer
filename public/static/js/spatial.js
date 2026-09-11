@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Universal Theme Controller (Dark / Light toggle)
   initThemeController();
+
+  // Zero-Latency Navigation & Instant Prefetch Engine
+  initZeroLatencyNavigation();
+
+  // Instant Form Submit Feedback
+  initInstantFormFeedback();
 });
 
 function initThemeController() {
@@ -212,3 +218,105 @@ function initUploadDropzones() {
     });
   });
 }
+
+// ==========================================================================
+// Zero-Latency Navigation & Instant Prefetch Engine
+// ==========================================================================
+
+function initZeroLatencyNavigation() {
+  // 1. Register Service Worker for 0ms Asset Serving
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+
+  const prefetchedUrls = new Set();
+  const currentOrigin = window.location.origin;
+
+  function canPrefetch(urlStr) {
+    if (!urlStr) return false;
+    try {
+      const url = new URL(urlStr, currentOrigin);
+      if (url.origin !== currentOrigin) return false;
+      if (url.pathname === window.location.pathname) return false;
+      if (url.pathname.includes('logout') || url.pathname.includes('download') || url.pathname.includes('delete')) return false;
+      if (url.hash && url.pathname === window.location.pathname) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function prefetch(urlStr) {
+    if (!canPrefetch(urlStr)) return;
+    const url = new URL(urlStr, currentOrigin).pathname;
+    if (prefetchedUrls.has(url)) return;
+    prefetchedUrls.add(url);
+
+    // Native link prefetch
+    const linkEl = document.createElement('link');
+    linkEl.rel = 'prefetch';
+    linkEl.href = url;
+    linkEl.as = 'document';
+    document.head.appendChild(linkEl);
+
+    // Low-priority HTTP cache warm-up
+    if ('fetch' in window) {
+      fetch(url, { priority: 'low', credentials: 'same-origin' }).catch(() => {});
+    }
+  }
+
+  // Idle background prefetch of core workspace tools
+  const idlePrefetch = () => {
+    const coreRoutes = ['/dashboard', '/builder', '/interview', '/jobs'];
+    coreRoutes.forEach((route) => {
+      if (route !== window.location.pathname) {
+        prefetch(route);
+      }
+    });
+  };
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(idlePrefetch, { timeout: 1500 });
+  } else {
+    setTimeout(idlePrefetch, 800);
+  }
+
+  // Instant hover & touch anticipation (fires ~150ms before click)
+  document.addEventListener('mouseover', (e) => {
+    const link = e.target.closest('a[href]');
+    if (link && canPrefetch(link.href)) {
+      prefetch(link.href);
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchstart', (e) => {
+    const link = e.target.closest('a[href]');
+    if (link && canPrefetch(link.href)) {
+      prefetch(link.href);
+    }
+  }, { passive: true });
+}
+
+function initInstantFormFeedback() {
+  document.querySelectorAll('form').forEach((form) => {
+    if (form.dataset.instantFeedbackBound === 'true') return;
+    form.dataset.instantFeedbackBound = 'true';
+
+    form.addEventListener('submit', () => {
+      const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+      if (submitBtn && !submitBtn.disabled) {
+        submitBtn.dataset.originalHtml = submitBtn.innerHTML;
+        submitBtn.style.opacity = '0.88';
+        submitBtn.style.pointerEvents = 'none';
+        if (submitBtn.tagName.toLowerCase() === 'button') {
+          submitBtn.innerHTML = '<span style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">' +
+            '<svg style="animation: spin 0.8s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>' +
+            '⚡ Processing with AI...</span>';
+        }
+      }
+    });
+  });
+}
+

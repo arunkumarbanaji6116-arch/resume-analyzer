@@ -5,14 +5,26 @@ from config import Config
 
 def get_db():
     if "db" not in g:
-        g.db = sqlite3.connect(Config.DATABASE)
+        g.db = sqlite3.connect(Config.DATABASE, timeout=10)
         g.db.row_factory = sqlite3.Row
+        try:
+            g.db.execute("PRAGMA journal_mode = WAL;")
+            g.db.execute("PRAGMA synchronous = NORMAL;")
+            g.db.execute("PRAGMA cache_size = -64000;")
+            g.db.execute("PRAGMA temp_store = MEMORY;")
+        except Exception:
+            pass
     return g.db
 
 
 def init_db():
     Config.DATABASE.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(Config.DATABASE)
+    db = sqlite3.connect(Config.DATABASE, timeout=10)
+    try:
+        db.execute("PRAGMA journal_mode = WAL;")
+        db.execute("PRAGMA synchronous = NORMAL;")
+    except Exception:
+        pass
     db.executescript(
         """
         CREATE TABLE IF NOT EXISTS users (

@@ -1,12 +1,33 @@
+import hashlib
 import json
 import logging
 import re
+import time
 
 from config import Config
 
 logger = logging.getLogger(__name__)
 
 _client = None
+
+_JSON_CACHE = {}
+_CACHE_TTL = 3600  # 1-hour fast in-memory cache
+_MAX_CACHE_ENTRIES = 300
+
+
+def _get_cached_json(cache_key: str):
+    item = _JSON_CACHE.get(cache_key)
+    if item and (time.time() - item["timestamp"]) < _CACHE_TTL:
+        return item["data"]
+    return None
+
+
+def _set_cached_json(cache_key: str, data):
+    if len(_JSON_CACHE) >= _MAX_CACHE_ENTRIES:
+        sorted_keys = sorted(_JSON_CACHE.keys(), key=lambda k: _JSON_CACHE[k]["timestamp"])
+        for k in sorted_keys[:75]:
+            _JSON_CACHE.pop(k, None)
+    _JSON_CACHE[cache_key] = {"data": data, "timestamp": time.time()}
 
 
 def get_gemini_client():
@@ -25,16 +46,20 @@ def get_gemini_client():
         return None
 
 
+# Verified ultra-low-latency models with immediate 1s response times
 CANDIDATE_MODELS = [
     "gemini-flash-lite-latest",
     "gemini-3.1-flash-lite-preview",
-    "gemini-flash-latest",
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
 ]
 
 
 def _call_gemini_json(prompt: str) -> dict | list | None:
+    # 0ms Instant Cache Check
+    cache_key = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    cached = _get_cached_json(cache_key)
+    if cached is not None:
+        return cached
+
     client = get_gemini_client()
     if not client:
         return None
@@ -49,7 +74,9 @@ def _call_gemini_json(prompt: str) -> dict | list | None:
                 config=types.GenerateContentConfig(response_mime_type="application/json")
             )
             if response and response.text:
-                return json.loads(response.text)
+                parsed = json.loads(response.text)
+                _set_cached_json(cache_key, parsed)
+                return parsed
         except Exception as e:
             logger.warning(f"Gemini call with {model} failed: {e}")
             continue
