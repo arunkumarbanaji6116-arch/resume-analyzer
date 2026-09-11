@@ -635,12 +635,24 @@ document.addEventListener('DOMContentLoaded', () => {
           if (questionScoreNum) questionScoreNum.textContent = result.score;
           const scoreCircle = document.getElementById('question-score-circle');
           if (scoreCircle) {
-            scoreCircle.style.borderColor = '';
-            scoreCircle.style.color = '';
+            if (result.score >= 80) {
+              scoreCircle.style.borderColor = '#059669';
+              scoreCircle.style.color = '#059669';
+            } else if (result.score >= 65) {
+              scoreCircle.style.borderColor = 'var(--accent, #6d5dfc)';
+              scoreCircle.style.color = 'var(--accent, #6d5dfc)';
+            } else if (result.score >= 45) {
+              scoreCircle.style.borderColor = '#f59e0b';
+              scoreCircle.style.color = '#f59e0b';
+            } else {
+              scoreCircle.style.borderColor = '#ef4444';
+              scoreCircle.style.color = '#ef4444';
+            }
           }
           if (feedbackSummaryTitle) {
             if (result.score >= 80) feedbackSummaryTitle.textContent = '🌟 Strong Response';
             else if (result.score >= 65) feedbackSummaryTitle.textContent = '👍 Good Answer';
+            else if (result.score >= 45) feedbackSummaryTitle.textContent = '💡 Good Start · Needs More Depth';
             else feedbackSummaryTitle.textContent = '⚠️ Needs More Structure';
           }
           if (feedbackMainText) feedbackMainText.textContent = result.feedback;
@@ -664,7 +676,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Strengths & Improvements
           if (strengthsList) {
-            strengthsList.innerHTML = (result.strengths || []).map((s) => `<li>${s}</li>`).join('');
+            const strengths = (result.strengths && result.strengths.length > 0)
+              ? result.strengths
+              : ['Describe a specific project or technical action to unlock tailored strengths.'];
+            strengthsList.innerHTML = strengths.map((s) => `<li>${s}</li>`).join('');
           }
           if (improvementsList) {
             improvementsList.innerHTML = (result.improvements || []).map((i) => `<li>${i}</li>`).join('');

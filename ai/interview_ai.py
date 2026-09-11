@@ -818,29 +818,62 @@ def mcq_questions_for(role: str, count: int = 5, seen_questions: list = None) ->
 
 
 STAR_KEYWORDS = {
-    "situation": ["situation", "context", "background", "when", "company", "project", "client", "team", "working at", "faced"],
-    "task": ["task", "goal", "target", "needed to", "responsible for", "objective", "challenge", "assigned", "requirement"],
-    "action": ["built", "designed", "developed", "led", "created", "implemented", "refactored", "analyzed", "coordinated", "resolved", "spearheaded", "executed"],
-    "result": ["result", "impact", "increased", "decreased", "reduced", "improved", "saved", "%", "percent", "metric", "revenue", "achieved", "learned", "outcome"]
+    "situation": [
+        "situation", "context", "background", "when", "company", "project", "client", "team", "working at", "faced",
+        "problem", "issue", "bug", "outage", "incident", "crash", "downtime", "failure", "error", "bottleneck",
+        "customer", "user", "legacy", "system", "app", "service", "production", "environment", "during", "while", "scenario"
+    ],
+    "task": [
+        "task", "goal", "target", "needed to", "had to", "wanted to", "responsible for", "objective", "challenge",
+        "assigned", "requirement", "tasked with", "my role", "priority", "mandate", "decided to", "in order to"
+    ],
+    "action": [
+        "built", "designed", "developed", "wrote", "coded", "implemented", "refactored", "analyzed", "coordinated",
+        "resolved", "spearheaded", "executed", "optimized", "configured", "deployed", "migrated", "investigated",
+        "debugged", "fixed", "solved", "created", "architected", "automated", "tuned", "indexed", "integrated", "tested", "led"
+    ],
+    "result": [
+        "result", "impact", "increased", "decreased", "reduced", "improved", "saved", "%", "percent", "metric",
+        "revenue", "achieved", "learned", "outcome", "boosted", "accelerated", "dropped", "doubled", "tripled",
+        "eliminated", "uptime", "latency", "throughput", "performance", "ms", "seconds", "hours", "success", "smoothly"
+    ]
 }
 
 
+def _is_gibberish(text: str) -> bool:
+    clean = re.sub(r"[^a-zA-Z\s]", "", text).strip()
+    if not clean or len(clean) < 3:
+        return True
+    words = clean.split()
+    if len(words) == 1:
+        w = words[0].lower()
+        if len(w) >= 4 and not any(v in w for v in "aeiouy"):
+            return True
+        if w in {"asdf", "asdfghjk", "asdfqhjk", "qwerty", "zxcv", "test", "testing"}:
+            return True
+    return False
+
+
 def assess_answer(answer: str, question: str = "") -> dict:
-    text = answer.strip()
+    text = (answer or "").strip()
     words = re.findall(r"\b[\w+#.-]+\b", text.lower())
     word_count = len(words)
 
-    if word_count < 10:
+    # Detect random keyboard mash / empty / gibberish answers
+    if _is_gibberish(text) or word_count < 2:
         return {
-            "score": 25,
+            "score": 20,
             "word_count": word_count,
             "star": {"situation": False, "task": False, "action": False, "result": False},
             "strengths": [],
-            "improvements": ["Provide a detailed response addressing the situation, task, action, and result."],
-            "feedback": "Your answer was too short to evaluate. Please elaborate using the STAR method."
+            "improvements": [
+                "Structure your response using the STAR method: Situation, Task, Action, and Result.",
+                "Describe a real engineering or workplace experience with specific tools and measurable outcomes."
+            ],
+            "feedback": "Your input appears to be test or random characters. Please describe a genuine professional experience using the STAR method to receive an accurate evaluation."
         }
 
-    # First attempt AI evaluation via Gemini
+    # Primary evaluation via Gemini AI (balanced STAR coaching rubric)
     try:
         from ai.gemini_client import gemini_assess_interview
         gemini_result = gemini_assess_interview(text, question)
@@ -849,7 +882,7 @@ def assess_answer(answer: str, question: str = "") -> dict:
     except Exception:
         pass
 
-    # Heuristic STAR assessment fallback
+    # High-accuracy heuristic STAR assessment fallback
     text_lower = text.lower()
     has_situation = any(k in text_lower for k in STAR_KEYWORDS["situation"])
     has_task = any(k in text_lower for k in STAR_KEYWORDS["task"])
@@ -858,53 +891,56 @@ def assess_answer(answer: str, question: str = "") -> dict:
 
     star_count = sum([has_situation, has_task, has_action, has_result])
 
-    # Base scoring algorithm
-    score = 40
-    # Length points (target: 80 - 220 words)
-    if word_count >= 80:
-        score += 20
-    elif word_count >= 40:
-        score += 10
-
-    # STAR structure points
-    score += star_count * 9
+    # Calibrated base score depending on depth and completeness
+    if word_count < 8:
+        score = 35 + (star_count * 8)
+    elif word_count < 20:
+        score = 48 + (star_count * 8)
+    elif word_count < 40:
+        score = 56 + (star_count * 8)
+    elif word_count < 80:
+        score = 64 + (star_count * 7)
+    else:
+        score = 70 + (star_count * 6)
 
     # Quantified metrics bonus
     metrics = len(re.findall(r"\b\d+(?:\.\d+)?%?\b", text))
     if metrics >= 2:
         score += 8
     elif metrics == 1:
-        score += 4
+        score += 5
 
-    score = min(98, max(30, score))
+    score = min(98, max(25, score))
 
     strengths = []
     improvements = []
 
     if has_action:
-        strengths.append("Strong active verbs demonstrating personal ownership.")
+        strengths.append("Demonstrated clear personal ownership with active engineering verbs.")
     if has_result or metrics > 0:
-        strengths.append("Included tangible business or technical results.")
-    if word_count >= 75:
-        strengths.append("Sufficient narrative depth and detail.")
+        strengths.append("Included concrete results or measurable performance impact.")
+    if has_situation or has_task:
+        strengths.append("Provided clear project background and defined responsibilities.")
     if not strengths:
-        strengths.append("Good start addressing the prompt directly.")
+        strengths.append("Directly addressed the interview question.")
 
     if not has_result:
-        improvements.append("Quantify the final result (e.g. % performance boost, time saved, revenue generated).")
+        improvements.append("Quantify the final outcome (e.g. % latency decrease, uptime metric, revenue saved).")
+    if not has_situation:
+        improvements.append("Set the scene by briefly describing the company, team, or problem context.")
     if not has_task:
-        improvements.append("Clarify your specific responsibility or task within the larger team.")
-    if word_count < 65:
-        improvements.append("Expand on the technical or procedural decisions you made during the project.")
-    if word_count > 300:
+        improvements.append("Clarify your specific role or challenge within the project.")
+    if word_count < 40:
+        improvements.append("Elaborate on the technical trade-offs and decision rationale you considered.")
+    elif word_count > 300:
         improvements.append("Keep your answer concise (aim for ~90-180 words) to avoid rambling.")
 
     if score >= 80:
-        feedback = "Outstanding response. Clear STAR structure, concrete actions, and impactful outcome."
+        feedback = "Outstanding response! Strong STAR structure, concrete engineering actions, and impactful outcome."
     elif score >= 65:
-        feedback = "Solid answer. Strengthen with more specific metrics or sharper action verbs."
+        feedback = "Solid answer. Strengthen with deeper context on the problem and specific measurable metrics."
     else:
-        feedback = "Needs more structure. Detail your exact actions and the final measurable outcome using the STAR format."
+        feedback = "Good foundation. Elaborate on the context and measurable results using the STAR framework."
 
     return {
         "score": score,

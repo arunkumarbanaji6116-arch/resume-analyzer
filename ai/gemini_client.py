@@ -207,26 +207,33 @@ Respond ONLY with valid JSON matching this exact structure:
 
 def gemini_assess_interview(answer: str, question: str) -> dict | None:
     prompt = f"""
-You are an expert interviewer and interview coach. Assess this candidate's interview response using the STAR method (Situation, Task, Action, Result).
+You are an expert technical interviewer and empathetic career coach. Assess the candidate's interview answer accurately, fairly, and constructively using the STAR method (Situation, Task, Action, Result).
 
 Interview Question:
-{question}
+"{question}"
 
 Candidate's Answer:
-{answer}
+"{answer}"
+
+Evaluation Rubric:
+- 88 - 98: Outstanding / Exceptional. Fully addresses the question with strong STAR alignment, specific actions/technologies, and tangible outcome or metrics.
+- 75 - 87: Solid Answer. Good technical clarity and direct answer. Shows ownership and results even if concise.
+- 60 - 74: Competent. Right direction, but missing either context (Situation), specific technologies, or quantified impact.
+- 45 - 59: Brief / Incomplete. Mentions an action or skill, but lacks context or measurable result.
+- 20 - 35: Off-topic, single-word, non-responsive, or gibberish input (e.g. 'asdf', 'ok', 'yes').
 
 Respond ONLY with valid JSON matching this exact structure:
 {{
-  "score": <integer from 25 to 98 based on structure, depth, ownership, and measurable results>,
+  "score": <integer from 20 to 98 based on the rubric above>,
   "star": {{
-    "situation": <true or false depending on whether context/situation was described>,
-    "task": <true or false depending on whether personal responsibility/task was clarified>,
-    "action": <true or false depending on whether concrete action verbs/steps were detailed>,
-    "result": <true or false depending on whether measurable outcome/metrics/takeaway was shared>
+    "situation": <true if context, problem, or company/project was mentioned, else false>,
+    "task": <true if the candidate's responsibility, challenge, or goal was stated, else false>,
+    "action": <true if specific actions, tools, code, or technical steps were described, else false>,
+    "result": <true if the outcome, resolution, metrics, or takeaway was shared, else false>
   }},
-  "strengths": ["<1 to 3 specific strengths of the response>"],
-  "improvements": ["<1 to 3 actionable constructive feedback points to improve the answer>"],
-  "feedback": "<2 sentence evaluator summary on delivery and impact>"
+  "strengths": ["<1 to 3 specific, encouraging strengths observed in their actual answer>"],
+  "improvements": ["<1 to 3 actionable, constructive tips to elevate their answer>"],
+  "feedback": "<2 clear sentences summarizing their performance and the most impactful next step>"
 }}
 """
     data = _call_gemini_json(prompt)
