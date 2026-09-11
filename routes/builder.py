@@ -19,11 +19,16 @@ def builder_view():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     
+    saved_prefill = session.pop("builder_prefill", None) or {}
+
     prefill = {
-        "name": session.get("user", ""),
-        "target_role": request.args.get("role", ""),
-        "experience_level": request.args.get("level", "Mid-Level"),
-        "skills": request.args.get("skills", ""),
+        "name": saved_prefill.get("name") or session.get("user", ""),
+        "target_role": request.args.get("role") or saved_prefill.get("target_role", ""),
+        "experience_level": request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level"),
+        "skills": request.args.get("skills") or saved_prefill.get("skills", ""),
+        "experience_raw": saved_prefill.get("experience_raw", ""),
+        "missing_keywords": saved_prefill.get("missing_keywords", []),
+        "from_job_analyzer": saved_prefill.get("from_job_analyzer", False),
     }
     return render_template("builder.html", prefill=prefill, resume=None)
 

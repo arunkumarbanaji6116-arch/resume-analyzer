@@ -5030,6 +5030,148 @@ button.cssbuttons-io.auth-btn-uiverse span {
   to { transform: rotate(360deg); }
 }
 
+/* ==========================================================================
+   Job Analyzer to Resume Builder Bridge CTA Card
+   ========================================================================== */
+
+.builder-bridge-card {
+  margin-top: 22px;
+  padding: 24px 26px;
+  background: linear-gradient(135deg, rgba(109, 93, 252, 0.08), rgba(99, 102, 241, 0.04));
+  border: 1.5px solid rgba(109, 93, 252, 0.32);
+  border-radius: 20px;
+  box-shadow: 0 16px 36px -8px rgba(109, 93, 252, 0.14),
+              0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.builder-bridge-card:hover {
+  border-color: rgba(109, 93, 252, 0.5);
+  box-shadow: 0 20px 42px -6px rgba(109, 93, 252, 0.22),
+              0 0 0 1px rgba(255, 255, 255, 0.95) inset;
+}
+
+.builder-bridge-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.builder-bridge-badge span {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(109, 93, 252, 0.14);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(109, 93, 252, 0.28);
+}
+
+.builder-bridge-title {
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 4px 0 8px;
+}
+
+.builder-bridge-desc {
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+  margin: 0 0 16px;
+}
+
+.builder-bridge-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.builder-bridge-chip {
+  background: rgba(239, 68, 68, 0.09);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.builder-bridge-chip:hover {
+  background: rgba(239, 68, 68, 0.15);
+  transform: translateY(-1px);
+}
+
+.builder-bridge-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #4f46e5 100%);
+  color: #ffffff !important;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 26px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 24px -4px rgba(109, 93, 252, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  width: auto;
+}
+
+.builder-bridge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -4px rgba(109, 93, 252, 0.65);
+}
+
+.builder-bridge-btn:active {
+  transform: translateY(0);
+}
+
+/* Dark Mode Adaptations */
+.dark .builder-bridge-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.7), rgba(15, 23, 42, 0.88));
+  border-color: rgba(129, 140, 248, 0.35);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.7),
+              0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.dark .builder-bridge-title {
+  color: #f8fafc;
+}
+
+.dark .builder-bridge-desc {
+  color: #cbd5e1;
+}
+
+.dark .builder-bridge-chip {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.dark .bridge-success-banner {
+  background: linear-gradient(135deg, rgba(76, 29, 149, 0.25), rgba(6, 78, 59, 0.25)) !important;
+  border-color: rgba(129, 140, 248, 0.4) !important;
+  box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark .bridge-success-banner strong {
+  color: #f8fafc !important;
+}
+
+.dark .bridge-success-banner p {
+  color: #cbd5e1 !important;
+}
+
+
 
 
 

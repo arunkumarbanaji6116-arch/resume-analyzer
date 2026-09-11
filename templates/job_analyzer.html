@@ -152,6 +152,37 @@
             </div>
           </div>
 
+          <!-- Improve in Resume Builder Interactive Bridge Card -->
+          {% if analysis.missing %}
+            <div class="builder-bridge-card">
+              <div class="builder-bridge-badge">
+                <span>🚀 ONE-CLICK ATS RESUME UPGRADE</span>
+              </div>
+              <h3 class="builder-bridge-title">
+                Improve Your Resume in Our Resume Builder
+              </h3>
+              <p class="builder-bridge-desc">
+                These <strong>{{ analysis.missing|length }} recommended keywords</strong> are missing from your current resume. Seamlessly transfer these missing keywords into our AI Resume Builder to automatically weave them into your experience and generate a targeted, high-scoring new resume!
+              </p>
+              
+              <div class="builder-bridge-chips">
+                {% for skill in analysis.missing %}
+                  <span class="builder-bridge-chip">+ {{ skill }}</span>
+                {% endfor %}
+              </div>
+
+              <form action="/jobs/bridge-to-builder" method="POST" style="margin: 0;">
+                <input type="hidden" name="job_description" value="{{ job_description }}">
+                <input type="hidden" name="resume_text" value="{{ resume_text }}">
+                <input type="hidden" name="missing_keywords" value="{{ analysis.missing|join(', ') }}">
+                <input type="hidden" name="matched_skills" value="{{ analysis.matched|join(', ') }}">
+                <button type="submit" class="builder-bridge-btn">
+                  <span>⚡ Improve Resume with Missing Keywords in Resume Builder →</span>
+                </button>
+              </form>
+            </div>
+          {% endif %}
+
           <!-- Recommendations -->
           {% if analysis.recommendations %}
             <div style="margin-top: 20px;">
