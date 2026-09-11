@@ -44,31 +44,41 @@ function initThemeController() {
   const moonIcon = document.getElementById("theme-icon-moon");
 
   function updateThemeIcons(isDark) {
-    if (sunIcon && moonIcon) {
-      if (isDark) {
-        sunIcon.style.display = "block";
-        moonIcon.style.display = "none";
-      } else {
-        sunIcon.style.display = "none";
-        moonIcon.style.display = "block";
-      }
+    if (sunIcon) {
+      sunIcon.style.display = isDark ? "block" : "none";
+    }
+    if (moonIcon) {
+      moonIcon.style.display = isDark ? "none" : "block";
+    }
+    if (themeToggleBtn) {
+      const label = isDark ? "Switch to light theme" : "Switch to dark theme";
+      themeToggleBtn.setAttribute("title", label);
+      themeToggleBtn.setAttribute("aria-label", label);
     }
   }
 
-  // Sync icons on page load with current class on html
+  // Determine theme state on load
   const isCurrentlyDark = document.documentElement.classList.contains("dark");
   updateThemeIcons(isCurrentlyDark);
 
   if (themeToggleBtn) {
-    // Avoid double listeners if already bound elsewhere
-    if (!themeToggleBtn.dataset.bound) {
-      themeToggleBtn.dataset.bound = "true";
-      themeToggleBtn.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.toggle("dark");
-        localStorage.setItem("careerforge_theme", isDark ? "dark" : "light");
-        updateThemeIcons(isDark);
-      });
-    }
+    // Avoid double listeners
+    if (themeToggleBtn.dataset.bound === "true") return;
+    themeToggleBtn.dataset.bound = "true";
+
+    themeToggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const willBeDark = !document.documentElement.classList.contains("dark");
+      if (willBeDark) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("careerforge_theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("careerforge_theme", "light");
+      }
+      updateThemeIcons(willBeDark);
+    });
   }
 }
 

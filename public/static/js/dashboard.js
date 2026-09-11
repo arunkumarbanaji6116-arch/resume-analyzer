@@ -1,36 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   /* ==========================================================================
-     Theme (Dark / Light) Toggle
-     ========================================================================== */
-  const themeToggleBtn = document.getElementById("theme-toggle-btn");
-  const sunIcon = document.getElementById("theme-icon-sun");
-  const moonIcon = document.getElementById("theme-icon-moon");
-
-  function updateThemeIcons(isDark) {
-    if (sunIcon && moonIcon) {
-      if (isDark) {
-        sunIcon.style.display = "block";
-        moonIcon.style.display = "none";
-      } else {
-        sunIcon.style.display = "none";
-        moonIcon.style.display = "block";
-      }
-    }
-  }
-
-  // Sync icons on page load
-  const isCurrentlyDark = document.documentElement.classList.contains("dark");
-  updateThemeIcons(isCurrentlyDark);
-
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.toggle("dark");
-      localStorage.setItem("careerforge_theme", isDark ? "dark" : "light");
-      updateThemeIcons(isDark);
-    });
-  }
-
-  /* ==========================================================================
      Collapsible Sidebar Toggle
      ========================================================================== */
   const sidebar = document.getElementById("dashboard-sidebar");
