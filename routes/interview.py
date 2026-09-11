@@ -19,7 +19,7 @@ def setup():
         session["interview_role"] = request.form.get("role", "General")
         session["interview_type"] = request.form.get("interview_type", "star")
         session["interview_count"] = int(request.form.get("question_count", 5))
-        session["interview_voice"] = request.form.get("voice", "rachel")
+        session["interview_voice"] = request.form.get("voice", "arun")
         session["interview_auto_speak"] = request.form.get("auto_speak") != "off"
         return redirect(url_for("interview.room"))
     return render_template(
@@ -29,6 +29,13 @@ def setup():
     )
 
 
+@interview_bp.route("/interview/refresh", methods=["GET", "POST"])
+def refresh():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return redirect(url_for("interview.room"))
+
+
 @interview_bp.get("/interview/room")
 def room():
     if "user_id" not in session:
@@ -36,15 +43,38 @@ def room():
     role = session.get("interview_role", "General")
     interview_type = session.get("interview_type", "star")
     count = session.get("interview_count", 5)
-    voice = session.get("interview_voice", "rachel")
+    voice = session.get("interview_voice", "arun")
     auto_speak = session.get("interview_auto_speak", True)
     
-    if interview_type == "mcq":
-        all_questions = mcq_questions_for(role)
-    else:
-        all_questions = questions_for(role)
+    # History of already presented questions to prevent loops
+    asked_history = session.get("interview_question_history", [])
+    if not isinstance(asked_history, list):
+        asked_history = []
 
-    selected_questions = all_questions[:count]
+    # First attempt: dynamic generation via Gemini AI
+    selected_questions = None
+    try:
+        from ai.gemini_client import gemini_generate_interview_questions
+        selected_questions = gemini_generate_interview_questions(
+            role=role,
+            interview_type=interview_type,
+            count=count,
+            seen_questions=asked_history
+        )
+    except Exception:
+        selected_questions = None
+
+    # Fallback to randomized non-repeating questions from expanded bank
+    if not selected_questions or len(selected_questions) < count:
+        if interview_type == "mcq":
+            selected_questions = mcq_questions_for(role, count=count, seen_questions=asked_history)
+        else:
+            selected_questions = questions_for(role, count=count, seen_questions=asked_history)
+
+    # Save to session history to prevent repeating on next open
+    new_texts = [q["text"] for q in selected_questions if isinstance(q, dict) and q.get("text")]
+    session["interview_question_history"] = (asked_history + new_texts)[-60:]
+
     return render_template(
         "interview_room.html",
         role=role,
@@ -64,7 +94,7 @@ def speak():
         return jsonify({"error": "Please sign in."}), 401
     payload = request.get_json(silent=True) or {}
     text = payload.get("text", "").strip()
-    voice = payload.get("voice") or session.get("interview_voice", "rachel")
+    voice = payload.get("voice") or session.get("interview_voice", "arun")
 
     if not text:
         return jsonify({"error": "Text is required."}), 400

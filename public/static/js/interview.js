@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!app) return;
 
   const role = app.dataset.role || 'General';
-  const selectedVoice = app.dataset.voice || 'rachel';
+  const selectedVoice = app.dataset.voice || 'arun';
   const autoSpeak = app.dataset.autoSpeak === 'true';
   let questions = [];
   try {
@@ -140,25 +140,26 @@ document.addEventListener('DOMContentLoaded', () => {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
 
-      // Pitch & rate tailored to persona
-      if (selectedVoice === 'george') {
-        utterance.pitch = 0.82;
+      // Pitch & rate tailored to persona (Arun, Shravan, Rakesh, Sai Srinath)
+      if (selectedVoice === 'sai_srinath' || selectedVoice === 'george') {
+        utterance.pitch = 0.85;
         utterance.rate = 0.92;
-      } else if (selectedVoice === 'adam') {
-        utterance.pitch = 0.90;
+      } else if (selectedVoice === 'shravan' || selectedVoice === 'adam') {
+        utterance.pitch = 0.88;
         utterance.rate = 0.96;
-      } else if (selectedVoice === 'sarah') {
-        utterance.pitch = 1.08;
+      } else if (selectedVoice === 'rakesh' || selectedVoice === 'sarah') {
+        utterance.pitch = 1.0;
         utterance.rate = 1.0;
       } else {
-        // rachel
-        utterance.pitch = 1.02;
+        // arun (default)
+        utterance.pitch = 0.95;
         utterance.rate = 0.98;
       }
 
       const voices = window.speechSynthesis.getVoices();
       if (voices && voices.length > 0) {
-        const isMale = selectedVoice === 'adam' || selectedVoice === 'george';
+        // All team members (Arun, Shravan, Rakesh, Sai Srinath) are male
+        const isMale = true;
         const targetVoice =
           voices.find((v) => {
             const name = (v.name || '').toLowerCase();
@@ -171,15 +172,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 name.includes('george') ||
                 name.includes('guy') ||
                 name.includes('james') ||
-                name.includes('mark')
+                name.includes('mark') ||
+                name.includes('ravi') ||
+                name.includes('prabhat')
               );
             }
             return (
               name.includes('female') ||
               name.includes('zira') ||
               name.includes('samantha') ||
-              name.includes('victoria') ||
-              name.includes('rachel') ||
               name.includes('natural')
             );
           }) ||

@@ -8,31 +8,37 @@ from config import Config
 logger = logging.getLogger(__name__)
 
 VOICES = {
-    'rachel': {
+    'arun': {
         'id': '21m00Tcm4TlvDq8ikWAM',
-        'name': 'Rachel (Professional Recruiter)',
-        'gender': 'female',
-        'desc': 'Calm, clear, and professional'
+        'name': 'Arun (Lead Technical Interviewer)',
+        'gender': 'male',
+        'desc': 'Clear, analytical, and focused'
     },
-    'adam': {
+    'shravan': {
         'id': 'pNInz6obpgDQGcFmaJgB',
-        'name': 'Adam (Senior Hiring Manager)',
+        'name': 'Shravan (Senior Hiring Manager)',
         'gender': 'male',
         'desc': 'Deep, authoritative, and structured'
     },
-    'sarah': {
-        'id': 'EXAVITQu4vr4xnSDxMaL',
-        'name': 'Sarah (Technical Lead)',
-        'gender': 'female',
-        'desc': 'Warm, engaging, and articulate'
+    'rakesh': {
+        'id': 'VR6AewLTigWG4xSOukaG',
+        'name': 'Rakesh (Technical Lead)',
+        'gender': 'male',
+        'desc': 'Sharp, engaging, and articulate'
     },
-    'george': {
+    'sai_srinath': {
         'id': 'JBFqnCBsd6RMkjVDRZzb',
-        'name': 'George (Executive Director)',
+        'name': 'Sai Srinath (Executive Director)',
         'gender': 'male',
         'desc': 'Warm, seasoned, and measured'
     }
 }
+
+# Aliases for backward compatibility with existing session values
+VOICES['rachel'] = VOICES['arun']
+VOICES['adam'] = VOICES['shravan']
+VOICES['sarah'] = VOICES['rakesh']
+VOICES['george'] = VOICES['sai_srinath']
 
 _AUDIO_CACHE = {}
 
@@ -43,7 +49,7 @@ def get_voice_id(key_or_id: str = None) -> str:
         return VOICES[key_lower]['id']
     if key_or_id and len(key_or_id) >= 15:
         return key_or_id
-    return getattr(Config, 'ELEVENLABS_DEFAULT_VOICE', None) or VOICES['rachel']['id']
+    return getattr(Config, 'ELEVENLABS_DEFAULT_VOICE', None) or VOICES['arun']['id']
 
 
 def generate_speech(text: str, voice_key_or_id: str = None) -> bytes | None:

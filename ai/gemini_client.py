@@ -25,10 +25,16 @@ def get_gemini_client():
         return None
 
 
-CANDIDATE_MODELS = ["gemini-flash-lite-latest", "gemini-3.1-flash-lite-preview", "gemini-flash-latest"]
+CANDIDATE_MODELS = [
+    "gemini-flash-lite-latest",
+    "gemini-3.1-flash-lite-preview",
+    "gemini-flash-latest",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+]
 
 
-def _call_gemini_json(prompt: str) -> dict | None:
+def _call_gemini_json(prompt: str) -> dict | list | None:
     client = get_gemini_client()
     if not client:
         return None
@@ -667,5 +673,115 @@ def _heuristic_certificate_info(text: str, filename: str = "") -> dict:
         "year": candidate_year,
         "formatted_entry": formatted
     }
+
+
+def gemini_generate_interview_questions(role: str, interview_type: str = "star", count: int = 5, seen_questions: list = None) -> list | None:
+    """Generate dynamic, challenging, non-repeating interview questions tailored to the role using Gemini AI."""
+    seen_clause = ""
+    if seen_questions:
+        items = "\n".join(f"- {q}" for q in seen_questions[-30:] if q)
+        if items:
+            seen_clause = (
+                f"\nCRITICAL ANTI-REPEAT CONSTRAINT:\n"
+                f"Do NOT ask or rephrase any of the following questions that were already presented to the candidate:\n"
+                f"{items}\n"
+                f"You MUST generate brand-new, completely different technical scenarios and prompts.\n"
+            )
+
+    if interview_type == "mcq":
+        prompt = f"""
+You are an elite technical interviewer designing a rigorous multiple-choice assessment for the role of: "{role}".
+Generate {count} unique, production-grade multiple choice questions.
+{seen_clause}
+Requirements:
+1. Each question must test real-world trade-offs, architecture, concurrency, optimization, debugging, or system design.
+2. Provide 4 realistic, distinct options (A, B, C, D) without obvious throwaway choices.
+3. Identify the single best/optimal engineering choice ("A", "B", "C", or "D").
+4. Provide a 1-2 sentence engineering justification in "explanation".
+
+Respond ONLY with valid JSON matching this exact structure:
+{{
+  "questions": [
+    {{
+      "category": "<Concise Category, e.g. Distributed Systems, Database Indexing, Concurrency, API Design>",
+      "text": "<Detailed technical scenario or question>",
+      "options": [
+        {{"id": "A", "text": "<Option A text>"}},
+        {{"id": "B", "text": "<Option B text>"}},
+        {{"id": "C", "text": "<Option C text>"}},
+        {{"id": "D", "text": "<Option D text>"}}
+      ],
+      "correct": "<One of: 'A', 'B', 'C', 'D'>",
+      "explanation": "<Engineering rationale explaining why this choice is optimal>"
+    }}
+  ]
+}}
+"""
+    else:
+        prompt = f"""
+You are an executive interviewer and engineering leader conducting a senior interview for the role of: "{role}".
+Generate {count} unique, high-impact STAR (Situation, Task, Action, Result) interview questions.
+{seen_clause}
+Requirements:
+1. Focus on real-world engineering challenges, complex trade-offs, architectural decisions, production incidents, team conflict, and measurable business impact.
+2. Questions must be open-ended, probing, and invite structured storytelling.
+
+Respond ONLY with valid JSON matching this exact structure:
+{{
+  "questions": [
+    {{
+      "category": "<Concise Category, e.g. System Scaling, High-Priority Outage, Technical Conflict, Leadership>",
+      "text": "<The open-ended behavioral/technical question>"
+    }}
+  ]
+}}
+"""
+
+    data = _call_gemini_json(prompt)
+    if isinstance(data, dict) and "questions" in data and isinstance(data["questions"], list):
+        questions = data["questions"]
+    elif isinstance(data, list):
+        questions = data
+    else:
+        return None
+
+    valid = []
+    for q in questions:
+        if not isinstance(q, dict) or not q.get("text"):
+            continue
+        category = str(q.get("category", "Technical & Behavioral")).strip()
+        text = str(q.get("text", "")).strip()
+        if not text:
+            continue
+        if interview_type == "mcq":
+            raw_options = q.get("options", [])
+            options = []
+            for opt in raw_options:
+                if isinstance(opt, dict) and opt.get("id") and opt.get("text"):
+                    options.append({"id": str(opt["id"]).strip().upper(), "text": str(opt["text"]).strip()})
+            correct = str(q.get("correct", "A")).strip().upper()
+            if correct not in ["A", "B", "C", "D"]:
+                correct = "A"
+            explanation = str(q.get("explanation", "")).strip()
+            if len(options) >= 2:
+                valid.append({
+                    "category": category,
+                    "text": text,
+                    "options": options,
+                    "correct": correct,
+                    "explanation": explanation
+                })
+        else:
+            valid.append({
+                "category": category,
+                "text": text
+            })
+
+    if len(valid) >= count:
+        return valid[:count]
+    if valid:
+        return valid
+    return None
+
 
 

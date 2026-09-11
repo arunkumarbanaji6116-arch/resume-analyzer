@@ -83,7 +83,7 @@
           </div>
           <div class="voice-interviewer-meta">
             <div class="voice-interviewer-name-row">
-              <strong id="current-voice-name">AI Interviewer ({{ voice|capitalize }})</strong>
+              <strong id="current-voice-name">{% if voice in voices %}{{ voices[voice].name }}{% else %}AI Interviewer ({{ voice|replace('_', ' ')|title }}){% endif %}</strong>
               <span class="voice-engine-badge" id="voice-engine-badge">
                 {% if elevenlabs_configured %}ElevenLabs HD Voice{% else %}Interactive Voice{% endif %}
               </span>
@@ -98,6 +98,10 @@
         </div>
 
         <div class="voice-controls-row">
+          <a href="/interview/refresh" class="voice-control-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 6px;" title="Fetch a fresh, non-repeating set of questions">
+            <span>🎲</span>
+            <span>New Questions</span>
+          </a>
           <button type="button" class="voice-control-btn replay-voice-btn" id="replay-voice-btn" title="Listen to question again">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             <span id="replay-btn-label">Replay Question</span>
