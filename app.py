@@ -45,11 +45,12 @@ def create_app():
         # Content Security Policy (prevents cross-site script exfiltration & clickjacking)
         csp_policy = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com data:; "
             "img-src 'self' data: blob: https:; "
-            "connect-src 'self' https://api.github.com https://api.elevenlabs.io https://*.supabase.co; "
+            "connect-src 'self' https://api.github.com https://api.elevenlabs.io https://*.supabase.co https://pagead2.googlesyndication.com https://*.google.com; "
+            "frame-src 'self' https://googleads.g.doubleclick.net https://*.googlesyndication.com https://*.google.com; "
             "media-src 'self' blob: data: https://api.elevenlabs.io; "
             "frame-ancestors 'self';"
         )
@@ -115,6 +116,13 @@ def create_app():
         response.headers["Content-Type"] = "application/javascript; charset=utf-8"
         response.headers["Service-Worker-Allowed"] = "/"
         response.headers["Cache-Control"] = "no-cache"
+        return response
+
+    @app.get("/ads.txt")
+    def ads_txt():
+        response = app.send_static_file("ads.txt")
+        response.headers["Content-Type"] = "text/plain; charset=utf-8"
+        response.headers["Cache-Control"] = "public, max-age=86400"
         return response
 
     @app.teardown_appcontext
