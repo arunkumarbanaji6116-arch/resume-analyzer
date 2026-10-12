@@ -49,7 +49,10 @@
     <div class="interview-header-card">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <span class="eyebrow">{{ role|upper }} {% if interview_type == 'mcq' %}MULTIPLE CHOICE DRILL{% else %}MOCK INTERVIEW{% endif %}</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="eyebrow">{{ role|upper }} {% if interview_type == 'mcq' %}MULTIPLE CHOICE DRILL{% else %}MOCK INTERVIEW{% endif %}</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 999px;">⚡ Zero Latency Active</span>
+          </div>
           <h1 id="question-number-title" style="margin: 4px 0 0; font-size: 1.8rem;">Question 1 of {{ total_count }}</h1>
         </div>
         <div class="running-score-container">
@@ -134,12 +137,12 @@
         </div>
 
         <!-- STAR Assistant Guidance Box -->
-        <div class="star-guidance-box">
-          <span style="font-weight: 700; color: var(--accent);">STAR Rubric:</span>
-          <span><strong>S</strong>ituation (Context)</span> ·
-          <span><strong>T</strong>ask (Goal)</span> ·
-          <span><strong>A</strong>ction (Your exact work)</span> ·
-          <span><strong>R</strong>esult (Impact & metrics)</span>
+        <div class="star-guidance-box" id="star-guidance-box">
+          <span style="font-weight: 700; color: var(--accent);">STAR Rubric (Live):</span>
+          <span class="live-star-badge" id="live-star-s"><strong>S</strong>ituation (Context)</span> ·
+          <span class="live-star-badge" id="live-star-t"><strong>T</strong>ask (Goal)</span> ·
+          <span class="live-star-badge" id="live-star-a"><strong>A</strong>ction (Your exact work)</span> ·
+          <span class="live-star-badge" id="live-star-r"><strong>R</strong>esult (Impact & metrics)</span>
         </div>
       </div>
 

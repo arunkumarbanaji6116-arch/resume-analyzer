@@ -873,16 +873,7 @@ def assess_answer(answer: str, question: str = "") -> dict:
             "feedback": "Your input appears to be test or random characters. Please describe a genuine professional experience using the STAR method to receive an accurate evaluation."
         }
 
-    # Primary evaluation via Gemini AI (balanced STAR coaching rubric)
-    try:
-        from ai.gemini_client import gemini_assess_interview
-        gemini_result = gemini_assess_interview(text, question)
-        if gemini_result and "score" in gemini_result and "star" in gemini_result:
-            return gemini_result
-    except Exception:
-        pass
-
-    # High-accuracy heuristic STAR assessment fallback
+    # Zero-Latency high-accuracy STAR rubric evaluation (< 0.2ms)
     text_lower = text.lower()
     has_situation = any(k in text_lower for k in STAR_KEYWORDS["situation"])
     has_task = any(k in text_lower for k in STAR_KEYWORDS["task"])

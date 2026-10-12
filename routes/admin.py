@@ -165,3 +165,4 @@ def system_health_status():
         "supabase_configured": bool(Config.SUPABASE_URL and Config.SUPABASE_ANON_KEY),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     })
+

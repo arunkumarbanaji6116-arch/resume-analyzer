@@ -14,14 +14,15 @@ jobs_bp = Blueprint("jobs", __name__)
 
 @jobs_bp.route("/jobs", methods=["GET", "POST"])
 @login_required
-@limiter.limit("20 per minute")
+@limiter.limit("60 per minute")
 def jobs():
     analysis = None
     job_description = ""
     resume_text = ""
     if request.method == "POST":
-        job_description = sanitize_text(request.form.get("job_description", "").strip(), max_length=15000)
-        resume_text = sanitize_text(request.form.get("resume_text", "").strip(), max_length=15000)
+        payload = request.get_json(silent=True) or request.form
+        job_description = sanitize_text(payload.get("job_description", "").strip(), max_length=15000)
+        resume_text = sanitize_text(payload.get("resume_text", "").strip(), max_length=15000)
 
         job_image = request.files.get("job_image")
         resume_image = request.files.get("resume_image")
@@ -43,12 +44,22 @@ def jobs():
                 flash(f"Resume upload error: {err}")
 
         if not job_description:
-            flash("Please provide a job description by pasting text or uploading a document/screenshot.")
+            if not (request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json):
+                flash("Please provide a job description by pasting text or uploading a document/screenshot.")
         elif not resume_text:
-            flash("Please provide your resume by pasting text or uploading a PDF, DOCX, or image.")
+            if not (request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json):
+                flash("Please provide your resume by pasting text or uploading a PDF, DOCX, or image.")
         else:
             analysis = analyze_job(job_description, resume_text)
             record_activity(session["user_id"], "job", "Job match analysis", analysis["match_score"])
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+            return {
+                "success": bool(analysis),
+                "analysis": analysis,
+                "job_description": job_description,
+                "resume_text": resume_text
+            }
 
     return render_template(
         "job_analyzer.html",

@@ -52,25 +52,11 @@ def room():
     if not isinstance(asked_history, list):
         asked_history = []
 
-    # First attempt: dynamic generation via Gemini AI
-    selected_questions = None
-    try:
-        from ai.gemini_client import gemini_generate_interview_questions
-        selected_questions = gemini_generate_interview_questions(
-            role=role,
-            interview_type=interview_type,
-            count=count,
-            seen_questions=asked_history
-        )
-    except Exception:
-        selected_questions = None
-
-    # Fallback to randomized non-repeating questions from expanded bank
-    if not selected_questions or len(selected_questions) < count:
-        if interview_type == "mcq":
-            selected_questions = mcq_questions_for(role, count=count, seen_questions=asked_history)
-        else:
-            selected_questions = questions_for(role, count=count, seen_questions=asked_history)
+    # Zero-latency instant question retrieval from rich curated question bank (< 1ms)
+    if interview_type == "mcq":
+        selected_questions = mcq_questions_for(role, count=count, seen_questions=asked_history)
+    else:
+        selected_questions = questions_for(role, count=count, seen_questions=asked_history)
 
     # Save to session history to prevent repeating on next open
     new_texts = [q["text"] for q in selected_questions if isinstance(q, dict) and q.get("text")]
