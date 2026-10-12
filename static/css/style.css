@@ -5753,3 +5753,254 @@ button.cssbuttons-io.auth-btn-uiverse span {
     border-radius: 10px !important;
   }
 }
+
+/* ================= TEMPLATE 6: IVY LEAGUE PRESTIGE & COOL TOOLBAR BUTTONS ================= */
+.tool-btn#xray-open-btn,
+.tool-btn.xray-btn {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border: 1px solid #0369a1 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22) !important;
+  font-weight: 650 !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.tool-btn#xray-open-btn svg,
+.tool-btn.xray-btn svg {
+  stroke: #ffffff !important;
+}
+.tool-btn#xray-open-btn:hover,
+.tool-btn.xray-btn:hover {
+  background: #0369a1 !important;
+  border-color: #0284c7 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+  color: #ffffff !important;
+}
+.dark .tool-btn#xray-open-btn,
+.dark .tool-btn.xray-btn {
+  background: rgba(14, 165, 233, 0.16) !important;
+  color: #38bdf8 !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2) !important;
+}
+.dark .tool-btn#xray-open-btn svg,
+.dark .tool-btn.xray-btn svg {
+  stroke: #38bdf8 !important;
+}
+.dark .tool-btn#xray-open-btn:hover,
+.dark .tool-btn.xray-btn:hover {
+  background: rgba(14, 165, 233, 0.28) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35) !important;
+}
+
+.tool-btn#version-open-btn,
+.tool-btn.versions-btn {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border: 1px solid #4338ca !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.22) !important;
+  font-weight: 650 !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.tool-btn#version-open-btn svg,
+.tool-btn.versions-btn svg {
+  stroke: #ffffff !important;
+}
+.tool-btn#version-open-btn:hover,
+.tool-btn.versions-btn:hover {
+  background: #4338ca !important;
+  border-color: #3730a3 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+  color: #ffffff !important;
+}
+.dark .tool-btn#version-open-btn,
+.dark .tool-btn.versions-btn {
+  background: rgba(99, 102, 241, 0.16) !important;
+  color: #a5b4fc !important;
+  border: 1.5px solid rgba(129, 140, 248, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2) !important;
+}
+.dark .tool-btn#version-open-btn svg,
+.dark .tool-btn.versions-btn svg {
+  stroke: #a5b4fc !important;
+}
+.dark .tool-btn#version-open-btn:hover,
+.dark .tool-btn.versions-btn:hover {
+  background: rgba(99, 102, 241, 0.28) !important;
+  border-color: #c7d2fe !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+.tool-btn#save-version-btn,
+.tool-btn.save-version-btn {
+  background: #0d9488 !important;
+  color: #ffffff !important;
+  border: 1px solid #0f766e !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.22) !important;
+  font-weight: 650 !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.tool-btn#save-version-btn svg,
+.tool-btn.save-version-btn svg {
+  stroke: #ffffff !important;
+}
+.tool-btn#save-version-btn:hover,
+.tool-btn.save-version-btn:hover {
+  background: #0f766e !important;
+  border-color: #115e59 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35) !important;
+  color: #ffffff !important;
+}
+.dark .tool-btn#save-version-btn,
+.dark .tool-btn.save-version-btn {
+  background: rgba(20, 184, 166, 0.16) !important;
+  color: #2dd4bf !important;
+  border: 1.5px solid rgba(45, 212, 191, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2) !important;
+}
+.dark .tool-btn#save-version-btn svg,
+.dark .tool-btn.save-version-btn svg {
+  stroke: #2dd4bf !important;
+}
+.dark .tool-btn#save-version-btn:hover,
+.dark .tool-btn.save-version-btn:hover {
+  background: rgba(20, 184, 166, 0.28) !important;
+  border-color: #5eead4 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35) !important;
+}
+
+/* Template 6: Ivy League Prestige Styles */
+.ivy-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.ivy-candidate-name {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 0.04em;
+  margin: 0 0 3px;
+  text-transform: uppercase;
+}
+.ivy-target-role {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 750;
+  color: #1e3a8a;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 5px;
+}
+.ivy-contact-line {
+  font-size: 0.80rem;
+  color: #475569;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.ivy-header-divider {
+  width: 100%;
+  height: 2px;
+  background: #0f172a;
+  margin: 8px 0 14px;
+}
+.ivy-section-heading {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0f172a;
+  border-bottom: 1.5px solid #0f172a;
+  padding-bottom: 3px;
+  margin: 14px 0 8px;
+}
+.ivy-summary-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.84rem;
+  line-height: 1.56;
+  color: #334155;
+  text-align: justify;
+  margin: 0;
+}
+.ivy-job-entry {
+  margin-bottom: 12px;
+}
+.ivy-job-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.86rem;
+  margin-bottom: 2px;
+}
+.ivy-job-company {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 0.90rem;
+}
+.ivy-job-location {
+  font-style: italic;
+  color: #64748b;
+  font-size: 0.80rem;
+}
+.ivy-job-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+}
+.ivy-job-title {
+  font-style: italic;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+.ivy-job-period {
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.78rem;
+}
+.ivy-bullets {
+  margin: 0;
+  padding-left: 18px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.83rem;
+  color: #334155;
+  line-height: 1.52;
+}
+.ivy-bullets li {
+  margin-bottom: 3px;
+}
+.ivy-skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ivy-skill-category {
+  font-size: 0.82rem;
+  line-height: 1.48;
+  color: #334155;
+}
+.ivy-skill-label {
+  font-weight: 750;
+  color: #0f172a;
+  margin-right: 4px;
+}
+.ivy-edu-entry {
+  margin-bottom: 8px;
+}
+.ivy-proj-entry {
+  font-size: 0.83rem;
+  color: #334155;
+  line-height: 1.48;
+  margin-bottom: 5px;
+}

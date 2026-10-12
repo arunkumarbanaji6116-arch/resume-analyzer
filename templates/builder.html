@@ -339,10 +339,15 @@
     }
     .template-pills-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 960px) {
+      .template-pills-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
       .template-pills-row {
         display: flex !important;
         overflow-x: auto !important;
@@ -356,8 +361,8 @@
         display: none;
       }
       .template-pill {
-        flex: 0 0 160px !important;
-        min-width: 160px !important;
+        flex: 0 0 170px !important;
+        min-width: 170px !important;
         scroll-snap-align: start;
       }
     }
@@ -667,131 +672,158 @@
       border-color: rgba(99, 102, 241, 0.4);
     }
 
-    /* Vibrant Action Button Styling (Replacing dull grey buttons) */
-    /* Feature 5: Vibrant Resume X-Ray Trigger Button (Cyan / Ocean Diagnostic Theme) */
+    /* Feature 5: Cool Arctic Cyan Resume X-Ray Trigger Button */
     .tool-btn#xray-open-btn,
     .tool-btn.xray-btn {
-      background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%) !important;
+      background: #0284c7 !important;
       color: #ffffff !important;
-      border: 1px solid #0284c7 !important;
+      border: 1px solid #0369a1 !important;
       border-radius: 10px !important;
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
-      font-weight: 700 !important;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22) !important;
+      font-weight: 650 !important;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     .tool-btn#xray-open-btn svg,
     .tool-btn.xray-btn svg {
       stroke: #ffffff !important;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
     .tool-btn#xray-open-btn:hover,
     .tool-btn.xray-btn:hover {
-      background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%) !important;
-      border-color: #0891b2 !important;
-      transform: translateY(-1.5px) !important;
-      box-shadow: 0 6px 18px rgba(6, 182, 212, 0.45) !important;
+      background: #0369a1 !important;
+      border-color: #0284c7 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
       color: #ffffff !important;
     }
     .dark .tool-btn#xray-open-btn,
     .dark .tool-btn.xray-btn {
-      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%) !important;
-      color: #ffffff !important;
-      border-color: #38bdf8 !important;
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35) !important;
+      background: rgba(14, 165, 233, 0.16) !important;
+      color: #38bdf8 !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2) !important;
+    }
+    .dark .tool-btn#xray-open-btn svg,
+    .dark .tool-btn.xray-btn svg {
+      stroke: #38bdf8 !important;
     }
     .dark .tool-btn#xray-open-btn:hover,
     .dark .tool-btn.xray-btn:hover {
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%) !important;
+      background: rgba(14, 165, 233, 0.28) !important;
       border-color: #7dd3fc !important;
-      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35) !important;
+    }
+    .dark .tool-btn#xray-open-btn:hover svg,
+    .dark .tool-btn.xray-btn:hover svg {
+      stroke: #ffffff !important;
     }
 
-    /* Feature 6: Vibrant Versions Comparison Trigger Button (Warm Amber / Tangerine Snapshot Theme) */
+    /* Feature 6: Cool Periwinkle Slate-Indigo Versions Comparison Button */
     .tool-btn#version-open-btn,
     .tool-btn.versions-btn {
-      background: linear-gradient(135deg, #d97706 0%, #ea580c 100%) !important;
+      background: #4f46e5 !important;
       color: #ffffff !important;
-      border: 1px solid #d97706 !important;
+      border: 1px solid #4338ca !important;
       border-radius: 10px !important;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
-      font-weight: 700 !important;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.22) !important;
+      font-weight: 650 !important;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     .tool-btn#version-open-btn svg,
     .tool-btn.versions-btn svg {
       stroke: #ffffff !important;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
     .tool-btn#version-open-btn:hover,
     .tool-btn.versions-btn:hover {
-      background: linear-gradient(135deg, #b45309 0%, #c2410c 100%) !important;
-      border-color: #c2410c !important;
-      transform: translateY(-1.5px) !important;
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45) !important;
+      background: #4338ca !important;
+      border-color: #3730a3 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
       color: #ffffff !important;
     }
     .dark .tool-btn#version-open-btn,
     .dark .tool-btn.versions-btn {
-      background: linear-gradient(135deg, #d97706 0%, #ea580c 100%) !important;
-      color: #ffffff !important;
-      border-color: #fbbf24 !important;
-      box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35) !important;
+      background: rgba(99, 102, 241, 0.16) !important;
+      color: #a5b4fc !important;
+      border: 1.5px solid rgba(129, 140, 248, 0.5) !important;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2) !important;
+    }
+    .dark .tool-btn#version-open-btn svg,
+    .dark .tool-btn.versions-btn svg {
+      stroke: #a5b4fc !important;
     }
     .dark .tool-btn#version-open-btn:hover,
     .dark .tool-btn.versions-btn:hover {
-      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%) !important;
-      border-color: #fde68a !important;
-      box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5) !important;
+      background: rgba(99, 102, 241, 0.28) !important;
+      border-color: #c7d2fe !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    }
+    .dark .tool-btn#version-open-btn:hover svg,
+    .dark .tool-btn.versions-btn:hover svg {
+      stroke: #ffffff !important;
     }
     #version-count-pill {
-      background: rgba(255, 255, 255, 0.28) !important;
-      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.2) !important;
+      color: inherit !important;
       padding: 1px 7px !important;
       border-radius: 9999px !important;
-      font-weight: 800 !important;
+      font-weight: 750 !important;
       font-size: 0.78rem !important;
       display: inline-block !important;
       margin-left: 2px !important;
-      border: 1px solid rgba(255, 255, 255, 0.45) !important;
-      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+    .dark #version-count-pill {
+      background: rgba(99, 102, 241, 0.3) !important;
+      color: #e0e7ff !important;
+      border-color: rgba(129, 140, 248, 0.45) !important;
     }
 
-    /* Save Version Button (Vivid Fuchsia / Electric Rose Theme) */
+    /* Cool Mint Teal Save Version Button */
     .tool-btn#save-version-btn,
     .tool-btn.save-version-btn {
-      background: linear-gradient(135deg, #db2777 0%, #e11d48 100%) !important;
+      background: #0d9488 !important;
       color: #ffffff !important;
-      border: 1px solid #db2777 !important;
+      border: 1px solid #0f766e !important;
       border-radius: 10px !important;
-      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3) !important;
-      font-weight: 700 !important;
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.22) !important;
+      font-weight: 650 !important;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     .tool-btn#save-version-btn svg,
     .tool-btn.save-version-btn svg {
       stroke: #ffffff !important;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
     .tool-btn#save-version-btn:hover,
     .tool-btn.save-version-btn:hover {
-      background: linear-gradient(135deg, #be185d 0%, #be123c 100%) !important;
-      border-color: #be123c !important;
-      transform: translateY(-1.5px) !important;
-      box-shadow: 0 6px 18px rgba(219, 39, 119, 0.45) !important;
+      background: #0f766e !important;
+      border-color: #115e59 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35) !important;
       color: #ffffff !important;
     }
     .dark .tool-btn#save-version-btn,
     .dark .tool-btn.save-version-btn {
-      background: linear-gradient(135deg, #db2777 0%, #e11d48 100%) !important;
-      color: #ffffff !important;
-      border-color: #f472b6 !important;
-      box-shadow: 0 4px 14px rgba(244, 114, 182, 0.35) !important;
+      background: rgba(20, 184, 166, 0.16) !important;
+      color: #2dd4bf !important;
+      border: 1.5px solid rgba(45, 212, 191, 0.5) !important;
+      box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2) !important;
+    }
+    .dark .tool-btn#save-version-btn svg,
+    .dark .tool-btn.save-version-btn svg {
+      stroke: #2dd4bf !important;
     }
     .dark .tool-btn#save-version-btn:hover,
     .dark .tool-btn.save-version-btn:hover {
-      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%) !important;
-      border-color: #fbcfe8 !important;
-      box-shadow: 0 6px 20px rgba(244, 114, 182, 0.5) !important;
+      background: rgba(20, 184, 166, 0.28) !important;
+      border-color: #5eead4 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35) !important;
+    }
+    .dark .tool-btn#save-version-btn:hover svg,
+    .dark .tool-btn.save-version-btn:hover svg {
+      stroke: #ffffff !important;
     }
 
     .tool-btn#copy-markdown-btn {
@@ -1733,6 +1765,134 @@
       justify-content: space-between;
       align-items: baseline;
       font-size: 0.82rem;
+      margin-bottom: 5px;
+    }
+
+    /* --- Template 6: Ivy League Prestige (Harvard / Academic Elite Standard) --- */
+    .ivy-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .ivy-candidate-name {
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: 0.04em;
+      margin: 0 0 3px;
+      text-transform: uppercase;
+    }
+    .ivy-target-role {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 0.84rem;
+      font-weight: 750;
+      color: #1e3a8a;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0 5px;
+    }
+    .ivy-contact-line {
+      font-size: 0.80rem;
+      color: #475569;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    .ivy-header-divider {
+      width: 100%;
+      height: 2px;
+      background: #0f172a;
+      margin: 8px 0 14px;
+      position: relative;
+    }
+    .ivy-section-heading {
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #0f172a;
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 3px;
+      margin: 14px 0 8px;
+    }
+    .ivy-summary-text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.84rem;
+      line-height: 1.56;
+      color: #334155;
+      text-align: justify;
+      margin: 0;
+    }
+    .ivy-job-entry {
+      margin-bottom: 12px;
+    }
+    .ivy-job-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.86rem;
+      margin-bottom: 2px;
+    }
+    .ivy-job-company {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 0.90rem;
+    }
+    .ivy-job-location {
+      font-style: italic;
+      color: #64748b;
+      font-size: 0.80rem;
+    }
+    .ivy-job-sub {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+    }
+    .ivy-job-title {
+      font-style: italic;
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+    .ivy-job-period {
+      font-weight: 700;
+      color: #475569;
+      font-size: 0.78rem;
+    }
+    .ivy-bullets {
+      margin: 0;
+      padding-left: 18px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.83rem;
+      color: #334155;
+      line-height: 1.52;
+    }
+    .ivy-bullets li {
+      margin-bottom: 3px;
+    }
+    .ivy-skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .ivy-skill-category {
+      font-size: 0.82rem;
+      line-height: 1.48;
+      color: #334155;
+    }
+    .ivy-skill-label {
+      font-weight: 750;
+      color: #0f172a;
+      margin-right: 4px;
+    }
+    .ivy-edu-entry {
+      margin-bottom: 8px;
+    }
+    .ivy-proj-entry {
+      font-size: 0.83rem;
+      color: #334155;
+      line-height: 1.48;
       margin-bottom: 5px;
     }
 
@@ -3154,19 +3314,19 @@
             <!-- Feature 5: Resume X-Ray Trigger -->
             <button type="button" class="tool-btn xray-btn" id="xray-open-btn" title="Inspect Resume X-Ray: Strongest & Weakest Parts">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <span>🔍 Resume X-Ray</span>
+              <span>Resume X-Ray</span>
             </button>
 
             <!-- Feature 6: Version Compare Trigger -->
             <button type="button" class="tool-btn versions-btn" id="version-open-btn" title="Saved Versions & Side-by-Side ATS Comparison">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              <span>📑 Versions (<span id="version-count-pill">0</span>)</span>
+              <span>Versions (<span id="version-count-pill">0</span>)</span>
             </button>
 
             <!-- Save Version Button -->
             <button type="button" class="tool-btn save-version-btn" id="save-version-btn" title="Save current resume as a version">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              <span>💾 Save Version</span>
+              <span>Save Version</span>
             </button>
 
             <button type="button" class="tool-btn" id="copy-markdown-btn" title="Copy resume as text">
@@ -3235,6 +3395,16 @@
                   </div>
                   <span class="dropdown-active-pill">PDF</span>
                 </button>
+                <button type="button" class="dropdown-item" data-download-template="ivy">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">🎓</span>
+                    <div class="dropdown-item-text">
+                      <strong>Ivy League Prestige (PDF)</strong>
+                      <small>Harvard & Academic Elite Small-Caps Standard</small>
+                    </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
+                </button>
 
                 <!-- Feature 7: Native DOCX Export Option -->
                 <div class="dropdown-divider"></div>
@@ -3253,8 +3423,8 @@
                   <div class="dropdown-item-left">
                     <span class="dropdown-item-icon">📦</span>
                     <div class="dropdown-item-text">
-                      <strong>Download All 5 Templates</strong>
-                      <small>Export Classic, Modern, Minimal, Photo & Nordic (5 PDFs)</small>
+                      <strong>Download All 6 Templates</strong>
+                      <small>Export Classic, Modern, Minimal, Photo, Nordic & Ivy (6 PDFs)</small>
                     </div>
                   </div>
                 </button>
@@ -3273,7 +3443,7 @@
           <div class="template-selector-header">
             <span class="template-selector-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
-              RESUME TEMPLATE STYLES (5 AVAILABLE)
+              RESUME TEMPLATE STYLES (6 AVAILABLE)
             </span>
             <span class="template-selector-hint">Click below to switch template instantly · Zero latency</span>
           </div>
@@ -3317,6 +3487,14 @@
                 <span class="template-pill-desc">Refined serif typography & slate accents</span>
               </div>
               <span class="template-pill-badge new-badge" style="background:#1e3a8a;">Editorial</span>
+            </button>
+            <button type="button" class="template-pill" data-template="ivy" id="pill-ivy" title="Ivy League Harvard Academic Elite Layout">
+              <span class="template-pill-icon">🎓</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Ivy League Prestige</strong>
+                <span class="template-pill-desc">Harvard & academic elite small-caps serif</span>
+              </div>
+              <span class="template-pill-badge new-badge" style="background:#0f172a; color:#f8fafc;">Prestige</span>
             </button>
           </div>
         </div>
@@ -3801,6 +3979,92 @@
               </section>
             {% endif %}
           </div>
+
+          <!-- ================= TEMPLATE 6: IVY LEAGUE PRESTIGE ================= -->
+          <div class="template-view" id="template-view-ivy" data-template-name="Ivy League Prestige" style="display: none;">
+            <header class="ivy-header">
+              <h1 class="ivy-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+              <p class="ivy-target-role live-role" contenteditable="true">{{ r.target_role }}</p>
+              <div class="ivy-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+              <div class="ivy-header-divider"></div>
+            </header>
+
+            <section class="sheet-section">
+              <h2 class="ivy-section-heading">Executive Summary</h2>
+              <p class="ivy-summary-text live-summary" contenteditable="true">{{ r.executive_summary }}</p>
+            </section>
+
+            <section class="sheet-section">
+              <h2 class="ivy-section-heading">Professional Experience</h2>
+              <div class="live-experience-ivy">
+                {% for job in r.experience %}
+                  <div class="ivy-job-entry">
+                    <div class="ivy-job-top">
+                      <span class="ivy-job-company">{{ job.company }}</span>
+                      <span class="ivy-job-location">{% if job.location %}{{ job.location }}{% else %}United States{% endif %}</span>
+                    </div>
+                    <div class="ivy-job-sub">
+                      <span class="ivy-job-title">{{ job.title }}</span>
+                      <span class="ivy-job-period">{{ job.period }}</span>
+                    </div>
+                    <ul class="ivy-bullets">
+                      {% for bullet in job.bullets %}
+                        <li class="resume-bullet-wrap">
+                          <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                          <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="sheet-section">
+              <h2 class="ivy-section-heading">Areas of Expertise & Skills</h2>
+              <div class="ivy-skills-grid live-skills-ivy">
+                {% for skill_group in r.skills %}
+                  <div class="ivy-skill-category">
+                    <span class="ivy-skill-label">{{ skill_group.category }}:</span>
+                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            {% if r.education %}
+              <section class="sheet-section">
+                <h2 class="ivy-section-heading">Education</h2>
+                <div class="live-education-ivy">
+                  {% for edu in r.education %}
+                    <div class="ivy-edu-entry">
+                      <div class="ivy-job-top">
+                        <span class="ivy-job-company">{{ edu.institution }}</span>
+                        <span class="ivy-job-location">{{ edu.year }}</span>
+                      </div>
+                      <div class="ivy-job-sub">
+                        <span class="ivy-job-title">{{ edu.degree }}</span>
+                        <span class="ivy-job-period">{% if edu.details %}{{ edu.details }}{% endif %}</span>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </section>
+            {% endif %}
+
+            {% if r.projects_or_certifications %}
+              <section class="sheet-section">
+                <h2 class="ivy-section-heading">Certifications & Honors</h2>
+                <div class="live-projects-ivy">
+                  {% for proj in r.projects_or_certifications %}
+                    <div class="ivy-proj-entry">
+                      <strong>{{ proj.title }}</strong>: {{ proj.details }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </section>
+            {% endif %}
+          </div>
           </div>
         </div>
       </div>
@@ -4179,6 +4443,16 @@
               </div>
             `).join('');
           }
+          // Ivy League
+          const ivySkills = document.querySelector('.live-skills-ivy');
+          if (ivySkills) {
+            ivySkills.innerHTML = r.skills.map(g => `
+              <div class="ivy-skill-category">
+                <span class="ivy-skill-label">${g.category}:</span>
+                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+              </div>
+            `).join('');
+          }
 
           // Also sync to inputSkills
           if (inputSkills) {
@@ -4191,7 +4465,7 @@
           }
         }
 
-        // 6. Experience across all 5 templates
+        // 6. Experience across all 6 templates
         if (r.experience && Array.isArray(r.experience)) {
           const makeBulletHtml = (bullets) => bullets.map(b => `
             <li class="resume-bullet-wrap">
@@ -4289,6 +4563,26 @@
                   <span class="nordic-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
                 </div>
                 <ul class="nordic-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Ivy League Experience
+          const ivyExpList = document.querySelector('.live-experience-ivy');
+          if (ivyExpList) {
+            ivyExpList.innerHTML = r.experience.map(job => `
+              <div class="ivy-job-entry">
+                <div class="ivy-job-top">
+                  <span class="ivy-job-company">${job.company}</span>
+                  <span class="ivy-job-location">${job.location || 'United States'}</span>
+                </div>
+                <div class="ivy-job-sub">
+                  <span class="ivy-job-title">${job.title}</span>
+                  <span class="ivy-job-period">${job.period}</span>
+                </div>
+                <ul class="ivy-bullets">
                   ${makeBulletHtml(job.bullets || [])}
                 </ul>
               </div>
@@ -4479,6 +4773,19 @@
               </div>
             `;
           }
+
+          // Ivy League Skills
+          const ivySkills = document.querySelector('.live-skills-ivy');
+          if (ivySkills && skillList.length > 0) {
+            const cat1 = skillList.slice(0, 4);
+            const cat2 = skillList.slice(4, 8);
+            const cat3 = skillList.slice(8);
+            ivySkills.innerHTML = `
+              <div class="ivy-skill-category"><span class="ivy-skill-label">Areas of Expertise:</span> <span>${cat1.join(', ') || 'Systems Architecture, Full-Stack Engineering'}</span></div>
+              <div class="ivy-skill-category"><span class="ivy-skill-label">Technical Stack & Cloud:</span> <span>${cat2.join(', ') || 'Python, TypeScript, React, Docker, AWS'}</span></div>
+              <div class="ivy-skill-category"><span class="ivy-skill-label">Methodologies & Leadership:</span> <span>${cat3.join(', ') || 'Agile Sprints, Microservices, CI/CD, Distributed Systems'}</span></div>
+            `;
+          }
         }
 
         // 3. Update Education
@@ -4505,6 +4812,9 @@
             document.querySelectorAll('.live-education-nordic').forEach(el => {
               el.innerHTML = `<div class="nordic-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="nordic-job-meta">${yr}</div></div>`;
             });
+            document.querySelectorAll('.live-education-ivy').forEach(el => {
+              el.innerHTML = `<div class="ivy-edu-entry"><div class="ivy-job-top"><span class="ivy-job-company">${inst}</span><span class="ivy-job-location">${yr}</span></div><div class="ivy-job-sub"><span class="ivy-job-title">${deg}</span></div></div>`;
+            });
           }
         }
 
@@ -4527,6 +4837,9 @@
             });
             document.querySelectorAll('.live-projects-nordic').forEach(el => {
               el.innerHTML = projs.map(p => `<div class="nordic-proj-entry"><div><strong>${p}</strong>: Verified credential</div></div>`).join('');
+            });
+            document.querySelectorAll('.live-projects-ivy').forEach(el => {
+              el.innerHTML = projs.map(p => `<div class="ivy-proj-entry"><strong>${p}</strong>: <span class="muted">Verified credential and technical deliverable</span></div>`).join('');
             });
           }
         }
@@ -4572,7 +4885,7 @@
               </li>
             `).join('');
 
-            document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets, .photo-cv-bullets, .nordic-bullets').forEach(ul => {
+            document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets, .photo-cv-bullets, .nordic-bullets, .ivy-bullets').forEach(ul => {
               ul.innerHTML = bulletHtml;
             });
             attachBulletActionListeners();
@@ -5404,7 +5717,8 @@
         modern: 'Modern Two-Column',
         minimal: 'Minimalist Silicon',
         photo: 'Executive Portrait',
-        nordic: 'Nordic Elegant'
+        nordic: 'Nordic Elegant',
+        ivy: 'Ivy League Prestige'
       };
 
       const templateFilenames = {
@@ -5412,7 +5726,8 @@
         modern: 'Modern_Two_Column',
         minimal: 'Minimalist_Silicon',
         photo: 'Executive_Portrait_Photo_CV',
-        nordic: 'Nordic_Elegant'
+        nordic: 'Nordic_Elegant',
+        ivy: 'Ivy_League_Prestige'
       };
 
       function setActiveTemplate(tpl) {
@@ -5551,7 +5866,7 @@
 
           // Protect individual job & education entries from breaking awkwardly across pages
           // (NOTE: NEVER set break-inside avoid on headers or entire sidebars)
-          const breakAvoidItems = clone.querySelectorAll('.classic-job-entry, .modern-timeline-item, .minimal-job-entry, .photo-cv-timeline-item, .nordic-job-entry, .classic-edu-entry, .modern-edu-item, .minimal-edu-entry, .photo-cv-edu-item, .nordic-edu-entry, .classic-proj-entry, .modern-proj-item, .minimal-proj-entry, .photo-cv-proj-item, .nordic-proj-entry');
+          const breakAvoidItems = clone.querySelectorAll('.classic-job-entry, .modern-timeline-item, .minimal-job-entry, .photo-cv-timeline-item, .nordic-job-entry, .ivy-job-entry, .classic-edu-entry, .modern-edu-item, .minimal-edu-entry, .photo-cv-edu-item, .nordic-edu-entry, .ivy-edu-entry, .classic-proj-entry, .modern-proj-item, .minimal-proj-entry, .photo-cv-proj-item, .nordic-proj-entry, .ivy-proj-entry');
           breakAvoidItems.forEach(s => {
             s.style.pageBreakInside = 'avoid';
             s.style.breakInside = 'avoid';
@@ -5664,18 +5979,18 @@
           if (downloadAllBtn) downloadAllBtn.disabled = true;
           if (dropdownMenu) dropdownMenu.classList.remove('show');
 
-          const tpls = ['classic', 'modern', 'minimal', 'photo', 'nordic'];
+          const tpls = ['classic', 'modern', 'minimal', 'photo', 'nordic', 'ivy'];
           for (let i = 0; i < tpls.length; i++) {
             const key = tpls[i];
             if (downloadPdfLabel) {
-              downloadPdfLabel.textContent = `Exporting ${i + 1}/5: ${templateTitles[key]}...`;
+              downloadPdfLabel.textContent = `Exporting ${i + 1}/6: ${templateTitles[key]}...`;
             }
             setActiveTemplate(key);
             await exportTemplateAsPdf(key);
             await new Promise(r => setTimeout(r, 1200));
           }
 
-          if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ All 5 Templates Exported!';
+          if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ All 6 Templates Exported!';
           setTimeout(() => {
             if (downloadPdfLabel) downloadPdfLabel.textContent = `Download PDF (${templateTitles[activeTemplate].split(' ')[0]})`;
             if (downloadPdfBtn) downloadPdfBtn.disabled = false;

@@ -69,6 +69,11 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
         secondary_color = RGBColor(71, 85, 105)    # Slate 600
         heading_border_hex = "1E3A8A"
         font_family = "Georgia"
+    elif template_style == "ivy":
+        primary_color = RGBColor(15, 23, 42)       # Slate 900
+        secondary_color = RGBColor(30, 58, 138)    # Deep Navy 900
+        heading_border_hex = "0F172A"
+        font_family = "Times New Roman"
     else:  # classic
         primary_color = RGBColor(15, 23, 42)       # Slate 900
         secondary_color = RGBColor(67, 56, 202)    # Indigo 700
@@ -149,7 +154,7 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
         p_name.paragraph_format.space_before = Pt(0)
         p_name.paragraph_format.space_after = Pt(2)
         p_name.paragraph_format.line_spacing = 1.05
-        if template_style in ("minimal", "nordic"):
+        if template_style in ("minimal", "nordic", "ivy"):
             p_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run_name = p_name.add_run(candidate_name)
         run_name.font.name = font_family
@@ -160,7 +165,7 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
         p_role = doc.add_paragraph()
         p_role.paragraph_format.space_before = Pt(0)
         p_role.paragraph_format.space_after = Pt(3)
-        if template_style in ("minimal", "nordic"):
+        if template_style in ("minimal", "nordic", "ivy"):
             p_role.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run_role = p_role.add_run(target_role)
         run_role.font.name = font_family
@@ -171,7 +176,7 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
         p_contact = doc.add_paragraph()
         p_contact.paragraph_format.space_before = Pt(0)
         p_contact.paragraph_format.space_after = Pt(10)
-        if template_style in ("minimal", "nordic"):
+        if template_style in ("minimal", "nordic", "ivy"):
             p_contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run_contact = p_contact.add_run(contact_line)
         run_contact.font.name = font_family
