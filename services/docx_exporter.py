@@ -53,14 +53,27 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
         primary_color = RGBColor(79, 70, 229)      # Indigo 600
         secondary_color = RGBColor(99, 102, 241)   # Indigo 500
         heading_border_hex = "6366F1"
+        font_family = "Calibri"
     elif template_style == "minimal":
         primary_color = RGBColor(17, 24, 39)       # Gray 900
         secondary_color = RGBColor(75, 85, 99)     # Gray 600
         heading_border_hex = "111827"
+        font_family = "Arial"
+    elif template_style == "photo":
+        primary_color = RGBColor(15, 23, 42)       # Slate 900
+        secondary_color = RGBColor(37, 99, 235)    # Blue 600
+        heading_border_hex = "0F172A"
+        font_family = "Calibri"
+    elif template_style == "nordic":
+        primary_color = RGBColor(30, 58, 138)      # Blue 900
+        secondary_color = RGBColor(71, 85, 105)    # Slate 600
+        heading_border_hex = "1E3A8A"
+        font_family = "Georgia"
     else:  # classic
         primary_color = RGBColor(15, 23, 42)       # Slate 900
         secondary_color = RGBColor(67, 56, 202)    # Indigo 700
         heading_border_hex = "0F172A"
+        font_family = "Calibri"
 
     dark_neutral = RGBColor(30, 41, 59)            # Slate 800
     muted_color = RGBColor(100, 116, 139)          # Slate 500
@@ -73,40 +86,97 @@ def generate_resume_docx(resume: dict, template_style: str = "classic") -> io.By
     experience = resume.get("experience") or []
     education = resume.get("education") or []
     projects = resume.get("projects_or_certifications") or []
+    photo_raw = resume.get("photo") or ""
+
+    # Parse photo if available
+    photo_stream = None
+    if photo_raw and "base64," in photo_raw:
+        try:
+            import base64
+            clean_b64 = photo_raw.split("base64,", 1)[1]
+            photo_bytes = base64.b64decode(clean_b64)
+            photo_stream = io.BytesIO(photo_bytes)
+        except Exception:
+            photo_stream = None
 
     # 1. HEADER
-    p_name = doc.add_paragraph()
-    p_name.paragraph_format.space_before = Pt(0)
-    p_name.paragraph_format.space_after = Pt(2)
-    p_name.paragraph_format.line_spacing = 1.05
-    if template_style == "minimal":
-        p_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_name = p_name.add_run(candidate_name)
-    run_name.font.name = "Calibri"
-    run_name.font.size = Pt(22)
-    run_name.font.bold = True
-    run_name.font.color.rgb = primary_color
+    if template_style == "photo" and photo_stream:
+        # Build 2-column header table with passport photograph
+        header_table = doc.add_table(rows=1, cols=2)
+        header_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        header_table.autofit = False
+        _set_cell_margins(header_table.cell(0, 0), top=0, bottom=0, left=0, right=80)
+        _set_cell_margins(header_table.cell(0, 1), top=0, bottom=0, left=80, right=0)
+        header_table.columns[0].width = Inches(5.6)
+        header_table.columns[1].width = Inches(1.35)
 
-    p_role = doc.add_paragraph()
-    p_role.paragraph_format.space_before = Pt(0)
-    p_role.paragraph_format.space_after = Pt(3)
-    if template_style == "minimal":
-        p_role.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_role = p_role.add_run(target_role)
-    run_role.font.name = "Calibri"
-    run_role.font.size = Pt(12)
-    run_role.font.bold = True
-    run_role.font.color.rgb = secondary_color
+        cell_text = header_table.cell(0, 0)
+        p_name = cell_text.paragraphs[0]
+        p_name.paragraph_format.space_before = Pt(0)
+        p_name.paragraph_format.space_after = Pt(2)
+        run_name = p_name.add_run(candidate_name)
+        run_name.font.name = font_family
+        run_name.font.size = Pt(21)
+        run_name.font.bold = True
+        run_name.font.color.rgb = primary_color
 
-    p_contact = doc.add_paragraph()
-    p_contact.paragraph_format.space_before = Pt(0)
-    p_contact.paragraph_format.space_after = Pt(10)
-    if template_style == "minimal":
-        p_contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_contact = p_contact.add_run(contact_line)
-    run_contact.font.name = "Calibri"
-    run_contact.font.size = Pt(9.5)
-    run_contact.font.color.rgb = muted_color
+        p_role = cell_text.add_paragraph()
+        p_role.paragraph_format.space_before = Pt(0)
+        p_role.paragraph_format.space_after = Pt(3)
+        run_role = p_role.add_run(target_role)
+        run_role.font.name = font_family
+        run_role.font.size = Pt(11.5)
+        run_role.font.bold = True
+        run_role.font.color.rgb = secondary_color
+
+        p_contact = cell_text.add_paragraph()
+        p_contact.paragraph_format.space_before = Pt(0)
+        p_contact.paragraph_format.space_after = Pt(6)
+        run_contact = p_contact.add_run(contact_line)
+        run_contact.font.name = font_family
+        run_contact.font.size = Pt(9.5)
+        run_contact.font.color.rgb = muted_color
+
+        cell_photo = header_table.cell(0, 1)
+        p_photo = cell_photo.paragraphs[0]
+        p_photo.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        try:
+            p_photo.add_run().add_picture(photo_stream, width=Inches(1.15), height=Inches(1.45))
+        except Exception:
+            pass
+    else:
+        p_name = doc.add_paragraph()
+        p_name.paragraph_format.space_before = Pt(0)
+        p_name.paragraph_format.space_after = Pt(2)
+        p_name.paragraph_format.line_spacing = 1.05
+        if template_style in ("minimal", "nordic"):
+            p_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run_name = p_name.add_run(candidate_name)
+        run_name.font.name = font_family
+        run_name.font.size = Pt(22)
+        run_name.font.bold = True
+        run_name.font.color.rgb = primary_color
+
+        p_role = doc.add_paragraph()
+        p_role.paragraph_format.space_before = Pt(0)
+        p_role.paragraph_format.space_after = Pt(3)
+        if template_style in ("minimal", "nordic"):
+            p_role.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run_role = p_role.add_run(target_role)
+        run_role.font.name = font_family
+        run_role.font.size = Pt(12)
+        run_role.font.bold = True
+        run_role.font.color.rgb = secondary_color
+
+        p_contact = doc.add_paragraph()
+        p_contact.paragraph_format.space_before = Pt(0)
+        p_contact.paragraph_format.space_after = Pt(10)
+        if template_style in ("minimal", "nordic"):
+            p_contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run_contact = p_contact.add_run(contact_line)
+        run_contact.font.name = font_family
+        run_contact.font.size = Pt(9.5)
+        run_contact.font.color.rgb = muted_color
 
     def add_section_header(title):
         p = doc.add_paragraph()

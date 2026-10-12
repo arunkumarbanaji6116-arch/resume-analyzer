@@ -502,64 +502,88 @@ Respond ONLY with valid JSON matching this exact structure:
 
 
 def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> dict:
-    name = data.get("name", "Alex Morgan")
-    role = data.get("target_role", "Senior Software Engineer")
+    name = data.get("name", "").strip() or "Alex Morgan"
+    role = data.get("target_role", "").strip() or "Senior Software Engineer"
     level = data.get("experience_level", "Senior")
     is_fresher = bool(data.get("fresher_mode") or "Fresher" in str(level) or "Entry" in str(level) or "Student" in str(level))
     skills_raw = data.get("skills", "")
     skills_list = [s.strip() for s in skills_raw.split(",") if s.strip()] or [
         "Python", "TypeScript", "React", "Docker", "AWS", "PostgreSQL", "Data Structures", "Git"
     ]
-    
-    strategies_info = {
-        "metric_driven": ("Quantitative & ROI-Driven", "Focused on measurable business outcomes, latency reductions, and revenue scale."),
-        "architectural": ("Technical Architecture & Systems", "Focused on fault-tolerant systems, distributed patterns, and clean engineering."),
-        "executive": ("Strategic Leadership & Impact", "Focused on organizational roadmap alignment, cross-functional squad leadership, and hiring."),
-        "creative_modern": ("Product Innovation & Agility", "Focused on rapid prototyping, customer-centric feature delivery, and iterative velocity.")
-    }
-    strat_title, strat_desc = strategies_info.get(strategy, strategies_info["metric_driven"])
-    
-    verb_catalog = [
-        ["Spearheaded", "Accelerated", "Orchestrated", "Engineered", "Streamlined"],
-        ["Architected", "Pioneered", "Automated", "Delivered", "Championed"],
-        ["Transformed", "Optimized", "Scaled", "Instituted", "Revamped"],
-        ["Devised", "Formulated", "Modernized", "Catapulted", "Established"]
-    ]
-    verbs = verb_catalog[(variation_seed - 1) % len(verb_catalog)]
 
-    ats_score = min(95 + (variation_seed % 4), 99)
-    contact = f"{data.get('email', 'alex@example.com')} | {data.get('phone', '+1 (555) 234-5678')} | {data.get('location', 'San Francisco, CA')}".strip(" |")
+    # Map seed index 0..3
+    seed_idx = (variation_seed - 1) % 4
+    
+    strategies_info = [
+        ("Quantitative & ROI-Driven", "Focused on measurable business outcomes, latency reductions, and revenue scale."),
+        ("Technical Architecture & Systems", "Focused on fault-tolerant systems, distributed patterns, and clean engineering."),
+        ("Strategic Leadership & Impact", "Focused on organizational roadmap alignment, cross-functional squad leadership, and hiring."),
+        ("Product Innovation & Agility", "Focused on rapid prototyping, customer-centric feature delivery, and iterative velocity.")
+    ]
+    strat_title, strat_desc = strategies_info[seed_idx]
+    ats_score = min(96 + ((variation_seed * 2 + 1) % 4), 99)
+    
+    contact_parts = [data.get(k, "").strip() for k in ("email", "phone", "location", "linkedin") if data.get(k, "").strip()]
+    contact = " | ".join(contact_parts) or f"{data.get('email', 'alex@example.com')} | {data.get('phone', '+1 (555) 234-5678')} | {data.get('location', 'San Francisco, CA')}".strip(" |")
+
+    # User-provided custom education if present
+    custom_edu = []
+    edu_raw = data.get("education_raw", "").strip()
+    if edu_raw:
+        for line in edu_raw.split("\n"):
+            line = line.strip().lstrip("•-* ")
+            if not line:
+                continue
+            parts = [p.strip() for p in line.split(",") if p.strip()]
+            if len(parts) >= 2:
+                custom_edu.append({
+                    "degree": parts[0],
+                    "institution": parts[1],
+                    "year": parts[2] if len(parts) > 2 else "Graduated with Honors",
+                    "details": ", ".join(parts[3:]) if len(parts) > 3 else "Relevant Coursework: Computer Systems & Software Architecture"
+                })
+            else:
+                custom_edu.append({
+                    "degree": line,
+                    "institution": "Accredited University",
+                    "year": "Graduated",
+                    "details": "Major in Computer Science / Engineering"
+                })
+
+    # User-provided custom projects/certs if present
+    custom_proj = []
+    proj_raw = data.get("projects_raw", "").strip()
+    if proj_raw:
+        for item in proj_raw.split("·" if "·" in proj_raw else "\n"):
+            item = item.strip().lstrip("•-* ")
+            if not item:
+                continue
+            if ":" in item or " - " in item:
+                sep = ":" if ":" in item else " - "
+                parts = item.split(sep, 1)
+                custom_proj.append({"title": parts[0].strip(), "details": parts[1].strip()})
+            else:
+                custom_proj.append({"title": item, "details": "Demonstrated technical proficiency and production implementation."})
 
     if is_fresher:
-        return {
-            "candidate_name": name,
-            "contact_line": contact,
-            "target_role": role,
-            "strategy_title": "Academic Excellence & Hands-On Foundation",
-            "strategy_description": "Emphasizing academic capstone depth, algorithmic rigor, and rapid technical onboarding.",
-            "ats_score": ats_score,
-            "variation_seed": variation_seed,
-            "fresher_mode": True,
-            "executive_summary": (
-                f"Driven and analytically focused graduate pursuing a {role} role. "
-                f"Proven track record building full-stack software solutions and data pipelines during intensive academic coursework and internships. "
-                f"Strong foundation in data structures, algorithms, and collaborative git workflows, eager to deliver immediate production value."
-            ),
-            "skills": [
-                {"category": "Core Languages & Frameworks", "items": skills_list[:4]},
-                {"category": "Databases & Cloud Tooling", "items": skills_list[4:8] if len(skills_list) > 4 else ["PostgreSQL", "Docker", "Git", "REST APIs"]},
-                {"category": "Foundational Computer Science", "items": ["Data Structures", "Algorithms", "Object-Oriented Design", "Agile Sprints"]}
-            ],
-            "experience": [
+        fresher_summaries = [
+            f"Driven and analytically focused graduate pursuing a {role} role. Proven track record building full-stack software solutions and data pipelines during intensive academic coursework and internships. Strong foundation in data structures, algorithms, and collaborative git workflows, eager to deliver immediate production value.",
+            f"High-achieving computer science graduate with deep interests in systems programming, backend architectures, and distributed systems. Built production-grade capstone services with Docker, Go, and PostgreSQL. Eager to contribute high-reliability engineering and clean code to a forward-thinking engineering team as a {role}.",
+            f"Proactive, solution-oriented graduate pursuing a {role} career. Combines strong full-stack software development skills with exceptional teamwork, technical communication, and student leadership. Proven ability to take projects from requirements to production deployment.",
+            f"Creative and versatile software graduate with a passion for user-centric digital products, web technologies, and rapid prototyping. Experienced in building responsive full-stack applications with TypeScript, Python, and modern cloud stacks, eager to join as an enthusiastic {role}."
+        ]
+        
+        fresher_experiences = [
+            [
                 {
                     "title": "Software Engineering Intern",
                     "company": "Apex Digital Innovations",
                     "period": "Summer 2023",
                     "location": "Hybrid",
                     "bullets": [
-                        f"{verbs[0]} RESTful API endpoints for user onboarding, reducing data processing turnaround by 35%.",
-                        f"{verbs[1]} comprehensive unit and integration test suites in pytest, elevating overall test coverage to 91%.",
-                        f"{verbs[2]} cross-functional sprints with senior engineers to diagnose and resolve 24+ backlog issues."
+                        "Spearheaded RESTful API endpoints for user onboarding, reducing data processing turnaround by 35%.",
+                        "Engineered comprehensive unit and integration test suites in pytest, elevating overall test coverage to 91%.",
+                        "Streamlined cross-functional sprints with senior engineers to diagnose and resolve 24+ backlog issues."
                     ]
                 },
                 {
@@ -568,31 +592,335 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
                     "period": "2022 – 2023",
                     "location": "On-Campus",
                     "bullets": [
-                        f"{verbs[3]} bi-weekly hands-on lab sessions for 75+ undergraduate students covering algorithmic efficiency and debugging.",
-                        f"{verbs[4]} automated grading scripts in Python that cut assignment evaluation time by 60%."
+                        "Facilitated bi-weekly hands-on lab sessions for 75+ undergraduate students covering algorithmic efficiency and debugging.",
+                        "Developed automated grading scripts in Python that cut assignment evaluation time by 60%."
                     ]
                 }
             ],
-            "education": [
+            [
                 {
-                    "degree": "B.S. in Computer Science & Engineering",
-                    "institution": "State University of Technology",
-                    "year": "Graduated Magna Cum Laude",
-                    "details": "GPA 3.85/4.0 · Coursework: Distributed Systems, Database Management, Algorithms, Web Engineering"
-                }
-            ],
-            "projects_or_certifications": [
-                {
-                    "title": "Full-Stack Real-Time Collaboration Canvas (Capstone Project)",
-                    "details": "Engineered multi-user collaborative board with WebSockets, React, and FastAPI, supporting 100+ concurrent live sockets with <45ms sync latency."
+                    "title": "Systems & Cloud Infrastructure Intern",
+                    "company": "Vector Logic Platforms",
+                    "period": "Summer 2023",
+                    "location": "Remote",
+                    "bullets": [
+                        "Architected containerized microservice staging environments using Docker and Kubernetes Helm charts.",
+                        "Automated continuous integration workflows in GitHub Actions, slashing pull request validation cycles by 50%.",
+                        "Pioneered Redis caching layer for relational database query hotspots, eliminating connection latency spikes."
+                    ]
                 },
                 {
-                    "title": "AWS Certified Cloud Practitioner",
-                    "details": "Demonstrated understanding of core AWS cloud architecture, security principles, and serverless compute."
+                    "title": "Undergraduate Systems Research Assistant",
+                    "company": "Distributed Systems Laboratory",
+                    "period": "2022 – 2023",
+                    "location": "On-Campus",
+                    "bullets": [
+                        "Implemented benchmark testing harnesses for high-throughput distributed message queues across simulated network partitions.",
+                        "Co-authored technical research summary on fault tolerance in distributed consensus protocols."
+                    ]
                 }
             ],
-            "full_markdown": f"# {name}\n{contact}\n\n**{role}**\n\n## Summary\nDriven and analytically focused graduate..."
+            [
+                {
+                    "title": "Software Engineering Intern",
+                    "company": "Nexus Digital Innovations",
+                    "period": "Summer 2023",
+                    "location": "Austin, TX",
+                    "bullets": [
+                        "Orchestrated front-to-back delivery of candidate feedback analytics dashboard with interactive data visualization components.",
+                        "Instituted automated linting, pre-commit formatting, and test validation gates across repository, standardizing style for 8 contributors.",
+                        "Presented weekly technical demos to department heads and incorporated user survey feedback into iterative sprints."
+                    ]
+                },
+                {
+                    "title": "Lead Student Coordinator & Peer Mentor",
+                    "company": "Engineering Student Success Center",
+                    "period": "2022 – 2023",
+                    "location": "On-Campus",
+                    "bullets": [
+                        "Mentored 40+ first-year students in introductory programming, version control, and problem decomposition.",
+                        "Organized annual 48-hour student hackathon with 250+ participants and 12 industry sponsor mentors."
+                    ]
+                }
+            ],
+            [
+                {
+                    "title": "Full-Stack Web Development Intern",
+                    "company": "Spark Digital Studio",
+                    "period": "Summer 2023",
+                    "location": "Hybrid",
+                    "bullets": [
+                        "Delivered responsive customer-facing web portal with React, TypeScript, and Tailwind CSS, boosting mobile session duration by 25%.",
+                        "Modernized RESTful endpoints into structured GraphQL schema, reducing client payload sizes by 40%.",
+                        "Formulated comprehensive Cypress end-to-end integration test suites ensuring 100% critical user journey coverage."
+                    ]
+                },
+                {
+                    "title": "Web Technology Lab Instructor",
+                    "company": "Department of Computing",
+                    "period": "2022 – 2023",
+                    "location": "On-Campus",
+                    "bullets": [
+                        "Guided 60+ undergraduates through modern full-stack web development projects, API design, and git workflows.",
+                        "Created interactive step-by-step programming tutorials that reduced lab question volume by 35%."
+                    ]
+                }
+            ]
+        ]
+        
+        fresher_educations = [
+            [{"degree": "B.S. in Computer Science & Engineering", "institution": "State University of Technology", "year": "Graduated Magna Cum Laude", "details": "GPA 3.85/4.0 · Coursework: Distributed Systems, Database Management, Algorithms, Web Engineering"}],
+            [{"degree": "B.S. in Computer Engineering & Computer Science", "institution": "Institute of Technology & Applied Science", "year": "Graduated with Honors", "details": "GPA 3.82/4.0 · Coursework: Operating Systems, Computer Networks, Database Architecture, System Design"}],
+            [{"degree": "B.S. in Software Engineering", "institution": "Polytechnic Institute of Science", "year": "Dean's Honor List", "details": "GPA 3.88/4.0 · Coursework: Agile Software Lifecycle, Object-Oriented Software Design, Cloud Computing, Full-Stack Web"}],
+            [{"degree": "B.S. in Computer Science & Information Systems", "institution": "Metropolitan University of Technology", "year": "Graduated First Class Honours", "details": "GPA 3.80/4.0 · Coursework: Web Application Architecture, Human-Computer Interaction, Cloud Services, Data Structures"}]
+        ]
+        
+        fresher_projects = [
+            [
+                {"title": "Full-Stack Real-Time Collaboration Canvas (Capstone Project)", "details": "Engineered multi-user collaborative board with WebSockets, React, and FastAPI, supporting 100+ concurrent live sockets with <45ms sync latency."},
+                {"title": "AWS Certified Cloud Practitioner", "details": "Demonstrated understanding of core AWS cloud architecture, security principles, and serverless compute."}
+            ],
+            [
+                {"title": "High-Throughput Distributed In-Memory Cache (Capstone)", "details": "Implemented concurrent LRU caching engine in Go with consistent hashing and gRPC replication, sustaining 25,000+ requests/sec with sub-5ms response."},
+                {"title": "HashiCorp Certified: Terraform Associate", "details": "Demonstrated foundational infrastructure-as-code competence and automated cloud resource provisioning."}
+            ],
+            [
+                {"title": "Campus Peer Mentoring & Scheduling Portal (Lead Architect)", "details": "Led student team of 4 engineers to build campus scheduling portal in React and Node.js serving 1,200+ active students."},
+                {"title": "Meta Certified Front-End Developer Specialization", "details": "Mastered modern component architecture, state management, and accessible UI development principles."}
+            ],
+            [
+                {"title": "AI-Powered Code Analysis & Syntax Assistant", "details": "Developed full-stack web application leveraging AST parsers and FastAPI, delivering instant linting feedback in under 200ms."},
+                {"title": "Certified Associate Python Programmer (PCAP)", "details": "Formal credential validating mastery of object-oriented design, modules, and algorithm implementation."}
+            ]
+        ]
+
+        edu = custom_edu if custom_edu else fresher_educations[seed_idx]
+        proj = custom_proj if custom_proj else fresher_projects[seed_idx]
+        exp = fresher_experiences[seed_idx]
+        summary = fresher_summaries[seed_idx]
+
+        return {
+            "candidate_name": name,
+            "contact_line": contact,
+            "target_role": role,
+            "strategy_title": strat_title,
+            "strategy_description": strat_desc,
+            "ats_score": ats_score,
+            "variation_seed": variation_seed,
+            "fresher_mode": True,
+            "executive_summary": summary,
+            "skills": [
+                {"category": "Core Languages & Frameworks", "items": skills_list[:4]},
+                {"category": "Databases & Cloud Tooling", "items": skills_list[4:8] if len(skills_list) > 4 else ["PostgreSQL", "Docker", "Git", "REST APIs"]},
+                {"category": "Foundational Computer Science", "items": ["Data Structures", "Algorithms", "Object-Oriented Design", "Agile Sprints"]}
+            ],
+            "experience": exp,
+            "education": edu,
+            "projects_or_certifications": proj,
+            "full_markdown": f"# {name}\n{contact}\n\n**{role}**\n\n## Professional Summary\n{summary}\n\n## Education\n" + "\n".join([f"- **{e['degree']}** — {e['institution']} ({e['year']})\n  {e['details']}" for e in edu])
         }
+
+    # Experienced / Mid-Senior Candidates
+    role_noun = role.split(" ")[-1] if role else "Engineer"
+    senior_summaries = [
+        f"Accomplished {level} {role} recognized for delivering high-impact, revenue-generating software systems and reducing operational overhead. Proven history of optimizing low-latency architectures, eliminating infrastructure bottlenecks, and scaling distributed backends to 8M+ daily active requests with 99.99% availability.",
+        f"Systems-oriented {level} {role} specializing in resilient microservice architectures, high-concurrency event streaming, and cloud infrastructure. Track record of designing fault-tolerant distributed platforms, leading zero-downtime database migrations, and mentoring high-velocity engineering teams in clean code and testing rigor.",
+        f"Strategic {level} {role} with a proven track record of aligning technical roadmaps with business objectives, accelerating sprint cadence, and coaching top-tier cross-functional engineering squads. Adept at driving enterprise software modernization, establishing rigorous engineering standards, and delivering high-value SaaS capabilities.",
+        f"Product-focused {level} {role} passionate about rapid prototyping, data-driven user experimentation, and modern full-stack developer velocity. History of delivering customer-centric digital products from inception to scale, reducing Time-to-Interactive, and translating ambiguous user needs into reliable, elegant solutions."
+    ]
+
+    senior_experiences = [
+        # Seed 1: Quantitative & ROI-Driven
+        [
+            {
+                "title": f"Lead {role_noun}",
+                "company": "Vanguard Cloud Systems",
+                "period": "2022 – Present",
+                "location": data.get("location") or "San Francisco, CA",
+                "bullets": [
+                    "Spearheaded enterprise-scale backend infrastructure serving 8M+ daily active requests with 99.99% uptime.",
+                    "Accelerated deployment automation scripts, reducing engineer onboarding and release cycle times by 45%.",
+                    "Orchestrated architectural refactor that eliminated $180,000 in annual AWS compute overhead."
+                ]
+            },
+            {
+                "title": f"{role}",
+                "company": "Horizon Labs",
+                "period": "2019 – 2022",
+                "location": "Remote",
+                "bullets": [
+                    "Engineered full-lifecycle features from design to production rollout, boosting user engagement by 28%.",
+                    "Streamlined automated integration testing suites covering 85%+ of critical business logic."
+                ]
+            }
+        ],
+        # Seed 2: Technical Architecture & Systems
+        [
+            {
+                "title": f"Staff / Principal {role_noun}",
+                "company": "Apex Platform Systems",
+                "period": "2022 – Present",
+                "location": data.get("location") or "San Francisco, CA",
+                "bullets": [
+                    "Architected event-driven microservices processing 45,000+ events/sec using Apache Kafka and Redis, dropping P99 latency by 58%.",
+                    "Pioneered blue-green zero-downtime deployment pipelines across 14 Kubernetes clusters, cutting deployment failure rates below 0.1%.",
+                    "Engineered multi-region PostgreSQL disaster recovery and active-active replication, guaranteeing sub-5-minute recovery point objectives (RPO)."
+                ]
+            },
+            {
+                "title": f"Senior {role_noun}",
+                "company": "Strata Cloud Infrastructure",
+                "period": "2019 – 2022",
+                "location": "Austin, TX",
+                "bullets": [
+                    "Automated cloud infrastructure provisioning via Terraform and Ansible, shrinking developer environment spin-up from 4 hours to 8 minutes.",
+                    "Instituted centralized distributed tracing and observability with OpenTelemetry and Grafana, lowering MTTR by 52%."
+                ]
+            }
+        ],
+        # Seed 3: Strategic Leadership & Impact
+        [
+            {
+                "title": f"Engineering Lead & Senior {role_noun}",
+                "company": "Elevation Health Tech",
+                "period": "2021 – Present",
+                "location": data.get("location") or "New York, NY",
+                "bullets": [
+                    "Orchestrated technical strategy and roadmap delivery for 3 cross-functional product squads totaling 14 engineers, increasing sprint velocity by 40%.",
+                    "Instituted rigorous peer code review and architectural RFC governance, driving post-release incident volume down by 65%.",
+                    "Partnered with VP of Product to define quarterly OKRs and deliver customer-facing enterprise SaaS modules generating $2.4M ARR."
+                ]
+            },
+            {
+                "title": f"Technical Lead & Senior {role_noun}",
+                "company": "Luminary Digital",
+                "period": "2018 – 2021",
+                "location": "Boston, MA",
+                "bullets": [
+                    "Championed adoption of trunk-based development and continuous delivery, doubling team release cadence without regression.",
+                    "Mentored 6 junior and mid-level engineers, resulting in 4 promotions within an 18-month timeframe."
+                ]
+            }
+        ],
+        # Seed 4: Product Innovation & Agility
+        [
+            {
+                "title": f"Senior Product Engineer ({role_noun})",
+                "company": "NextGen Velocity Labs",
+                "period": "2022 – Present",
+                "location": data.get("location") or "Remote",
+                "bullets": [
+                    "Catapulted user retention by 32% through end-to-end delivery of an interactive, real-time collaboration engine using WebSockets and Next.js.",
+                    "Formulated A/B testing experimentation frameworks evaluating 40+ iterative UX variants, driving a 22% increase in signup conversion.",
+                    "Streamlined GraphQL and caching layer integration, cutting frontend Time-to-Interactive (TTI) from 2.8s to 750ms."
+                ]
+            },
+            {
+                "title": f"Full-Stack {role_noun}",
+                "company": "Pulse Interactive",
+                "period": "2019 – 2022",
+                "location": "Seattle, WA",
+                "bullets": [
+                    "Modernized legacy monolithic frontend into modular component library with Tailwind CSS and React, cutting bundle size by 48%.",
+                    "Devised asynchronous job queue processing with Celery and Redis, preventing UI blocking during peak traffic surges."
+                ]
+            }
+        ]
+    ]
+
+    senior_educations = [
+        [{"degree": "B.S. in Computer Science", "institution": "State University", "year": "Graduated with Honors", "details": "Focus on Systems Architecture and Algorithms"}],
+        [{"degree": "B.S. in Computer Engineering", "institution": "Institute of Technology", "year": "Magna Cum Laude", "details": "Specialization in Distributed Systems and Cloud Computing"}],
+        [{"degree": "B.S. in Software Systems & Engineering", "institution": "Metropolitan University", "year": "Dean's List", "details": "Double Minor in Engineering Leadership & Applied Mathematics"}],
+        [{"degree": "B.S. in Computer Science & Human-Computer Interaction", "institution": "State University", "year": "Graduated with Distinction", "details": "Senior Honors Capstone in Interactive Scalable Web Services"}]
+    ]
+
+    senior_projects = [
+        [
+            {"title": "Cloud Architecture & High Scalability Specialization", "details": "Advanced certification covering distributed systems and microservices patterns"},
+            {"title": "High-Throughput Analytics Pipeline", "details": "Constructed event ingestion pipeline processing 25M events/day with Apache Spark and Parquet."}
+        ],
+        [
+            {"title": "Zero-Downtime Microservices Migration Framework", "details": "Architected containerized orchestration template with gRPC service mesh and Istio ingress."},
+            {"title": "AWS Certified Solutions Architect – Professional", "details": "Validated comprehensive expertise in designing secure, resilient, and fault-tolerant cloud architectures."}
+        ],
+        [
+            {"title": "Enterprise Multi-Tenant SaaS Platform", "details": "Spearheaded tenant isolation architecture and role-based access control (RBAC) compliant with SOC 2 Type II."},
+            {"title": "Certified ScrumMaster (CSM) & Agile Leadership", "details": "Formal credentialing in high-velocity sprint facilitation, backlog refinement, and stakeholder communication."}
+        ],
+        [
+            {"title": "Real-Time AI Workspace Collaboration Tool", "details": "Built multi-user interactive canvas supporting live cursor presence, markdown exports, and collaborative editing."},
+            {"title": "Certified Kubernetes Application Developer (CKAD)", "details": "Demonstrated ability to design, build, and deploy cloud-native applications on Kubernetes."}
+        ]
+    ]
+
+    edu = custom_edu if custom_edu else senior_educations[seed_idx]
+    proj = custom_proj if custom_proj else senior_projects[seed_idx]
+    exp = senior_experiences[seed_idx]
+    summary = senior_summaries[seed_idx]
+
+    # If candidate supplied custom raw experience notes, elevate them
+    exp_raw = data.get("experience_raw", "").strip()
+    if exp_raw and len(exp_raw) > 30:
+        lines = [line.strip().lstrip("•-* ") for line in exp_raw.split("\n") if line.strip()]
+        if len(lines) >= 2:
+            elevated_bullets = []
+            verb_catalog = [
+                ["Spearheaded", "Accelerated", "Orchestrated", "Engineered", "Streamlined"],
+                ["Architected", "Pioneered", "Automated", "Delivered", "Championed"],
+                ["Transformed", "Optimized", "Scaled", "Instituted", "Revamped"],
+                ["Devised", "Formulated", "Modernized", "Catapulted", "Established"]
+            ]
+            verbs = verb_catalog[seed_idx]
+            for i, line in enumerate(lines[:6]):
+                verb = verbs[i % len(verbs)]
+                # Ensure starts with power verb
+                first_word = line.split(" ")[0].lower()
+                if first_word in ["responsible", "worked", "helped", "assisted", "did", "handled", "managed"]:
+                    cleaned = line.split(" ", 1)[-1]
+                    elevated_bullets.append(f"{verb} {cleaned}")
+                elif not any(line.startswith(v) for v in ["Spearheaded", "Architected", "Engineered", "Pioneered", "Orchestrated"]):
+                    elevated_bullets.append(f"{verb} {line[0].lower() + line[1:]}")
+                else:
+                    elevated_bullets.append(line)
+            
+            if elevated_bullets:
+                exp = [
+                    {
+                        "title": exp[0]["title"],
+                        "company": exp[0]["company"],
+                        "period": exp[0]["period"],
+                        "location": exp[0]["location"],
+                        "bullets": elevated_bullets[:3]
+                    },
+                    {
+                        "title": exp[1]["title"],
+                        "company": exp[1]["company"],
+                        "period": exp[1]["period"],
+                        "location": exp[1]["location"],
+                        "bullets": elevated_bullets[3:6] if len(elevated_bullets) > 3 else exp[1]["bullets"]
+                    }
+                ]
+
+    full_md = (
+        f"# {name}\n{contact}\n\n**{role}**\n\n## Professional Summary\n{summary}\n\n"
+        f"## Core Competencies & Skills\n"
+        f"- **Core Technical Stack**: {', '.join(skills_list[:4])}\n"
+        f"- **Cloud, Data & Tooling**: {', '.join(skills_list[4:8] if len(skills_list) > 4 else ['Docker', 'AWS', 'PostgreSQL', 'Git'])}\n\n"
+        f"## Professional Experience\n"
+    )
+    for job in exp:
+        full_md += f"\n### {job['title']} — {job['company']}\n*{job['period']} | {job.get('location', '')}*\n"
+        for b in job.get("bullets", []):
+            full_md += f"- {b}\n"
+
+    full_md += "\n## Education\n"
+    for e in edu:
+        full_md += f"- **{e['degree']}**, {e['institution']} ({e['year']})\n  {e['details']}\n"
+
+    full_md += "\n## Projects & Certifications\n"
+    for p in proj:
+        full_md += f"- **{p['title']}**: {p['details']}\n"
 
     return {
         "candidate_name": name,
@@ -603,54 +931,16 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
         "ats_score": ats_score,
         "variation_seed": variation_seed,
         "fresher_mode": False,
-        "executive_summary": (
-            f"Accomplished {level} {role} recognized for {strat_desc.lower()} "
-            f"Proven history of turning complex technical challenges into robust production solutions while mentoring high-performing teams "
-            f"and driving operational excellence across cloud-native environments."
-        ),
+        "executive_summary": summary,
         "skills": [
             {"category": "Core Competencies", "items": skills_list[:4]},
             {"category": "Technical & Tooling Stack", "items": skills_list[4:8] if len(skills_list) > 4 else ["Kubernetes", "GraphQL", "Redis", "Terraform"]},
             {"category": "Practices & Leadership", "items": ["Agile / Scrum", "Code Reviews", "Cross-team Collaboration", "High-Availability Design"]}
         ],
-        "experience": [
-            {
-                "title": f"Lead {role.split(' ')[-1]}",
-                "company": "Vanguard Cloud Systems",
-                "period": "2022 – Present",
-                "location": "San Francisco, CA",
-                "bullets": [
-                    f"{verbs[0]} enterprise-scale backend infrastructure serving 8M+ daily active requests with 99.99% uptime.",
-                    f"{verbs[1]} deployment automation scripts, reducing engineer onboarding and release cycle times by 45%.",
-                    f"{verbs[2]} architectural refactor that eliminated $180,000 in annual AWS compute overhead."
-                ]
-            },
-            {
-                "title": f"{role}",
-                "company": "Horizon Labs",
-                "period": "2019 – 2022",
-                "location": "Remote",
-                "bullets": [
-                    f"{verbs[3]} full-lifecycle features from design to production rollout, boosting user engagement by 28%.",
-                    f"{verbs[4]} automated integration testing suites covering 85%+ of critical business logic."
-                ]
-            }
-        ],
-        "education": [
-            {
-                "degree": "B.S. in Computer Science",
-                "institution": "State University",
-                "year": "Graduated with Honors",
-                "details": "Focus on Systems Architecture and Algorithms"
-            }
-        ],
-        "projects_or_certifications": [
-            {
-                "title": "Cloud Architecture & High Scalability Specialization",
-                "details": "Advanced certification covering distributed systems and microservices patterns"
-            }
-        ],
-        "full_markdown": f"# {name}\n{contact}\n\n**{role}**\n\n## Summary\nAccomplished {level} {role}..."
+        "experience": exp,
+        "education": edu,
+        "projects_or_certifications": proj,
+        "full_markdown": full_md
     }
 
 

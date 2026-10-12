@@ -339,10 +339,10 @@
     }
     .template-pills-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 10px;
     }
-    @media (max-width: 960px) {
+    @media (max-width: 768px) {
       .template-pills-row {
         grid-template-columns: 1fr;
       }
@@ -1248,6 +1248,354 @@
       font-variant-numeric: tabular-nums;
     }
 
+    /* --- Form Passport Photo Card --- */
+    .passport-photo-upload-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(59, 130, 246, 0.04));
+      border: 1.5px dashed rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      margin-top: 12px;
+      transition: all 0.2s ease;
+    }
+    .dark .passport-photo-upload-card {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .passport-photo-preview-wrap {
+      flex-shrink: 0;
+    }
+    .passport-photo-thumb-frame {
+      width: 60px;
+      height: 77px; /* 35mm x 45mm ratio */
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1.5px solid #cbd5e1;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+    .dark .passport-photo-thumb-frame {
+      border-color: #3b4252;
+      background: #1e293b;
+    }
+    .passport-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .passport-thumb-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #94a3b8;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .passport-photo-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* --- Template 4: Executive Portrait (Passport Photo CV) --- */
+    .photo-cv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      gap: 18px;
+    }
+    .photo-cv-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .photo-cv-candidate-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 850;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin: 0 0 3px;
+      line-height: 1.15;
+    }
+    .photo-cv-target-role {
+      font-size: 0.95rem;
+      font-weight: 750;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 6px;
+    }
+    .photo-cv-contact-line {
+      font-size: 0.78rem;
+      color: #475569;
+      line-height: 1.45;
+    }
+    .photo-cv-photo-container {
+      flex-shrink: 0;
+      position: relative;
+      width: 105px;
+      height: 135px; /* Standard passport photo ratio ~ 35mm x 45mm */
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #0f172a;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .photo-cv-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-cv-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 750;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      text-align: center;
+      padding: 6px;
+      pointer-events: none;
+    }
+    .photo-cv-photo-container:hover .photo-cv-overlay {
+      opacity: 1;
+    }
+    .photo-cv-grid {
+      display: flex;
+      gap: 18px;
+    }
+    .photo-cv-sidebar {
+      width: 33%;
+      flex-shrink: 0;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 12px;
+      box-sizing: border-box;
+    }
+    .photo-cv-main {
+      width: 67%;
+      flex-grow: 1;
+      min-width: 0;
+    }
+    .photo-cv-side-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      text-transform: uppercase;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 4px;
+      margin: 0 0 10px;
+    }
+    .photo-cv-main-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      text-transform: uppercase;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 4px;
+      margin: 0 0 12px;
+    }
+    .photo-cv-summary-card {
+      background: rgba(37, 99, 235, 0.04);
+      border-left: 3px solid #2563eb;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+      font-size: 0.83rem;
+      line-height: 1.55;
+      color: #334155;
+    }
+    .photo-cv-job-entry {
+      margin-bottom: 13px;
+    }
+    .photo-cv-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+    .photo-cv-job-title {
+      font-size: 0.89rem;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .photo-cv-job-company {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    .photo-cv-job-meta {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .photo-cv-bullets {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.81rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .photo-cv-bullets li {
+      margin-bottom: 3px;
+    }
+    .photo-cv-chip {
+      display: inline-block;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 2px;
+    }
+
+    /* --- Template 5: Nordic Elegant --- */
+    .nordic-header {
+      text-align: center;
+      border-bottom: 1px solid #0f172a;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .nordic-header::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: #cbd5e1;
+      margin-top: 3px;
+    }
+    .nordic-candidate-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #0f172a;
+      margin: 0 0 4px;
+      line-height: 1.1;
+    }
+    .nordic-target-role {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #475569;
+      margin: 0 0 8px;
+    }
+    .nordic-contact-line {
+      font-size: 0.76rem;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+    .nordic-section-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1e3a8a;
+      border-bottom: 1px solid #1e3a8a;
+      padding-bottom: 3px;
+      margin: 16px 0 10px;
+    }
+    .nordic-summary-text {
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: #334155;
+      margin: 0 0 14px;
+    }
+    .nordic-job-entry {
+      margin-bottom: 14px;
+    }
+    .nordic-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .nordic-job-title {
+      font-size: 0.88rem;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .nordic-job-company {
+      font-size: 0.84rem;
+      font-style: italic;
+      color: #475569;
+    }
+    .nordic-job-meta {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 1px 7px;
+      border-radius: 4px;
+    }
+    .nordic-bullets {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.81rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .nordic-bullets li {
+      margin-bottom: 3px;
+    }
+    .nordic-skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .nordic-skill-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+    .nordic-skill-box strong {
+      color: #1e3a8a;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .nordic-edu-entry, .nordic-proj-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.82rem;
+      margin-bottom: 5px;
+    }
+
     /* ==============================================================
        NEW FEATURE 1-7 STYLES: Live Preview, Improver, Fresher, JD Matcher,
        X-Ray, Version Compare, DOCX/PDF
@@ -1930,11 +2278,13 @@
         width: 100% !important;
       }
       .sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry,
-      .classic-skills-grid, .modern-grid-body, .minimal-skills-row {
+      .photo-cv-job-entry, .nordic-job-entry, .photo-cv-grid, .photo-cv-photo-container,
+      .classic-skills-grid, .modern-grid-body, .minimal-skills-row, .nordic-skills-grid {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
-      header, .classic-section-heading, .modern-side-heading, .minimal-section-heading {
+      header, .classic-section-heading, .modern-side-heading, .minimal-section-heading,
+      .photo-cv-header, .photo-cv-main-heading, .nordic-header, .nordic-section-heading {
         page-break-after: avoid !important;
         break-after: avoid !important;
       }
@@ -2136,6 +2486,40 @@
               <div>
                 <label>Industry / Domain</label>
                 <input id="input-industry" name="industry" value="{{ prefill.industry if prefill else 'Technology & Software' }}" placeholder="e.g. FinTech, AI / ML, Healthcare">
+              </div>
+            </div>
+
+            <!-- Candidate Passport Photo Upload Control -->
+            <div class="passport-photo-upload-card" id="passport-photo-upload-card">
+              <div class="passport-photo-preview-wrap">
+                <div class="passport-photo-thumb-frame" id="passport-photo-thumb-frame" title="Click to upload or change candidate photograph">
+                  <img id="passport-photo-preview-img" src="" alt="Passport Photo" class="passport-thumb-img" style="display: none;">
+                  <div id="passport-photo-placeholder" class="passport-thumb-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>No Photo</span>
+                  </div>
+                </div>
+              </div>
+              <div class="passport-photo-details">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 0.84rem; color: var(--ink);">Candidate Photograph (Passport Size)</strong>
+                  <span class="badge-pill" style="background: rgba(59, 130, 246, 0.12); color: #2563eb; font-size: 0.68rem; font-weight: 700; padding: 1px 7px; border-radius: 999px;">35mm × 45mm</span>
+                </div>
+                <p style="margin: 2px 0 8px; font-size: 0.72rem; color: var(--ink-secondary); line-height: 1.4;">
+                  Used in <strong>Executive Portrait</strong> & photo-enabled templates. Click to upload or drag & drop image.
+                </p>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" class="button secondary" id="choose-passport-photo-btn" style="padding: 5px 12px; font-size: 0.76rem;">
+                    <span>📷 Choose Photo</span>
+                  </button>
+                  <button type="button" class="button secondary" id="remove-passport-photo-btn" style="padding: 5px 10px; font-size: 0.76rem; color: #ef4444; display: none;">
+                    <span>Remove</span>
+                  </button>
+                  <input type="file" id="passport-photo-input" name="passport_photo" accept="image/png,image/jpeg,image/jpg,image/webp" style="display: none;">
+                </div>
               </div>
             </div>
           </div>
@@ -2375,6 +2759,26 @@
                   </div>
                   <span class="dropdown-active-pill">PDF</span>
                 </button>
+                <button type="button" class="dropdown-item" data-download-template="photo">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">📸</span>
+                    <div class="dropdown-item-text">
+                      <strong>Executive Portrait (PDF)</strong>
+                      <small>Passport-Photo European & Global CV Format</small>
+                    </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
+                </button>
+                <button type="button" class="dropdown-item" data-download-template="nordic">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">🏛️</span>
+                    <div class="dropdown-item-text">
+                      <strong>Nordic Elegant (PDF)</strong>
+                      <small>Refined Editorial Serif & Slate Accents</small>
+                    </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
+                </button>
 
                 <!-- Feature 7: Native DOCX Export Option -->
                 <div class="dropdown-divider"></div>
@@ -2383,7 +2787,7 @@
                     <span class="dropdown-item-icon">📝</span>
                     <div class="dropdown-item-text">
                       <strong>Microsoft Word (.docx)</strong>
-                      <small>Preserves fonts, margins & page breaks</small>
+                      <small>Preserves fonts, margins, photos & page breaks</small>
                     </div>
                   </div>
                   <span class="dropdown-active-pill" style="background: rgba(37, 99, 235, 0.15); color: #2563eb;">DOCX</span>
@@ -2393,8 +2797,8 @@
                   <div class="dropdown-item-left">
                     <span class="dropdown-item-icon">📦</span>
                     <div class="dropdown-item-text">
-                      <strong>Download All 3 Templates</strong>
-                      <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
+                      <strong>Download All 5 Templates</strong>
+                      <small>Export Classic, Modern, Minimal, Photo & Nordic (5 PDFs)</small>
                     </div>
                   </div>
                 </button>
@@ -2413,7 +2817,7 @@
           <div class="template-selector-header">
             <span class="template-selector-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
-              RESUME TEMPLATE STYLES (3 AVAILABLE)
+              RESUME TEMPLATE STYLES (5 AVAILABLE)
             </span>
             <span class="template-selector-hint">Click below to switch template instantly · Zero latency</span>
           </div>
@@ -2441,6 +2845,22 @@
                 <span class="template-pill-desc">Clean linear 1-page compact tech style</span>
               </div>
               <span class="template-pill-badge new-badge">Compact</span>
+            </button>
+            <button type="button" class="template-pill" data-template="photo" id="pill-photo" title="Executive Portrait with Passport Photo">
+              <span class="template-pill-icon">📸</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Executive Portrait</strong>
+                <span class="template-pill-desc">Passport photo European/Global CV style</span>
+              </div>
+              <span class="template-pill-badge new-badge" style="background:#2563eb;">Photo CV</span>
+            </button>
+            <button type="button" class="template-pill" data-template="nordic" id="pill-nordic" title="Nordic Elegant Editorial Layout">
+              <span class="template-pill-icon">🏛️</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Nordic Elegant</strong>
+                <span class="template-pill-desc">Refined serif typography & slate accents</span>
+              </div>
+              <span class="template-pill-badge new-badge" style="background:#1e3a8a;">Editorial</span>
             </button>
           </div>
         </div>
@@ -2745,6 +3165,186 @@
               </section>
             {% endif %}
           </div>
+
+          <!-- ================= TEMPLATE 4: EXECUTIVE PORTRAIT (PHOTO CV) ================= -->
+          <div class="template-view" id="template-view-photo" data-template-name="Executive Portrait" style="display: none;">
+            <header class="photo-cv-header">
+              <div class="photo-cv-header-left">
+                <h1 class="photo-cv-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+                <div class="photo-cv-target-role live-role" contenteditable="true">{{ r.target_role }}</div>
+                <div class="photo-cv-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+              </div>
+              <div class="photo-cv-photo-container" id="photo-cv-frame" title="Click to upload or replace passport photo">
+                <img class="photo-cv-img live-photo-img" id="photo-cv-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 128' fill='%2394a3b8'><rect width='100' height='128' fill='%23f1f5f9'/><circle cx='50' cy='42' r='22' fill='%23cbd5e1'/><path d='M15 110 C15 78, 85 78, 85 110 Z' fill='%23cbd5e1'/></svg>" alt="Candidate Passport Photo">
+                <div class="photo-cv-overlay">
+                  <span>📷 Change Photo</span>
+                </div>
+              </div>
+            </header>
+
+            <div class="photo-cv-summary-card">
+              <strong style="display: block; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #2563eb; margin-bottom: 3px;">Executive Profile Summary</strong>
+              <div class="live-summary" contenteditable="true">{{ r.executive_summary }}</div>
+            </div>
+
+            <div class="photo-cv-grid">
+              <!-- Left Sidebar Column: Skills, Education, Certifications -->
+              <div class="photo-cv-sidebar">
+                <section class="sheet-section" style="margin-bottom: 14px;">
+                  <h3 class="photo-cv-side-heading">Core Skills & Stack</h3>
+                  <div class="live-skills-photo">
+                    {% for skill_group in r.skills %}
+                      <div style="margin-bottom: 8px;">
+                        <span style="font-size: 0.72rem; font-weight: 750; color: #0f172a; display: block; margin-bottom: 3px;">{{ skill_group.category }}</span>
+                        <div>
+                          {% if skill_group['items'] is iterable and skill_group['items'] is not string %}
+                            {% for item in skill_group['items'] %}
+                              <span class="photo-cv-chip">{{ item }}</span>
+                            {% endfor %}
+                          {% else %}
+                            <span class="photo-cv-chip">{{ skill_group['items'] }}</span>
+                          {% endif %}
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </section>
+
+                <section class="sheet-section" style="margin-bottom: 14px;">
+                  <h3 class="photo-cv-side-heading">Education</h3>
+                  <div class="live-education-photo">
+                    {% for edu in r.education %}
+                      <div style="margin-bottom: 8px; font-size: 0.78rem;">
+                        <strong style="color: #0f172a; display: block;">{{ edu.degree }}</strong>
+                        <div style="color: #2563eb; font-weight: 600;">{{ edu.institution }}</div>
+                        <div class="muted" style="font-size: 0.72rem;">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </section>
+
+                {% if r.projects_or_certifications %}
+                  <section class="sheet-section">
+                    <h3 class="photo-cv-side-heading">Credentials</h3>
+                    <div class="live-projects-photo">
+                      {% for proj in r.projects_or_certifications %}
+                        <div style="margin-bottom: 6px; font-size: 0.76rem;">
+                          <strong style="color: #0f172a;">{{ proj.title }}</strong>
+                          <div class="muted" style="font-size: 0.71rem;">{{ proj.details }}</div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </section>
+                {% endif %}
+              </div>
+
+              <!-- Right Main Column: Experience -->
+              <div class="photo-cv-main">
+                <section class="sheet-section">
+                  <h3 class="photo-cv-main-heading">Professional Experience</h3>
+                  <div class="live-experience-photo">
+                    {% for job in r.experience %}
+                      <div class="photo-cv-job-entry">
+                        <div class="photo-cv-job-header">
+                          <div>
+                            <strong class="photo-cv-job-title">{{ job.title }}</strong>
+                            <span class="photo-cv-job-company"> · {{ job.company }}</span>
+                          </div>
+                          <span class="photo-cv-job-meta">{{ job.period }}{% if job.location %} · {{ job.location }}{% endif %}</span>
+                        </div>
+                        <ul class="photo-cv-bullets">
+                          {% for bullet in job.bullets %}
+                            <li class="resume-bullet-wrap">
+                              <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                              <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TEMPLATE 5: NORDIC ELEGANT ================= -->
+          <div class="template-view" id="template-view-nordic" data-template-name="Nordic Elegant" style="display: none;">
+            <header class="nordic-header">
+              <h1 class="nordic-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+              <div class="nordic-target-role live-role" contenteditable="true">{{ r.target_role }}</div>
+              <div class="nordic-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+            </header>
+
+            <section class="sheet-section">
+              <h2 class="nordic-section-heading">Executive Profile</h2>
+              <p class="nordic-summary-text live-summary" contenteditable="true">{{ r.executive_summary }}</p>
+            </section>
+
+            <section class="sheet-section">
+              <h2 class="nordic-section-heading">Professional Experience</h2>
+              <div class="live-experience-nordic">
+                {% for job in r.experience %}
+                  <div class="nordic-job-entry">
+                    <div class="nordic-job-header">
+                      <div>
+                        <strong class="nordic-job-title">{{ job.title }}</strong>
+                        <span class="nordic-job-company"> — {{ job.company }}</span>
+                      </div>
+                      <span class="nordic-job-meta">{{ job.period }}{% if job.location %} · {{ job.location }}{% endif %}</span>
+                    </div>
+                    <ul class="nordic-bullets">
+                      {% for bullet in job.bullets %}
+                        <li class="resume-bullet-wrap">
+                          <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                          <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="sheet-section">
+              <h2 class="nordic-section-heading">Core Competencies</h2>
+              <div class="nordic-skills-grid live-skills-nordic">
+                {% for skill_group in r.skills %}
+                  <div class="nordic-skill-box">
+                    <strong>{{ skill_group.category }}</strong>
+                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            {% if r.education %}
+              <section class="sheet-section">
+                <h2 class="nordic-section-heading">Education</h2>
+                <div class="live-education-nordic">
+                  {% for edu in r.education %}
+                    <div class="nordic-edu-entry">
+                      <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
+                      <div class="nordic-job-meta">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </section>
+            {% endif %}
+
+            {% if r.projects_or_certifications %}
+              <section class="sheet-section">
+                <h2 class="nordic-section-heading">Certifications & Honors</h2>
+                <div class="live-projects-nordic">
+                  {% for proj in r.projects_or_certifications %}
+                    <div class="nordic-proj-entry">
+                      <div><strong>{{ proj.title }}</strong>: {{ proj.details }}</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </section>
+            {% endif %}
+          </div>
           </div>
         </div>
       </div>
@@ -2932,6 +3532,423 @@
         });
       });
 
+      // ================= CANDIDATE PASSPORT PHOTOGRAPH CONTROLLER =================
+      const photoInput = document.getElementById('passport-photo-input');
+      const choosePhotoBtn = document.getElementById('choose-passport-photo-btn');
+      const removePhotoBtn = document.getElementById('remove-passport-photo-btn');
+      const photoThumbFrame = document.getElementById('passport-photo-thumb-frame');
+      const photoThumbImg = document.getElementById('passport-photo-preview-img');
+      const photoPlaceholder = document.getElementById('passport-photo-placeholder');
+      const resumePhotoFrame = document.getElementById('photo-cv-frame');
+      const defaultAvatarSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 128' fill='%2394a3b8'><rect width='100' height='128' fill='%23f1f5f9'/><circle cx='50' cy='42' r='22' fill='%23cbd5e1'/><path d='M15 110 C15 78, 85 78, 85 110 Z' fill='%23cbd5e1'/></svg>";
+
+      let currentPhotoDataUrl = localStorage.getItem('careerforge_passport_photo') || null;
+
+      function setCandidatePhoto(dataUrl) {
+        currentPhotoDataUrl = dataUrl;
+        if (dataUrl) {
+          try { localStorage.setItem('careerforge_passport_photo', dataUrl); } catch(e){}
+          if (photoThumbImg) {
+            photoThumbImg.src = dataUrl;
+            photoThumbImg.style.display = 'block';
+          }
+          if (photoPlaceholder) photoPlaceholder.style.display = 'none';
+          if (removePhotoBtn) removePhotoBtn.style.display = 'inline-block';
+          document.querySelectorAll('.live-photo-img').forEach(img => {
+            img.src = dataUrl;
+          });
+        } else {
+          try { localStorage.removeItem('careerforge_passport_photo'); } catch(e){}
+          if (photoThumbImg) {
+            photoThumbImg.src = '';
+            photoThumbImg.style.display = 'none';
+          }
+          if (photoPlaceholder) photoPlaceholder.style.display = 'flex';
+          if (removePhotoBtn) removePhotoBtn.style.display = 'none';
+          document.querySelectorAll('.live-photo-img').forEach(img => {
+            img.src = defaultAvatarSvg;
+          });
+          if (photoInput) photoInput.value = '';
+        }
+      }
+
+      // Initialize saved photo on startup
+      if (currentPhotoDataUrl) {
+        setCandidatePhoto(currentPhotoDataUrl);
+      }
+
+      if (choosePhotoBtn && photoInput) {
+        choosePhotoBtn.addEventListener('click', (e) => { e.stopPropagation(); photoInput.click(); });
+      }
+      if (photoThumbFrame && photoInput) {
+        photoThumbFrame.addEventListener('click', (e) => { e.stopPropagation(); photoInput.click(); });
+      }
+      if (resumePhotoFrame && photoInput) {
+        resumePhotoFrame.addEventListener('click', (e) => { e.stopPropagation(); photoInput.click(); });
+      }
+      if (removePhotoBtn) {
+        removePhotoBtn.addEventListener('click', (e) => { e.stopPropagation(); setCandidatePhoto(null); });
+      }
+
+      if (photoInput) {
+        photoInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) {
+            if (!file.type.startsWith('image/')) {
+              alert('Please select an image file (PNG, JPG, WEBP).');
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              setCandidatePhoto(evt.target.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Support drag-and-drop onto resume photo frame or thumb
+      [photoThumbFrame, resumePhotoFrame].forEach(frame => {
+        if (!frame) return;
+        ['dragenter', 'dragover'].forEach(evt => {
+          frame.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); frame.style.opacity = '0.75'; });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+          frame.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); frame.style.opacity = '1'; });
+        });
+        frame.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          if (dt && dt.files && dt.files.length > 0) {
+            const file = dt.files[0];
+            if (file.type.startsWith('image/')) {
+              const reader = new FileReader();
+              reader.onload = (evt) => setCandidatePhoto(evt.target.result);
+              reader.readAsDataURL(file);
+            }
+          }
+        });
+      });
+
+      // ================= APPLY GENERATED RESUME DATA TO ALL VIEWS =================
+      function applyGeneratedResumeToUI(r) {
+        if (!r) return;
+
+        // 1. Candidate Name, Target Role, Contact Line
+        if (r.candidate_name) {
+          if (inputName) inputName.value = r.candidate_name;
+          document.querySelectorAll('.live-name').forEach(el => el.textContent = r.candidate_name);
+        }
+        if (r.target_role) {
+          if (inputTargetRole) inputTargetRole.value = r.target_role;
+          document.querySelectorAll('.live-role').forEach(el => el.textContent = r.target_role);
+        }
+        if (r.contact_line) {
+          document.querySelectorAll('.live-contact').forEach(el => el.textContent = r.contact_line);
+        }
+
+        // 2. Strategy Banner & Seed
+        const strategyTag = document.getElementById('sheet-strategy-tag');
+        const strategyDesc = document.getElementById('sheet-strategy-desc');
+        if (strategyTag && r.strategy_title) {
+          strategyTag.textContent = `Generation #${r.variation_seed || 1} · ${r.strategy_title}`;
+        }
+        if (strategyDesc && r.strategy_description) {
+          strategyDesc.textContent = r.strategy_description;
+        }
+
+        // 3. ATS Score Badge
+        if (r.ats_score) {
+          const atsVal = document.getElementById('ats-score-display-val');
+          if (atsVal) atsVal.innerHTML = `${r.ats_score}<span class="ats-score-max">/100</span>`;
+        }
+
+        // 4. Executive Summary
+        if (r.executive_summary) {
+          document.querySelectorAll('.live-summary').forEach(el => el.textContent = r.executive_summary);
+        }
+
+        // 5. Skills across all 5 templates
+        if (r.skills && Array.isArray(r.skills)) {
+          // Classic Grid
+          const classicGrid = document.querySelector('.live-skills-grid');
+          if (classicGrid) {
+            classicGrid.innerHTML = r.skills.map(g => `
+              <div class="classic-skill-category">
+                <strong>${g.category}:</strong>
+                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+              </div>
+            `).join('');
+          }
+          // Modern Sidebar
+          const modernSkills = document.querySelector('.live-skills-modern');
+          if (modernSkills) {
+            modernSkills.innerHTML = r.skills.map(g => `
+              <div class="modern-skill-group">
+                <span class="modern-skill-cat-title">${g.category}</span>
+                <div class="modern-chips-wrap">
+                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="modern-skill-chip">${item}</span>`).join('')}
+                </div>
+              </div>
+            `).join('');
+          }
+          // Minimal
+          const minimalSkills = document.querySelector('.live-skills-minimal');
+          if (minimalSkills) {
+            minimalSkills.innerHTML = r.skills.map(g => `
+              <div class="minimal-skill-item">
+                <strong>${g.category}:</strong>
+                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+              </div>
+            `).join('');
+          }
+          // Photo
+          const photoSkills = document.querySelector('.live-skills-photo');
+          if (photoSkills) {
+            photoSkills.innerHTML = r.skills.map(g => `
+              <div style="margin-bottom: 8px;">
+                <span style="font-size: 0.72rem; font-weight: 750; color: #0f172a; display: block; margin-bottom: 3px;">${g.category}</span>
+                <div>
+                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="photo-cv-chip">${item}</span>`).join('')}
+                </div>
+              </div>
+            `).join('');
+          }
+          // Nordic
+          const nordicSkills = document.querySelector('.live-skills-nordic');
+          if (nordicSkills) {
+            nordicSkills.innerHTML = r.skills.map(g => `
+              <div class="nordic-skill-box">
+                <strong>${g.category}</strong>
+                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+              </div>
+            `).join('');
+          }
+
+          // Also sync to inputSkills
+          if (inputSkills) {
+            const allItems = [];
+            r.skills.forEach(g => {
+              if (Array.isArray(g.items)) allItems.push(...g.items);
+              else allItems.push(g.items);
+            });
+            inputSkills.value = allItems.join(', ');
+          }
+        }
+
+        // 6. Experience across all 5 templates
+        if (r.experience && Array.isArray(r.experience)) {
+          const makeBulletHtml = (bullets) => bullets.map(b => `
+            <li class="resume-bullet-wrap">
+              <span class="bullet-text" contenteditable="true">${b}</span>
+              <button type="button" class="bullet-ai-action" data-bullet="${b.replace(/"/g, '&quot;')}" title="Rewrite this bullet point with AI">✨ Improve</button>
+            </li>
+          `).join('');
+
+          // Classic Experience
+          const classicExpList = document.querySelector('.live-experience-list');
+          if (classicExpList) {
+            classicExpList.innerHTML = r.experience.map(job => `
+              <div class="classic-job-entry">
+                <div class="classic-job-header">
+                  <div>
+                    <strong class="classic-job-title">${job.title}</strong>
+                    <span class="classic-job-company"> · ${job.company}</span>
+                  </div>
+                  <span class="classic-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                </div>
+                <ul class="classic-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Modern Experience
+          const modernExpList = document.querySelector('.live-experience-modern');
+          if (modernExpList) {
+            modernExpList.innerHTML = r.experience.map(job => `
+              <div class="modern-timeline-item">
+                <div class="modern-timeline-node"></div>
+                <div class="modern-job-header">
+                  <div>
+                    <strong class="modern-job-role">${job.title}</strong>
+                    <span class="modern-job-company"> · ${job.company}</span>
+                  </div>
+                  <span class="modern-job-period-badge">${job.period}</span>
+                </div>
+                <ul class="modern-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Minimal Experience
+          const minimalExpList = document.querySelector('.live-experience-minimal');
+          if (minimalExpList) {
+            minimalExpList.innerHTML = r.experience.map(job => `
+              <div class="minimal-job-entry">
+                <div class="minimal-job-header">
+                  <div class="minimal-job-title-company">
+                    <strong>${job.title}</strong> — ${job.company}
+                  </div>
+                  <div class="minimal-job-meta">${job.period}</div>
+                </div>
+                <ul class="minimal-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Photo Experience
+          const photoExpList = document.querySelector('.live-experience-photo');
+          if (photoExpList) {
+            photoExpList.innerHTML = r.experience.map(job => `
+              <div class="photo-cv-job-entry">
+                <div class="photo-cv-job-header">
+                  <div>
+                    <strong class="photo-cv-job-title">${job.title}</strong>
+                    <span class="photo-cv-job-company"> · ${job.company}</span>
+                  </div>
+                  <span class="photo-cv-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                </div>
+                <ul class="photo-cv-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Nordic Experience
+          const nordicExpList = document.querySelector('.live-experience-nordic');
+          if (nordicExpList) {
+            nordicExpList.innerHTML = r.experience.map(job => `
+              <div class="nordic-job-entry">
+                <div class="nordic-job-header">
+                  <div>
+                    <strong class="nordic-job-title">${job.title}</strong>
+                    <span class="nordic-job-company"> — ${job.company}</span>
+                  </div>
+                  <span class="nordic-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                </div>
+                <ul class="nordic-bullets">
+                  ${makeBulletHtml(job.bullets || [])}
+                </ul>
+              </div>
+            `).join('');
+          }
+
+          // Sync bullets into inputExperienceRaw
+          if (inputExperienceRaw) {
+            const allBullets = [];
+            r.experience.forEach(job => {
+              (job.bullets || []).forEach(b => allBullets.push('• ' + b));
+            });
+            if (allBullets.length > 0) inputExperienceRaw.value = allBullets.join('\n');
+          }
+        }
+
+        // Re-attach bullet action listeners
+        attachBulletActionListeners();
+
+        // Subtle animation to celebrate new generation
+        const sheet = document.getElementById('resume-sheet');
+        if (sheet) {
+          sheet.style.transition = 'box-shadow 0.35s ease, transform 0.35s ease';
+          sheet.style.boxShadow = '0 0 35px rgba(99, 102, 241, 0.45)';
+          sheet.style.transform = 'scale(1.008)';
+          setTimeout(() => {
+            sheet.style.boxShadow = '';
+            sheet.style.transform = '';
+          }, 450);
+        }
+      }
+
+      // ================= FEATURE: GENERATE DIFFERENT VARIATION ENGINE =================
+      if (regenBtn) {
+        regenBtn.addEventListener('click', async () => {
+          let currentSeed = parseInt(seedInput ? seedInput.value : 1, 10);
+          if (isNaN(currentSeed) || currentSeed < 1) currentSeed = 1;
+          const nextSeed = currentSeed + 1;
+          if (seedInput) seedInput.value = nextSeed;
+          if (variationBadge) variationBadge.textContent = `#${nextSeed + 1}`;
+
+          // Rotate narrative strategy to guarantee fresh framing across seeds
+          const strategyRadios = document.querySelectorAll('input[name="strategy"]');
+          if (strategyRadios.length > 0) {
+            const currentIdx = Array.from(strategyRadios).findIndex(r => r.checked);
+            const nextIdx = (currentIdx + 1) % strategyRadios.length;
+            strategyRadios[nextIdx].checked = true;
+            strategyCards.forEach((c, idx) => c.classList.toggle('active', idx === nextIdx));
+          }
+
+          const originalBtnHtml = regenBtn.innerHTML;
+          regenBtn.innerHTML = `<span>⏳ Synthesizing Fresh Variation #${nextSeed}...</span>`;
+          regenBtn.disabled = true;
+
+          try {
+            const formData = new FormData(form);
+            formData.set('variation_seed', nextSeed);
+
+            const res = await fetch('/builder/generate', {
+              method: 'POST',
+              headers: { 'X-Requested-With': 'XMLHttpRequest' },
+              body: formData
+            });
+
+            const data = await res.json();
+            if (res.ok && data.status === 'ok' && data.resume) {
+              applyGeneratedResumeToUI(data.resume);
+              regenBtn.innerHTML = `<span>✓ Variation #${nextSeed} Applied!</span>`;
+              setTimeout(() => {
+                regenBtn.innerHTML = `<span>🎲 Generate Different Variation <span id="variation-badge" class="badge-seed">#${nextSeed + 1}</span></span>`;
+                regenBtn.disabled = false;
+              }, 1800);
+            } else {
+              form.submit();
+            }
+          } catch (err) {
+            console.warn('Variation generation fallback to form submit:', err);
+            form.submit();
+          }
+        });
+      }
+
+      // Also enhance the main Generate button for zero-latency in-place generation
+      const mainGenerateBtn = document.getElementById('generate-btn');
+      if (form && mainGenerateBtn) {
+        form.addEventListener('submit', async (e) => {
+          // If browser supports FormData and fetch, generate in-place
+          e.preventDefault();
+          const origHtml = mainGenerateBtn.innerHTML;
+          mainGenerateBtn.innerHTML = '<span>⚡ Synthesizing AI Resume...</span>';
+          mainGenerateBtn.disabled = true;
+
+          try {
+            const formData = new FormData(form);
+            const res = await fetch('/builder/generate', {
+              method: 'POST',
+              headers: { 'X-Requested-With': 'XMLHttpRequest' },
+              body: formData
+            });
+            const data = await res.json();
+            if (res.ok && data.status === 'ok' && data.resume) {
+              applyGeneratedResumeToUI(data.resume);
+              mainGenerateBtn.innerHTML = '<span>✓ Resume Generated!</span>';
+              setTimeout(() => {
+                mainGenerateBtn.innerHTML = origHtml;
+                mainGenerateBtn.disabled = false;
+              }, 1600);
+            } else {
+              form.submit();
+            }
+          } catch (err) {
+            form.submit();
+          }
+        });
+      }
+
       // ================= FEATURE 1: REAL-TIME TWO-WAY LIVE PREVIEW ENGINE =================
       function updateLivePreview() {
         const nameVal = (inputName ? inputName.value.trim() : '') || 'Alex Morgan';
@@ -2984,6 +4001,28 @@
               <div class="minimal-skill-item"><strong>Skills:</strong> <span>${skillList.join(', ')}</span></div>
             `;
           }
+
+          // Photo Skills
+          const photoSkills = document.querySelector('.live-skills-photo');
+          if (photoSkills && skillList.length > 0) {
+            photoSkills.innerHTML = `
+              <div style="margin-bottom: 8px;">
+                <span style="font-size: 0.72rem; font-weight: 750; color: #0f172a; display: block; margin-bottom: 3px;">Core Stack</span>
+                <div>${skillList.map(s => `<span class="photo-cv-chip">${s}</span>`).join('')}</div>
+              </div>
+            `;
+          }
+
+          // Nordic Skills
+          const nordicSkills = document.querySelector('.live-skills-nordic');
+          if (nordicSkills && skillList.length > 0) {
+            nordicSkills.innerHTML = `
+              <div class="nordic-skill-box">
+                <strong>Core Competencies</strong>
+                <span>${skillList.join(', ')}</span>
+              </div>
+            `;
+          }
         }
 
         // 3. Update Education
@@ -3004,6 +4043,12 @@
             document.querySelectorAll('.live-education-minimal').forEach(el => {
               el.innerHTML = `<div class="minimal-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="minimal-edu-meta">${yr}</div></div>`;
             });
+            document.querySelectorAll('.live-education-photo').forEach(el => {
+              el.innerHTML = `<div style="margin-bottom: 8px; font-size: 0.78rem;"><strong style="color: #0f172a; display: block;">${deg}</strong><div style="color: #2563eb; font-weight: 600;">${inst}</div><div class="muted" style="font-size: 0.72rem;">${yr}</div></div>`;
+            });
+            document.querySelectorAll('.live-education-nordic').forEach(el => {
+              el.innerHTML = `<div class="nordic-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="nordic-job-meta">${yr}</div></div>`;
+            });
           }
         }
 
@@ -3020,6 +4065,12 @@
             });
             document.querySelectorAll('.live-projects-minimal').forEach(el => {
               el.innerHTML = projs.map(p => `<div class="minimal-proj-entry"><div><strong>${p}</strong>: Verified technical artifact</div></div>`).join('');
+            });
+            document.querySelectorAll('.live-projects-photo').forEach(el => {
+              el.innerHTML = projs.map(p => `<div style="margin-bottom: 6px; font-size: 0.76rem;"><strong style="color: #0f172a;">${p}</strong><div class="muted" style="font-size: 0.71rem;">Verified credential</div></div>`).join('');
+            });
+            document.querySelectorAll('.live-projects-nordic').forEach(el => {
+              el.innerHTML = projs.map(p => `<div class="nordic-proj-entry"><div><strong>${p}</strong>: Verified credential</div></div>`).join('');
             });
           }
         }
@@ -3065,7 +4116,7 @@
               </li>
             `).join('');
 
-            document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets').forEach(ul => {
+            document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets, .photo-cv-bullets, .nordic-bullets').forEach(ul => {
               ul.innerHTML = bulletHtml;
             });
             attachBulletActionListeners();
@@ -3396,7 +4447,8 @@
             bullets: Array.from(job.querySelectorAll('.bullet-text')).map(b => b.textContent.trim())
           })),
           education: [{ degree: (inputEducationRaw ? inputEducationRaw.value : 'B.S. Computer Science') }],
-          projects_or_certifications: [{ title: (inputProjectsRaw ? inputProjectsRaw.value : 'Certifications') }]
+          projects_or_certifications: [{ title: (inputProjectsRaw ? inputProjectsRaw.value : 'Certifications') }],
+          photo: currentPhotoDataUrl || ''
         };
       }
 
@@ -3894,13 +4946,17 @@
       const templateTitles = {
         classic: 'Classic Executive',
         modern: 'Modern Two-Column',
-        minimal: 'Minimalist Silicon'
+        minimal: 'Minimalist Silicon',
+        photo: 'Executive Portrait',
+        nordic: 'Nordic Elegant'
       };
 
       const templateFilenames = {
         classic: 'Classic_Executive',
         modern: 'Modern_Two_Column',
-        minimal: 'Minimalist_Silicon'
+        minimal: 'Minimalist_Silicon',
+        photo: 'Executive_Portrait_Photo_CV',
+        nordic: 'Nordic_Elegant'
       };
 
       function setActiveTemplate(tpl) {
@@ -4092,18 +5148,18 @@
           if (downloadAllBtn) downloadAllBtn.disabled = true;
           if (dropdownMenu) dropdownMenu.classList.remove('show');
 
-          const tpls = ['classic', 'modern', 'minimal'];
+          const tpls = ['classic', 'modern', 'minimal', 'photo', 'nordic'];
           for (let i = 0; i < tpls.length; i++) {
             const key = tpls[i];
             if (downloadPdfLabel) {
-              downloadPdfLabel.textContent = `Exporting ${i + 1}/3: ${templateTitles[key]}...`;
+              downloadPdfLabel.textContent = `Exporting ${i + 1}/5: ${templateTitles[key]}...`;
             }
             setActiveTemplate(key);
             await exportTemplateAsPdf(key);
             await new Promise(r => setTimeout(r, 1200));
           }
 
-          if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ All 3 Templates Exported!';
+          if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ All 5 Templates Exported!';
           setTimeout(() => {
             if (downloadPdfLabel) downloadPdfLabel.textContent = `Download PDF (${templateTitles[activeTemplate].split(' ')[0]})`;
             if (downloadPdfBtn) downloadPdfBtn.disabled = false;
