@@ -4849,8 +4849,8 @@ hr {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
-    height: 100% !important;
-    min-height: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
     font-size: 10pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -4881,7 +4881,8 @@ hr {
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #111827 !important;

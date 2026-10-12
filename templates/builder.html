@@ -2716,7 +2716,8 @@
         margin: 0 !important;
         background: #ffffff !important;
         color: #111827 !important;
-        min-height: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
       }
       .resume-paper-sheet {
         display: block !important;
@@ -2726,7 +2727,8 @@
         margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-        min-height: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
         background: #ffffff !important;
         background-color: #ffffff !important;
         color: #111827 !important;
@@ -5479,9 +5481,9 @@
         });
       }
 
-      // Reusable High-Fidelity PDF Exporter with Page-Break Protection
+      // Reusable High-Fidelity PDF Exporter with Perfect Fit & Zero Blank Pages
       function exportTemplateAsPdf(templateKey) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           const targetView = document.getElementById(`template-view-${templateKey}`);
           if (!targetView) {
             alert('Target template view not found.');
@@ -5493,69 +5495,129 @@
           if (downloadPdfBtn) downloadPdfBtn.disabled = true;
           if (dropdownMenu) dropdownMenu.classList.remove('show');
 
+          // 1. Temporarily save user scroll position and reset to (0, 0) for 100% precise coordinate capture
+          const prevScrollX = window.scrollX || window.pageXOffset || 0;
+          const prevScrollY = window.scrollY || window.pageYOffset || 0;
+          window.scrollTo(0, 0);
+
+          // 2. Clone the active template view
           const clone = targetView.cloneNode(true);
+          clone.id = 'pdf-render-clone';
+
+          // 3. Remove non-printable elements and interactive edit states
+          clone.querySelectorAll('.bullet-ai-action, .no-print, .photo-cv-overlay, button').forEach(el => el.remove());
+          clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+
+          // 4. Exact dimensions calibrated for A4 with 6mm margins (198mm printable width = ~750px at 96 DPI)
+          // With box-sizing: border-box, the 750px width contains the 30px left/right padding so nothing ever overflows or clips!
           clone.style.display = 'block';
-          clone.style.width = '794px';
-          clone.style.maxWidth = '794px';
-          clone.style.minHeight = 'auto';
-          clone.style.height = 'auto';
           clone.style.boxSizing = 'border-box';
-          clone.style.boxShadow = 'none';
+          clone.style.width = '750px';
+          clone.style.maxWidth = '750px';
+          clone.style.minWidth = '750px';
+          clone.style.height = 'auto';
+          clone.style.minHeight = 'auto';
+          clone.style.background = '#ffffff';
+          clone.style.color = '#0f172a';
+          clone.style.padding = '24px 30px';
+          clone.style.margin = '0 auto';
           clone.style.border = 'none';
           clone.style.borderRadius = '0';
-          clone.style.background = '#ffffff';
-          clone.style.color = '#111827';
-          clone.style.padding = '26px 34px';
-          clone.style.margin = '0';
-          clone.style.fontFamily = "'Inter', -apple-system, sans-serif";
+          clone.style.boxShadow = 'none';
+          clone.style.position = 'relative';
+          clone.style.overflow = 'visible';
+          clone.style.fontFamily = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
-          // Remove interactive buttons from clone
-          clone.querySelectorAll('.bullet-ai-action').forEach(b => b.remove());
+          // Ensure all children observe border-box and allow clean text wrapping
+          clone.querySelectorAll('*').forEach(el => {
+            el.style.boxSizing = 'border-box';
+            el.style.wordBreak = 'normal';
+            el.style.overflowWrap = 'break-word';
+          });
 
-          // Prevent awkward page break splits inside entries
-          const sections = clone.querySelectorAll('.sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry, header, .modern-sidebar-col, .modern-main-col');
-          sections.forEach(s => {
+          // Ensure multi-column templates (modern and photo-cv) preserve their grid/flex columns in the clone
+          const modernGrid = clone.querySelector('.modern-grid-body');
+          if (modernGrid) {
+            modernGrid.style.display = 'flex';
+            modernGrid.style.flexDirection = 'row';
+            modernGrid.style.gap = '20px';
+          }
+          const photoGrid = clone.querySelector('.photo-cv-grid');
+          if (photoGrid) {
+            photoGrid.style.display = 'flex';
+            photoGrid.style.flexDirection = 'row';
+            photoGrid.style.gap = '20px';
+          }
+
+          // Protect individual job & education entries from breaking awkwardly across pages
+          // (NOTE: NEVER set break-inside avoid on headers or entire sidebars)
+          const breakAvoidItems = clone.querySelectorAll('.classic-job-entry, .modern-timeline-item, .minimal-job-entry, .photo-cv-timeline-item, .nordic-job-entry, .classic-edu-entry, .modern-edu-item, .minimal-edu-entry, .photo-cv-edu-item, .nordic-edu-entry, .classic-proj-entry, .modern-proj-item, .minimal-proj-entry, .photo-cv-proj-item, .nordic-proj-entry');
+          breakAvoidItems.forEach(s => {
             s.style.pageBreakInside = 'avoid';
             s.style.breakInside = 'avoid';
           });
 
+          // Mount wrapper on DOM
           const wrapper = document.createElement('div');
+          wrapper.id = 'pdf-render-wrapper';
           wrapper.style.position = 'fixed';
           wrapper.style.left = '0';
           wrapper.style.top = '0';
-          wrapper.style.width = '794px';
-          wrapper.style.zIndex = '-9999';
+          wrapper.style.width = '750px';
+          wrapper.style.maxWidth = '750px';
+          wrapper.style.zIndex = '99999';
           wrapper.style.opacity = '1';
           wrapper.style.pointerEvents = 'none';
           wrapper.style.background = '#ffffff';
-          wrapper.style.overflow = 'hidden';
+          wrapper.style.overflow = 'visible';
+          wrapper.style.margin = '0';
+          wrapper.style.padding = '0';
           wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
+
+          // Measure rendered height: A4 printable height is ~1070px (285mm).
+          // If content is between 1000px and 1160px, smartly tighten section margins slightly so it fits on 1 page!
+          const cloneHeight = clone.offsetHeight;
+          if (cloneHeight > 1000 && cloneHeight <= 1160) {
+            clone.style.padding = '18px 26px';
+            clone.querySelectorAll('.sheet-section').forEach(sec => sec.style.marginBottom = '8px');
+            clone.querySelectorAll('.classic-job-entry, .modern-timeline-item, .minimal-job-entry, .photo-cv-timeline-item, .nordic-job-entry').forEach(entry => entry.style.marginBottom = '6px');
+          }
 
           let candidateName = (inputName ? inputName.value.trim() : '') || 'Candidate';
           candidateName = candidateName.replace(/[^a-zA-Z0-9_\s-]/g, '').trim().replace(/\s+/g, '_') || 'My';
           const suffix = templateFilenames[templateKey] || 'Resume';
           const filename = `${candidateName}_Resume_${suffix}.pdf`;
 
+          // CRITICAL:
+          // 1. margin: [6, 6, 6, 6] matches the 750px width calibrated for A4 (198mm)
+          // 2. pagebreak mode: ['css', 'legacy'] — NEVER use 'avoid-all', which inserts a 1000px spacer div that creates a blank page 1!
           const opt = {
-            margin:       [8, 8, 8, 8],
+            margin:       [6, 6, 6, 6],
             filename:     filename,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
               scale: 2, 
               useCORS: true, 
               letterRendering: true,
-              scrollY: 0,
               scrollX: 0,
+              scrollY: 0,
+              windowWidth: 1024,
+              backgroundColor: '#ffffff',
               logging: false
             },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            pagebreak:    { mode: ['css', 'legacy'] }
+          };
+
+          const cleanup = () => {
+            if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+            window.scrollTo(prevScrollX, prevScrollY);
           };
 
           if (typeof html2pdf !== 'undefined') {
             html2pdf().set(opt).from(clone).save().then(() => {
-              if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+              cleanup();
               if (downloadPdfLabel) downloadPdfLabel.textContent = '✓ Downloaded!';
               setTimeout(() => {
                 if (downloadPdfLabel) downloadPdfLabel.textContent = `Download PDF (${templateTitles[activeTemplate].split(' ')[0]})`;
@@ -5564,14 +5626,14 @@
               resolve(true);
             }).catch(err => {
               console.error(`PDF Generation failed for ${templateKey}:`, err);
-              if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+              cleanup();
               if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
               if (downloadPdfBtn) downloadPdfBtn.disabled = false;
               window.print();
               resolve(false);
             });
           } else {
-            if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+            cleanup();
             if (downloadPdfLabel) downloadPdfLabel.textContent = originalText;
             if (downloadPdfBtn) downloadPdfBtn.disabled = false;
             window.print();
