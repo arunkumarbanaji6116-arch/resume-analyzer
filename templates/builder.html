@@ -2951,7 +2951,7 @@
 
       <!-- LEFT COLUMN: Candidate Inputs & Variation Controls -->
       <div class="panel builder-form-panel">
-        <form id="resume-builder-form" action="/builder/generate" method="post" enctype="multipart/form-data">
+        <form id="resume-builder-form" action="/builder/generate" method="post" enctype="multipart/form-data" autocomplete="off">
           <input type="hidden" name="variation_seed" id="variation_seed_input" value="{{ current_seed or 1 }}">
           <input type="hidden" name="fresher_mode" id="fresher_mode_input" value="{% if prefill and prefill.fresher_mode %}1{% else %}0{% endif %}">
 
@@ -3081,11 +3081,11 @@
             <div class="form-row-2col">
               <div>
                 <label id="name-field-label">Full Name</label>
-                <input id="input-name" name="name" value="{{ prefill.name if prefill else (current_user or '') }}" placeholder="e.g. Alex Morgan" required>
+                <input id="input-name" name="name" value="{{ prefill.name if prefill and prefill.name else '' }}" placeholder="e.g. Alex Morgan" autocomplete="off" required>
               </div>
               <div>
                 <label id="role-field-label">Target Job Title</label>
-                <input id="input-target-role" name="target_role" value="{{ prefill.target_role if prefill else '' }}" placeholder="e.g. Senior Full-Stack Engineer" required>
+                <input id="input-target-role" name="target_role" value="{{ prefill.target_role if prefill and prefill.target_role else '' }}" placeholder="e.g. Senior Full-Stack Engineer" autocomplete="off" required>
               </div>
             </div>
 
@@ -3101,7 +3101,7 @@
               </div>
               <div>
                 <label>Industry / Domain</label>
-                <input id="input-industry" name="industry" value="{{ prefill.industry if prefill else 'Technology & Software' }}" placeholder="e.g. FinTech, AI / ML, Healthcare">
+                <input id="input-industry" name="industry" value="{{ prefill.industry if prefill and prefill.industry else '' }}" placeholder="e.g. Technology & Software, FinTech, AI / ML" autocomplete="off">
               </div>
             </div>
 
@@ -3146,16 +3146,16 @@
             <div class="form-row-2col">
               <div>
                 <label>Email</label>
-                <input id="input-email" name="email" type="email" value="{{ prefill.email if prefill else '' }}" placeholder="alex@example.com">
+                <input id="input-email" name="email" type="email" value="{{ prefill.email if prefill and prefill.email else '' }}" placeholder="alex@example.com" autocomplete="off">
               </div>
               <div>
                 <label>Phone & Location</label>
-                <input id="input-phone" name="phone" value="{{ prefill.phone if prefill else '' }}" placeholder="+1 (555) 019-2834 · San Francisco, CA">
+                <input id="input-phone" name="phone" value="{{ prefill.phone if prefill and prefill.phone else '' }}" placeholder="+1 (555) 019-2834 · San Francisco, CA" autocomplete="off">
               </div>
             </div>
             <div style="margin-top: 10px;">
               <label>LinkedIn / GitHub / Portfolio</label>
-              <input id="input-linkedin" name="linkedin" value="{{ prefill.linkedin if prefill else '' }}" placeholder="linkedin.com/in/alexmorgan · github.com/alexmorgan">
+              <input id="input-linkedin" name="linkedin" value="{{ prefill.linkedin if prefill and prefill.linkedin else '' }}" placeholder="linkedin.com/in/alexmorgan · github.com/alexmorgan" autocomplete="off">
             </div>
           </div>
 
@@ -3167,7 +3167,7 @@
                 <label id="skills-section-label" style="margin-bottom: 0;">Key Skills & Technologies</label>
                 <span class="live-sync-pill" title="Changes sync in real-time to preview">⚡ Live Preview</span>
               </div>
-              <textarea id="input-skills" name="skills" rows="2" placeholder="e.g. Python, TypeScript, React, Docker, Kubernetes, AWS, PostgreSQL, Microservices, CI/CD, Agile">{{ prefill.skills if prefill else '' }}</textarea>
+              <textarea id="input-skills" name="skills" rows="2" placeholder="e.g. Python, TypeScript, React, Docker, Kubernetes, AWS, PostgreSQL, Microservices, CI/CD, Agile" autocomplete="off">{{ prefill.skills if prefill and prefill.skills else '' }}</textarea>
             </div>
 
             <div style="margin-bottom: 12px;">
@@ -3177,13 +3177,13 @@
                   <span>✨ AI Bullet Improver</span>
                 </button>
               </div>
-              <textarea id="input-experience-raw" name="experience_raw" rows="4" placeholder="Briefly describe your past jobs:&#10;• Lead Engineer at TechCorp (2021-Present): built core payments pipeline, led 5 engineers, reduced latency.&#10;• Software Engineer at CloudLabs (2018-2021): developed React/Node dashboard, optimized SQL queries.">{{ prefill.experience_raw if prefill else '' }}</textarea>
+              <textarea id="input-experience-raw" name="experience_raw" rows="4" placeholder="Briefly describe your past jobs:&#10;• Lead Engineer at TechCorp (2021-Present): built core payments pipeline, led 5 engineers, reduced latency.&#10;• Software Engineer at CloudLabs (2018-2021): developed React/Node dashboard, optimized SQL queries." autocomplete="off">{{ prefill.experience_raw if prefill and prefill.experience_raw else '' }}</textarea>
             </div>
 
             <div class="form-row-2col">
               <div>
                 <label id="education-section-label">Education & Degree</label>
-                <input id="input-education-raw" name="education_raw" value="{{ prefill.education_raw if prefill else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018">
+                <input id="input-education-raw" name="education_raw" value="{{ prefill.education_raw if prefill and prefill.education_raw else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018" autocomplete="off">
               </div>
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -3197,7 +3197,7 @@
                     <span>Upload Certificate</span>
                   </button>
                 </div>
-                <input id="projects-raw-input" name="projects_raw" value="{{ prefill.projects_raw if prefill else '' }}" placeholder="e.g. AWS Solutions Architect, Open Source Contributor">
+                <input id="projects-raw-input" name="projects_raw" value="{{ prefill.projects_raw if prefill and prefill.projects_raw else '' }}" placeholder="e.g. AWS Solutions Architect, Open Source Contributor" autocomplete="off">
                 <input type="file" id="certificate-file-input" name="certificate_files" multiple accept=".pdf,.docx,.doc,.txt,.rtf,image/png,image/jpeg,image/jpg,image/webp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain" style="display: none;">
 
                 <!-- Dropzone for Drag-and-Drop or Click Upload -->
@@ -3238,7 +3238,7 @@
       <!-- RIGHT COLUMN: Interactive Live Resume Sheet Preview -->
       <div class="builder-preview-panel">
         {% set r = resume if resume else {
-          "candidate_name": prefill.name if (prefill and prefill.name) else (current_user or "Alex Morgan"),
+          "candidate_name": prefill.name if (prefill and prefill.name) else "Alex Morgan",
           "target_role": prefill.target_role if (prefill and prefill.target_role) else "Senior Full-Stack Engineer",
           "contact_line": ((prefill.email if (prefill and prefill.email) else "alex@example.com") ~ " | " ~ (prefill.phone if (prefill and prefill.phone) else "+1 (555) 019-2834 · San Francisco, CA") ~ ((" | " ~ prefill.linkedin) if (prefill and prefill.linkedin) else " | linkedin.com/in/alexmorgan")),
           "ats_score": 96,
@@ -4273,12 +4273,13 @@
       const resumePhotoFrame = document.getElementById('photo-cv-frame');
       const defaultAvatarSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 128' fill='%2394a3b8'><rect width='100' height='128' fill='%23f1f5f9'/><circle cx='50' cy='42' r='22' fill='%23cbd5e1'/><path d='M15 110 C15 78, 85 78, 85 110 Z' fill='%23cbd5e1'/></svg>";
 
-      let currentPhotoDataUrl = localStorage.getItem('careerforge_passport_photo') || null;
+      // Never store passport photo in localStorage across sessions
+      try { localStorage.removeItem('careerforge_passport_photo'); } catch(e){}
+      let currentPhotoDataUrl = null;
 
       function setCandidatePhoto(dataUrl) {
         currentPhotoDataUrl = dataUrl;
         if (dataUrl) {
-          try { localStorage.setItem('careerforge_passport_photo', dataUrl); } catch(e){}
           if (photoThumbImg) {
             photoThumbImg.src = dataUrl;
             photoThumbImg.style.display = 'block';
@@ -4289,7 +4290,6 @@
             img.src = dataUrl;
           });
         } else {
-          try { localStorage.removeItem('careerforge_passport_photo'); } catch(e){}
           if (photoThumbImg) {
             photoThumbImg.src = '';
             photoThumbImg.style.display = 'none';

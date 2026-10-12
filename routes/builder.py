@@ -41,31 +41,30 @@ def get_builder_prefill(user_id):
 @builder_bp.get("/builder")
 @login_required
 def builder_view():
-    user_id = session.get("user_id")
-    saved_prefill = session.pop("builder_prefill", None) or get_builder_prefill(user_id) or {}
+    # Only consume bridge data if explicitly passed via redirect, then immediately purge it
+    saved_prefill = session.pop("builder_prefill", None) or get_builder_prefill(session.get("user_id")) or {}
 
-    current_user_obj = session.get("user")
-    user_name_fallback = ""
-    if isinstance(current_user_obj, dict):
-        user_name_fallback = current_user_obj.get("name", "")
-    elif isinstance(current_user_obj, str):
-        user_name_fallback = current_user_obj
-
+    # Do NOT store, retain, or auto-fill account usernames or previous inputs
     prefill = {
-        "name": sanitize_text(request.args.get("name") or saved_prefill.get("name") or user_name_fallback, max_length=150),
+        "name": sanitize_text(request.args.get("name") or saved_prefill.get("name", ""), max_length=150),
         "target_role": sanitize_text(request.args.get("role") or saved_prefill.get("target_role", ""), max_length=150),
-        "experience_level": sanitize_text(request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level"), max_length=50),
-        "industry": sanitize_text(request.args.get("industry") or saved_prefill.get("industry", "Technology & Software"), max_length=100),
+        "experience_level": sanitize_text(request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level (3-5 years)"), max_length=50),
+        "industry": sanitize_text(request.args.get("industry") or saved_prefill.get("industry", ""), max_length=100),
         "email": sanitize_text(request.args.get("email") or saved_prefill.get("email", ""), max_length=254),
         "phone": sanitize_text(request.args.get("phone") or saved_prefill.get("phone", ""), max_length=50),
         "linkedin": sanitize_text(request.args.get("linkedin") or saved_prefill.get("linkedin", ""), max_length=255),
         "skills": sanitize_text(request.args.get("skills") or saved_prefill.get("skills", ""), max_length=2000),
-        "experience_raw": sanitize_text(saved_prefill.get("experience_raw", ""), max_length=15000),
+        "experience_raw": sanitize_text(request.args.get("experience") or saved_prefill.get("experience_raw", ""), max_length=15000),
         "education_raw": sanitize_text(request.args.get("education") or saved_prefill.get("education_raw", ""), max_length=5000),
         "projects_raw": sanitize_text(request.args.get("projects") or saved_prefill.get("projects_raw", ""), max_length=8000),
         "missing_keywords": saved_prefill.get("missing_keywords", []),
         "from_job_analyzer": saved_prefill.get("from_job_analyzer", False),
     }
+
+    # Clear residual session states so nothing is stored
+    session.pop("builder_prefill", None)
+    session.pop("last_generated_resume", None)
+
     return render_template("builder.html", prefill=prefill, resume=None)
 
 
