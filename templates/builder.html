@@ -2476,24 +2476,49 @@
     /* Feature 7: Strict Page-Break Preservation for Clean PDF/DOCX Export */
     @media print {
       @page {
-        margin: 10mm 8mm;
+        margin: 10mm 10mm;
         size: A4 portrait;
       }
-      .no-print, nav, .builder-form-panel, .preview-toolbar, .template-selector-bar, .sheet-strategy-banner {
+      /* Eliminate all dark-mode and colored backgrounds in print */
+      html, html.dark, body, body.dark, :root, :root.dark,
+      main, .container, .dark .container,
+      .resume-builder-grid, .dark .resume-builder-grid,
+      .builder-preview-panel, .dark .builder-preview-panel,
+      .resume-paper-sheet, .dark .resume-paper-sheet,
+      .template-view, .dark .template-view {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .no-print, nav, .builder-form-panel, .preview-toolbar, .template-selector-bar, .sheet-strategy-banner,
+      .cf-modal-backdrop, .cf-modal-dialog, .download-dropdown-menu, .bullet-ai-action {
+        display: none !important;
+      }
+      .template-view:not(.active-view) {
         display: none !important;
       }
       body, main, .container {
         padding: 0 !important;
         margin: 0 !important;
         background: #ffffff !important;
-        color: #000000 !important;
+        color: #111827 !important;
+        min-height: 100% !important;
       }
       .resume-paper-sheet {
+        display: block !important;
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
         margin: 0 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100% !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        color: #111827 !important;
       }
       .sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry,
       .photo-cv-job-entry, .nordic-job-entry, .photo-cv-grid, .photo-cv-photo-container,
@@ -5385,6 +5410,25 @@
           }, 3000);
         });
       }
+
+      // Native Print Hook: Drop dark mode on print and restore after print to prevent dark canvas leaking
+      window.addEventListener('beforeprint', () => {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+        const sheet = document.getElementById('resume-sheet');
+        if (sheet) {
+          sheet.style.backgroundColor = '#ffffff';
+          sheet.style.color = '#111827';
+        }
+      });
+
+      window.addEventListener('afterprint', () => {
+        const savedTheme = localStorage.getItem('careerforge_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+        }
+      });
     });
   </script>
   <script src="{{ url_for('static', filename='js/html2pdf.bundle.min.js') }}"></script>

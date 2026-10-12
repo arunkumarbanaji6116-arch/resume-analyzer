@@ -4582,6 +4582,7 @@ hr {
   .eyebrow,
   .builder-form-panel,
   .preview-toolbar,
+  .template-selector-bar,
   .sheet-strategy-banner,
   .flash,
   .brand,
@@ -4590,15 +4591,49 @@ hr {
   .toast-container,
   .score-elevation-actions,
   .score-elevation-banner,
-  .improvements-applied-box {
+  .improvements-applied-box,
+  .bullet-ai-action,
+  .cf-modal-backdrop,
+  .cf-modal-dialog,
+  .download-dropdown-menu {
     display: none !important;
   }
 
-  body, html {
+  /* Force pure white background on ALL elements, html, body, and dark-mode wrappers */
+  html,
+  html.dark,
+  body,
+  body.dark,
+  :root,
+  :root.dark,
+  main,
+  .dark main,
+  .container,
+  .dark .container,
+  .resume-builder-grid,
+  .dark .resume-builder-grid,
+  .builder-preview-panel,
+  .dark .builder-preview-panel,
+  .resume-paper-sheet,
+  .dark .resume-paper-sheet,
+  .improved-resume-sheet,
+  .dark .improved-resume-sheet,
+  .template-view,
+  .dark .template-view {
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     color: #111827 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  body, html {
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
     font-size: 10pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -4615,7 +4650,8 @@ hr {
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
 
   .resume-paper-sheet,
@@ -4628,9 +4664,14 @@ hr {
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
-    min-height: auto !important;
+    min-height: 100% !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #111827 !important;
+  }
+
+  .template-view:not(.active-view) {
+    display: none !important;
   }
 
   .sheet-header {
