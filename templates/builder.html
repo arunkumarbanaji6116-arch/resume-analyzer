@@ -344,7 +344,21 @@
     }
     @media (max-width: 768px) {
       .template-pills-row {
-        grid-template-columns: 1fr;
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px !important;
+        padding-bottom: 6px !important;
+        scrollbar-width: none;
+      }
+      .template-pills-row::-webkit-scrollbar {
+        display: none;
+      }
+      .template-pill {
+        flex: 0 0 160px !important;
+        min-width: 160px !important;
+        scroll-snap-align: start;
       }
     }
     .template-pill {
@@ -2253,6 +2267,210 @@
     [contenteditable="true"]:focus {
       background: rgba(99, 102, 241, 0.08);
       box-shadow: 0 0 0 2px #6366f1;
+    }
+
+    /* Mobile Responsive Optimizations for Resume Builder (<= 768px & <= 480px) */
+    @media (max-width: 768px) {
+      .resume-builder-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+      .builder-form-panel {
+        padding: 16px 14px !important;
+        border-radius: 16px !important;
+      }
+      .builder-preview-panel {
+        width: 100% !important;
+        overflow-x: hidden !important;
+      }
+      .builder-action-footer {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+      .builder-action-footer .button {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 44px !important;
+        font-size: 0.9rem !important;
+      }
+      .form-row-2col {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+      .passport-photo-upload-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 14px 12px !important;
+      }
+      .passport-photo-details {
+        width: 100% !important;
+      }
+
+      /* Preview Toolbar Responsive Flex */
+      .preview-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+      .preview-toolbar-left {
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+      .preview-toolbar-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+      .preview-toolbar-actions .tool-btn,
+      .preview-toolbar-actions .download-btn-group {
+        flex: 1 1 auto !important;
+        min-height: 36px !important;
+        padding: 6px 10px !important;
+        font-size: 0.78rem !important;
+        justify-content: center !important;
+      }
+      .download-btn-group {
+        display: inline-flex !important;
+        max-width: 100% !important;
+      }
+      .download-pdf-btn {
+        flex: 1 !important;
+      }
+      .download-dropdown-menu {
+        width: 290px !important;
+        max-width: 90vw !important;
+        right: 0 !important;
+        left: auto !important;
+      }
+
+      /* Multi-Column Templates Stacking on Mobile Screens */
+      .modern-grid-body {
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      .modern-sidebar-col {
+        width: 100% !important;
+      }
+      .modern-main-col {
+        width: 100% !important;
+      }
+      .photo-cv-grid {
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      .photo-cv-sidebar {
+        width: 100% !important;
+      }
+      .photo-cv-main {
+        width: 100% !important;
+      }
+
+      /* Fluid Heading Sizes */
+      .classic-candidate-name,
+      .modern-candidate-name,
+      .photo-cv-candidate-name,
+      .nordic-candidate-name {
+        font-size: 1.45rem !important;
+        word-break: break-word !important;
+      }
+      .photo-cv-header {
+        gap: 12px !important;
+      }
+      .photo-cv-photo-container {
+        width: 80px !important;
+        height: 103px !important;
+        flex-shrink: 0 !important;
+      }
+      .photo-cv-img {
+        width: 80px !important;
+        height: 103px !important;
+      }
+
+      /* Bullet AI action visible for touchscreens without hover */
+      .bullet-ai-action {
+        opacity: 0.92 !important;
+        visibility: visible !important;
+        position: static !important;
+        transform: none !important;
+        margin-left: 6px !important;
+        padding: 2px 7px !important;
+        font-size: 0.65rem !important;
+        vertical-align: middle !important;
+      }
+      .resume-bullet-wrap {
+        padding-right: 0 !important;
+      }
+
+      /* Modals on Mobile */
+      .cf-modal-backdrop {
+        padding: 8px !important;
+      }
+      .cf-modal-dialog {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: 94vh !important;
+        border-radius: 14px !important;
+      }
+      .cf-modal-header {
+        padding: 12px 14px !important;
+      }
+      .cf-modal-header h3 {
+        font-size: 0.95rem !important;
+      }
+      .cf-modal-body {
+        padding: 14px 12px !important;
+      }
+      .cf-modal-footer {
+        padding: 10px 14px !important;
+        flex-wrap: wrap !important;
+      }
+      .cf-modal-footer .button {
+        flex: 1 1 auto !important;
+        min-height: 38px !important;
+      }
+      .variation-result-card {
+        padding: 12px !important;
+      }
+      .variation-card-footer {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+      }
+      .variation-card-footer .button {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+      .xray-health-row {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 12px !important;
+      }
+      .version-compare-table-container {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: block !important;
+        width: 100% !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .classic-candidate-name,
+      .modern-candidate-name,
+      .photo-cv-candidate-name,
+      .nordic-candidate-name {
+        font-size: 1.3rem !important;
+      }
+      .photo-cv-header {
+        flex-direction: column-reverse !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+      .photo-cv-header-left {
+        text-align: center !important;
+      }
     }
 
     /* Feature 7: Strict Page-Break Preservation for Clean PDF/DOCX Export */
