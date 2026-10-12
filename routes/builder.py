@@ -1,11 +1,19 @@
 from datetime import datetime, timezone
+import json
 import logging
 
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, send_file, session, url_for
 
-from ai.gemini_client import gemini_build_resume_from_scratch, gemini_extract_certificate_info
+from ai.gemini_client import (
+    gemini_build_resume_from_scratch,
+    gemini_extract_certificate_info,
+    gemini_improve_bullet,
+    gemini_match_job_description,
+    gemini_resume_xray,
+)
 from ai.resume_ai import ResumeImageError, extract_text_from_file
 from db import get_db, record_activity
+from services.docx_exporter import generate_resume_docx
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +141,9 @@ def generate_resume():
         "projects_raw": request.form.get("projects_raw", "").strip(),
     }
 
+    fresher_mode = request.form.get("fresher_mode") in ("true", "1", "True")
+    data["fresher_mode"] = fresher_mode
+
     # Handle any directly attached certificate files via multipart POST
     uploaded_files = request.files.getlist("certificate_files") or []
     single_file = request.files.get("certificate_file")
@@ -167,6 +178,7 @@ def generate_resume():
         variation_seed = 1
 
     generated = gemini_build_resume_from_scratch(data, strategy=strategy, variation_seed=variation_seed)
+    session["last_generated_resume"] = generated
 
     record_activity(
         session["user_id"],
@@ -179,5 +191,217 @@ def generate_resume():
         return {"status": "ok", "resume": generated}
 
     return render_template("builder.html", prefill=data, resume=generated, active_strategy=strategy, current_seed=variation_seed)
+
+
+@builder_bp.post("/builder/improve-bullet")
+def improve_bullet():
+    """Rewrite weak bullet points using action verbs & metrics without inventing facts."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or request.form
+    bullet = payload.get("bullet", "").strip()
+    role = payload.get("role", "").strip()
+    industry = payload.get("industry", "").strip()
+
+    if not bullet:
+        return {"success": False, "error": "No bullet text provided"}, 400
+
+    try:
+        result = gemini_improve_bullet(bullet, role=role, industry=industry)
+        return {"success": True, "result": result}
+    except Exception as exc:
+        logger.error(f"Error improving bullet: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.post("/builder/match-jd")
+def match_jd():
+    """Highlight matched and missing keywords for a target job description."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or request.form
+    jd_text = payload.get("jd_text", "").strip()
+    skills = payload.get("skills", "").strip()
+    resume_text = payload.get("resume_text", "").strip()
+
+    if not jd_text:
+        return {"success": False, "error": "Job description text is required"}, 400
+
+    try:
+        result = gemini_match_job_description(jd_text, resume_skills=skills, resume_text=resume_text)
+        return {"success": True, "result": result}
+    except Exception as exc:
+        logger.error(f"Error matching job description: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.post("/builder/xray")
+def resume_xray():
+    """Explain the strongest and weakest parts of the candidate's resume."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or {}
+    resume_data = payload.get("resume") or session.get("last_generated_resume")
+    if not resume_data:
+        return {"success": False, "error": "No resume data available for X-Ray audit"}, 400
+
+    try:
+        result = gemini_resume_xray(resume_data)
+        return {"success": True, "result": result}
+    except Exception as exc:
+        logger.error(f"Error performing resume X-Ray: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.post("/builder/save-version")
+def save_version():
+    """Save a job-specific resume draft/version for ATS comparison."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or {}
+    version_name = payload.get("version_name", "").strip() or f"Draft {datetime.now().strftime('%b %d, %H:%M')}"
+    target_role = payload.get("target_role", "").strip() or "Software Engineer"
+    ats_score = int(payload.get("ats_score", 95))
+    strategy = payload.get("strategy", "metric_driven")
+    resume_data = payload.get("resume_data")
+
+    if not resume_data:
+        resume_data = session.get("last_generated_resume")
+
+    if not resume_data:
+        return {"success": False, "error": "No resume data to save"}, 400
+
+    user_id = session["user_id"]
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    try:
+        db = get_db()
+        cursor = db.execute(
+            """
+            INSERT INTO resume_versions (user_id, version_name, target_role, ats_score, strategy, resume_data, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (user_id, version_name, target_role, ats_score, strategy, json.dumps(resume_data), now_iso)
+        )
+        db.commit()
+        version_id = cursor.lastrowid
+
+        record_activity(
+            user_id,
+            "resume_version",
+            f"Saved Resume Version: {version_name} ({target_role})",
+            ats_score
+        )
+
+        return {"success": True, "version_id": version_id, "version_name": version_name}
+    except Exception as exc:
+        logger.error(f"Failed to save resume version: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.get("/builder/versions")
+def get_versions():
+    """Retrieve saved resume versions for comparison."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    user_id = session["user_id"]
+    try:
+        db = get_db()
+        rows = db.execute(
+            """
+            SELECT id, version_name, target_role, ats_score, strategy, resume_data, created_at
+            FROM resume_versions
+            WHERE user_id = ?
+            ORDER BY id DESC
+            """,
+            (user_id,)
+        ).fetchall()
+
+        versions = []
+        for r in rows:
+            try:
+                res_obj = json.loads(r["resume_data"])
+            except Exception:
+                res_obj = {}
+            versions.append({
+                "id": r["id"],
+                "version_name": r["version_name"],
+                "target_role": r["target_role"],
+                "ats_score": r["ats_score"],
+                "strategy": r["strategy"],
+                "resume_data": res_obj,
+                "created_at": r["created_at"]
+            })
+
+        return {"success": True, "versions": versions}
+    except Exception as exc:
+        logger.error(f"Failed to fetch versions: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.post("/builder/delete-version")
+def delete_version():
+    """Delete a saved resume version."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or request.form
+    version_id = payload.get("version_id")
+    if not version_id:
+        return {"success": False, "error": "Version ID required"}, 400
+
+    user_id = session["user_id"]
+    try:
+        db = get_db()
+        db.execute("DELETE FROM resume_versions WHERE id = ? AND user_id = ?", (version_id, user_id))
+        db.commit()
+        return {"success": True}
+    except Exception as exc:
+        logger.error(f"Failed to delete version: {exc}")
+        return {"success": False, "error": str(exc)}, 500
+
+
+@builder_bp.post("/builder/export-docx")
+def export_docx():
+    """Native ATS-compliant Microsoft Word (.docx) export preserving format and margins."""
+    if "user_id" not in session:
+        return {"success": False, "error": "Authentication required"}, 401
+
+    payload = request.get_json(silent=True) or {}
+    resume_data = payload.get("resume")
+    template_style = payload.get("template") or request.form.get("template") or "classic"
+
+    if not resume_data and request.form.get("resume_json"):
+        try:
+            resume_data = json.loads(request.form.get("resume_json"))
+        except Exception:
+            resume_data = None
+
+    if not resume_data:
+        resume_data = session.get("last_generated_resume")
+
+    if not resume_data:
+        return {"success": False, "error": "No resume data available for DOCX export"}, 400
+
+    try:
+        stream = generate_resume_docx(resume_data, template_style=template_style)
+        candidate_name = resume_data.get("candidate_name") or "Candidate"
+        clean_name = "".join(c for c in candidate_name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+        filename = f"{clean_name}_Resume_{template_style.capitalize()}.docx"
+
+        return send_file(
+            stream,
+            as_attachment=True,
+            download_name=filename,
+            mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+    except Exception as exc:
+        logger.error(f"DOCX export error: {exc}")
+        return {"success": False, "error": f"Failed to generate DOCX: {str(exc)}"}, 500
 
 

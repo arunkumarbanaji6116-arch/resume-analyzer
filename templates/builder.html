@@ -1247,6 +1247,698 @@
       color: #6b7280;
       font-variant-numeric: tabular-nums;
     }
+
+    /* ==============================================================
+       NEW FEATURE 1-7 STYLES: Live Preview, Improver, Fresher, JD Matcher,
+       X-Ray, Version Compare, DOCX/PDF
+       ============================================================== */
+
+    /* Feature 3: Fresher Mode Toggle Card */
+    .fresher-mode-toggle-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(16, 185, 129, 0.06));
+      border: 1.5px solid rgba(99, 102, 241, 0.25);
+      border-radius: 14px;
+      transition: all 0.2s ease;
+    }
+    .fresher-mode-toggle-card.fresher-active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(16, 185, 129, 0.14));
+      border-color: #6366f1;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+    }
+    .dark .fresher-mode-toggle-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .dark .fresher-mode-toggle-card.fresher-active {
+      border-color: #818cf8;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+    }
+    .fresher-mode-toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .fresher-icon-pill {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #6366f1;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+    }
+    .fresher-mode-title {
+      font-size: 0.88rem;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .dark .fresher-mode-title {
+      color: #f8fafc;
+    }
+    .fresher-status-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .fresher-status-tag.active {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .fresher-mode-subtitle {
+      margin: 2px 0 0;
+      font-size: 0.72rem;
+      color: #64748b;
+      line-height: 1.35;
+    }
+    .dark .fresher-mode-subtitle {
+      color: #94a3b8;
+    }
+
+    /* iOS-Style Switch Toggle */
+    .switch-toggle {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .switch-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch-slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      border-radius: 34px;
+      transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .switch-toggle input:checked + .switch-slider {
+      background-color: #6366f1;
+    }
+    .switch-toggle input:checked + .switch-slider:before {
+      transform: translateX(20px);
+    }
+    .dark .switch-slider {
+      background-color: #334155;
+    }
+
+    /* Feature 4: Job Description Matcher Card */
+    .jd-matcher-card {
+      margin: 16px 0 20px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .dark .jd-matcher-card {
+      background: #151d2f;
+      border-color: #28354d;
+    }
+    .jd-matcher-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(109, 93, 252, 0.03);
+      transition: background 0.15s ease;
+    }
+    .jd-matcher-header:hover {
+      background: rgba(109, 93, 252, 0.07);
+    }
+    .dark .jd-matcher-header {
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .dark .jd-matcher-header:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+    .jd-matcher-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .jd-matcher-icon {
+      font-size: 1.25rem;
+    }
+    .jd-badge-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(109, 93, 252, 0.12);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .jd-toggle-arrow {
+      font-size: 0.75rem;
+      color: #64748b;
+      transition: transform 0.2s ease;
+    }
+    .jd-toggle-arrow.open {
+      transform: rotate(180deg);
+    }
+    .jd-matcher-body {
+      padding: 14px 16px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #fafbfc;
+    }
+    .dark .jd-matcher-body {
+      border-color: #28354d;
+      background: #111827;
+    }
+    .jd-matcher-body textarea {
+      font-size: 0.8rem;
+      font-family: inherit;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      box-sizing: border-box;
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .dark .jd-matcher-body textarea {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    .jd-match-results {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+    }
+    .dark .jd-match-results {
+      background: #162033;
+      border-color: #2b3954;
+    }
+    .jd-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .jd-score-bar-bg {
+      height: 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .dark .jd-score-bar-bg {
+      background: #334155;
+    }
+    .jd-score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #10b981);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .jd-chips-group {
+      margin-bottom: 10px;
+    }
+    .jd-chips-label {
+      font-size: 0.72rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .jd-matched-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #065f46;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      margin: 2px 4px 4px 0;
+    }
+    .dark .jd-matched-chip {
+      background: rgba(16, 185, 129, 0.22);
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .jd-missing-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.08);
+      color: #991b1b;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 999px;
+      padding: 3px 8px 3px 10px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      margin: 2px 4px 4px 0;
+    }
+    .dark .jd-missing-chip {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+    .jd-add-btn {
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.3;
+      transition: all 0.15s ease;
+    }
+    .jd-add-btn:hover {
+      background: #4f46e5;
+      transform: scale(1.05);
+    }
+    .jd-add-btn.added {
+      background: #10b981;
+      cursor: default;
+    }
+
+    /* Feature 2: AI Bullet Improver Pill Trigger */
+    .bullet-improve-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, rgba(109, 93, 252, 0.12), rgba(168, 85, 247, 0.12));
+      color: var(--accent);
+      border: 1px solid rgba(109, 93, 252, 0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .bullet-improve-pill-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(109, 93, 252, 0.25);
+    }
+    .dark .bullet-improve-pill-btn {
+      color: #c7d2fe;
+      border-color: rgba(129, 140, 248, 0.35);
+    }
+    .dark .bullet-improve-pill-btn:hover {
+      background: #6366f1;
+      color: #ffffff;
+    }
+
+    /* Inline Resume Bullet Hover Action Button */
+    .resume-bullet-wrap {
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .resume-bullet-wrap:hover .bullet-ai-action {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(0);
+    }
+    .bullet-ai-action {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) translateX(5px);
+      opacity: 0;
+      visibility: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #6366f1;
+      color: #ffffff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.15s ease;
+      z-index: 10;
+      user-select: none;
+    }
+    .bullet-ai-action:hover {
+      background: #4f46e5;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Live Preview Sync Badge */
+    .live-sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #059669;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
+    .dark .live-sync-pill {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    /* Modals System (Improver, X-Ray, Version Comparison) */
+    .cf-modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .cf-modal-dialog {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+      overflow: hidden;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dark .cf-modal-dialog {
+      background: #151d2f;
+      border-color: #2b3954;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .cf-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dark .cf-modal-header {
+      border-color: #28354d;
+    }
+    .cf-modal-header h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dark .cf-modal-header h3 {
+      color: #f8fafc;
+    }
+    .cf-modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .cf-modal-close-btn:hover {
+      color: #0f172a;
+      background: #f1f5f9;
+    }
+    .dark .cf-modal-close-btn:hover {
+      color: #ffffff;
+      background: #1e293b;
+    }
+    .cf-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .cf-modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #fafbfc;
+    }
+    .dark .cf-modal-footer {
+      border-color: #28354d;
+      background: #111827;
+    }
+
+    /* AI Improver Variation Cards */
+    .variation-result-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    .variation-result-card:hover {
+      border-color: #6366f1;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    }
+    .dark .variation-result-card {
+      background: #182338;
+      border-color: #2b3954;
+    }
+    .dark .variation-result-card:hover {
+      border-color: #818cf8;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+    }
+    .var-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .var-badge {
+      font-size: 0.72rem;
+      font-weight: 750;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.12);
+      color: #4f46e5;
+    }
+    .dark .var-badge {
+      background: rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+    }
+    .var-text {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+    .dark .var-text {
+      color: #f1f5f9;
+    }
+    .var-apply-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .var-apply-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    /* Resume X-Ray Modal Details */
+    .xray-health-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.08));
+      border: 1.5px solid rgba(16, 185, 129, 0.3);
+      margin-bottom: 20px;
+    }
+    .xray-dial {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #059669;
+      line-height: 1;
+      text-align: center;
+    }
+    .dark .xray-dial {
+      color: #34d399;
+    }
+    .xray-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .xray-grid { grid-template-columns: 1fr; }
+    }
+    .xray-column h4 {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+    }
+    .xray-item-card {
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+    }
+    .xray-item-strength {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #065f46;
+    }
+    .dark .xray-item-strength {
+      background: rgba(16, 185, 129, 0.16);
+      color: #a7f3d0;
+      border-color: rgba(52, 211, 153, 0.3);
+    }
+    .xray-item-weakness {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #92400e;
+    }
+    .dark .xray-item-weakness {
+      background: rgba(245, 158, 11, 0.16);
+      color: #fde68a;
+      border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    /* Version Comparison Table */
+    .version-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+    .version-compare-table th, .version-compare-table td {
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    .dark .version-compare-table th, .dark .version-compare-table td {
+      border-color: #2b3954;
+    }
+    .version-compare-table th {
+      background: #f8fafc;
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .dark .version-compare-table th {
+      background: #192238;
+      color: #f8fafc;
+    }
+
+    /* Contenteditable Live Focus Ring */
+    [contenteditable="true"] {
+      outline: none;
+      transition: all 0.15s ease;
+      border-radius: 3px;
+    }
+    [contenteditable="true"]:hover {
+      background: rgba(99, 102, 241, 0.04);
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2);
+    }
+    [contenteditable="true"]:focus {
+      background: rgba(99, 102, 241, 0.08);
+      box-shadow: 0 0 0 2px #6366f1;
+    }
+
+    /* Feature 7: Strict Page-Break Preservation for Clean PDF/DOCX Export */
+    @media print {
+      @page {
+        margin: 10mm 8mm;
+        size: A4 portrait;
+      }
+      .no-print, nav, .builder-form-panel, .preview-toolbar, .template-selector-bar, .sheet-strategy-banner {
+        display: none !important;
+      }
+      body, main, .container {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .resume-paper-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      .sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry,
+      .classic-skills-grid, .modern-grid-body, .minimal-skills-row {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      header, .classic-section-heading, .modern-side-heading, .minimal-section-heading {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1295,6 +1987,25 @@
       <div class="panel builder-form-panel">
         <form id="resume-builder-form" action="/builder/generate" method="post" enctype="multipart/form-data">
           <input type="hidden" name="variation_seed" id="variation_seed_input" value="{{ current_seed or 1 }}">
+          <input type="hidden" name="fresher_mode" id="fresher_mode_input" value="{% if prefill and prefill.fresher_mode %}1{% else %}0{% endif %}">
+
+          <!-- Feature 3: Fresher Mode Toggle -->
+          <div class="fresher-mode-toggle-card {% if prefill and prefill.fresher_mode %}fresher-active{% endif %}" id="fresher-toggle-card">
+            <div class="fresher-mode-toggle-left">
+              <div class="fresher-icon-pill">🎓</div>
+              <div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <strong class="fresher-mode-title">Fresher / Student Mode</strong>
+                  <span class="fresher-status-tag {% if prefill and prefill.fresher_mode %}active{% endif %}" id="fresher-status-tag">{% if prefill and prefill.fresher_mode %}Active{% else %}Standard{% endif %}</span>
+                </div>
+                <p class="fresher-mode-subtitle">Optimizes resume for academic projects, internships, coursework & certifications</p>
+              </div>
+            </div>
+            <label class="switch-toggle" title="Toggle Fresher Mode">
+              <input type="checkbox" id="fresher-mode-checkbox" {% if prefill and prefill.fresher_mode %}checked{% endif %}>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
           
           <!-- Job Analyzer Bridge Connection Banner -->
           {% if prefill and prefill.from_job_analyzer %}
@@ -1368,25 +2079,55 @@
             </div>
           </div>
 
+          <!-- Feature 4: Job Description Matcher Accordion Card -->
+          <div class="jd-matcher-card" id="jd-matcher-card">
+            <div class="jd-matcher-header" id="jd-matcher-toggle-btn" role="button" tabindex="0" title="Expand or collapse Job Description Matcher">
+              <div class="jd-matcher-header-left">
+                <span class="jd-matcher-icon">🎯</span>
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <strong style="font-size: 0.88rem; color: var(--ink);">Target Job Description Matcher</strong>
+                    <span class="jd-badge-pill" id="jd-badge-pill">Highlight Missing Skills</span>
+                  </div>
+                  <p style="margin: 0; font-size: 0.72rem; color: var(--ink-secondary);">Scan any job posting against your resume to identify missing keywords</p>
+                </div>
+              </div>
+              <span class="jd-toggle-arrow" id="jd-toggle-arrow">▼</span>
+            </div>
+            <div class="jd-matcher-body" id="jd-matcher-body" style="display: none;">
+              <label style="font-size:0.75rem; font-weight:700; color:var(--ink-secondary); margin-bottom:4px; display:block;">PASTE TARGET JOB DESCRIPTION</label>
+              <textarea id="jd-text-input" rows="3" placeholder="Paste the job requirements, responsibilities, and qualifications here to scan for missing keywords..."></textarea>
+              <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+                <button type="button" id="analyze-jd-btn" class="button" style="padding: 7px 14px; font-size: 0.8rem; height: 34px;">
+                  <span>⚡ Scan Keywords & Match ATS</span>
+                </button>
+                <span id="jd-loading-spinner" class="spinner-sm" style="display: none;"></span>
+              </div>
+              <div id="jd-match-results" class="jd-match-results" style="display: none;">
+                <!-- Populated via JS: Match score gauge, matched skills, missing keywords with 1-click add -->
+              </div>
+            </div>
+          </div>
+
           <!-- Basic Info -->
           <div class="builder-section">
             <label class="builder-section-label"><span>TARGET & PROFILE</span></label>
             <div class="form-row-2col">
               <div>
-                <label>Full Name</label>
-                <input name="name" value="{{ prefill.name if prefill else (current_user or '') }}" placeholder="e.g. Alex Morgan" required>
+                <label id="name-field-label">Full Name</label>
+                <input id="input-name" name="name" value="{{ prefill.name if prefill else (current_user or '') }}" placeholder="e.g. Alex Morgan" required>
               </div>
               <div>
-                <label>Target Job Title</label>
-                <input name="target_role" value="{{ prefill.target_role if prefill else '' }}" placeholder="e.g. Senior Full-Stack Engineer" required>
+                <label id="role-field-label">Target Job Title</label>
+                <input id="input-target-role" name="target_role" value="{{ prefill.target_role if prefill else '' }}" placeholder="e.g. Senior Full-Stack Engineer" required>
               </div>
             </div>
 
             <div class="form-row-2col" style="margin-top: 10px;">
               <div>
                 <label>Experience Level</label>
-                <select name="experience_level">
-                  <option value="Entry-Level / Early Career" {% if prefill and prefill.experience_level == 'Entry-Level / Early Career' %}selected{% endif %}>Entry-Level / Early Career</option>
+                <select id="input-experience-level" name="experience_level">
+                  <option value="Entry-Level / Early Career" {% if prefill and prefill.experience_level == 'Entry-Level / Early Career' %}selected{% endif %}>Entry-Level / Early Career (Fresher)</option>
                   <option value="Mid-Level (3-5 years)" {% if not prefill or prefill.experience_level == 'Mid-Level' or prefill.experience_level == 'Mid-Level (3-5 years)' %}selected{% endif %}>Mid-Level (3–5 years)</option>
                   <option value="Senior Level (5-9 years)" {% if prefill and 'Senior' in prefill.experience_level %}selected{% endif %}>Senior Level (5–9 years)</option>
                   <option value="Staff / Principal / Director" {% if prefill and ('Director' in prefill.experience_level or 'Staff' in prefill.experience_level or 'Principal' in prefill.experience_level) %}selected{% endif %}>Staff / Principal / Director</option>
@@ -1394,7 +2135,7 @@
               </div>
               <div>
                 <label>Industry / Domain</label>
-                <input name="industry" value="{{ prefill.industry if prefill else 'Technology & Software' }}" placeholder="e.g. FinTech, AI / ML, Healthcare">
+                <input id="input-industry" name="industry" value="{{ prefill.industry if prefill else 'Technology & Software' }}" placeholder="e.g. FinTech, AI / ML, Healthcare">
               </div>
             </div>
           </div>
@@ -1405,16 +2146,16 @@
             <div class="form-row-2col">
               <div>
                 <label>Email</label>
-                <input name="email" type="email" value="{{ prefill.email if prefill else '' }}" placeholder="alex@example.com">
+                <input id="input-email" name="email" type="email" value="{{ prefill.email if prefill else '' }}" placeholder="alex@example.com">
               </div>
               <div>
                 <label>Phone & Location</label>
-                <input name="phone" value="{{ prefill.phone if prefill else '' }}" placeholder="+1 (555) 019-2834 · San Francisco, CA">
+                <input id="input-phone" name="phone" value="{{ prefill.phone if prefill else '' }}" placeholder="+1 (555) 019-2834 · San Francisco, CA">
               </div>
             </div>
             <div style="margin-top: 10px;">
               <label>LinkedIn / GitHub / Portfolio</label>
-              <input name="linkedin" value="{{ prefill.linkedin if prefill else '' }}" placeholder="linkedin.com/in/alexmorgan · github.com/alexmorgan">
+              <input id="input-linkedin" name="linkedin" value="{{ prefill.linkedin if prefill else '' }}" placeholder="linkedin.com/in/alexmorgan · github.com/alexmorgan">
             </div>
           </div>
 
@@ -1422,23 +2163,31 @@
           <div class="builder-section">
             <label class="builder-section-label"><span>SKILLS & EXPERIENCES</span></label>
             <div style="margin-bottom: 12px;">
-              <label>Key Skills & Technologies</label>
-              <textarea name="skills" rows="2" placeholder="e.g. Python, TypeScript, React, Docker, Kubernetes, AWS, PostgreSQL, Microservices, CI/CD, Agile">{{ prefill.skills if prefill else '' }}</textarea>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label id="skills-section-label" style="margin-bottom: 0;">Key Skills & Technologies</label>
+                <span class="live-sync-pill" title="Changes sync in real-time to preview">⚡ Live Preview</span>
+              </div>
+              <textarea id="input-skills" name="skills" rows="2" placeholder="e.g. Python, TypeScript, React, Docker, Kubernetes, AWS, PostgreSQL, Microservices, CI/CD, Agile">{{ prefill.skills if prefill else '' }}</textarea>
             </div>
 
             <div style="margin-bottom: 12px;">
-              <label>Past Roles & Responsibilities (raw notes or bullet points)</label>
-              <textarea name="experience_raw" rows="4" placeholder="Briefly describe your past jobs:&#10;• Lead Engineer at TechCorp (2021-Present): built core payments pipeline, led 5 engineers, reduced latency.&#10;• Software Engineer at CloudLabs (2018-2021): developed React/Node dashboard, optimized SQL queries.">{{ prefill.experience_raw if prefill else '' }}</textarea>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label id="experience-section-label" style="margin-bottom: 0;">Past Roles & Responsibilities (raw notes or bullet points)</label>
+                <button type="button" id="trigger-bullet-improver-btn" class="bullet-improve-pill-btn" title="Rewrite any weak bullet point using AI">
+                  <span>✨ AI Bullet Improver</span>
+                </button>
+              </div>
+              <textarea id="input-experience-raw" name="experience_raw" rows="4" placeholder="Briefly describe your past jobs:&#10;• Lead Engineer at TechCorp (2021-Present): built core payments pipeline, led 5 engineers, reduced latency.&#10;• Software Engineer at CloudLabs (2018-2021): developed React/Node dashboard, optimized SQL queries.">{{ prefill.experience_raw if prefill else '' }}</textarea>
             </div>
 
             <div class="form-row-2col">
               <div>
-                <label>Education</label>
-                <input name="education_raw" value="{{ prefill.education_raw if prefill else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018">
+                <label id="education-section-label">Education & Degree</label>
+                <input id="input-education-raw" name="education_raw" value="{{ prefill.education_raw if prefill else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018">
               </div>
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                  <label style="margin-bottom: 0;">Projects & Certifications (Optional)</label>
+                  <label id="projects-section-label" style="margin-bottom: 0;">Projects & Certifications (Optional)</label>
                   <button type="button" id="trigger-cert-upload-btn" class="cert-upload-pill-btn" title="Upload Certificate in PDF, Image, Word, or Text format">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -1488,233 +2237,351 @@
 
       <!-- RIGHT COLUMN: Interactive Live Resume Sheet Preview -->
       <div class="builder-preview-panel">
+        {% set r = resume if resume else {
+          "candidate_name": prefill.name if (prefill and prefill.name) else (current_user or "Alex Morgan"),
+          "target_role": prefill.target_role if (prefill and prefill.target_role) else "Senior Full-Stack Engineer",
+          "contact_line": ((prefill.email if (prefill and prefill.email) else "alex@example.com") ~ " | " ~ (prefill.phone if (prefill and prefill.phone) else "+1 (555) 019-2834 · San Francisco, CA") ~ ((" | " ~ prefill.linkedin) if (prefill and prefill.linkedin) else " | linkedin.com/in/alexmorgan")),
+          "ats_score": 96,
+          "variation_seed": current_seed or 1,
+          "strategy_title": "Quantitative & ROI-Driven",
+          "strategy_description": "Quantified accomplishment focus with robust metric verification",
+          "fresher_mode": prefill.fresher_mode if prefill else false,
+          "executive_summary": "Results-driven engineering professional specialized in building resilient distributed systems and modern web applications. Proven track record turning complex technical challenges into measurable business scale.",
+          "skills": [
+            {"category": "Core Languages & Frameworks", "items": ["Python", "TypeScript", "React", "PostgreSQL"]},
+            {"category": "Cloud & Distributed Systems", "items": ["AWS", "Docker", "Kubernetes", "Redis", "CI/CD"]},
+            {"category": "Engineering Practices", "items": ["Microservices", "RESTful APIs", "System Architecture", "Agile Sprints"]}
+          ],
+          "experience": [
+            {
+              "title": "Lead Software Engineer",
+              "company": "Vanguard Cloud Systems",
+              "period": "2021 – Present",
+              "location": "San Francisco, CA",
+              "bullets": [
+                "Spearheaded enterprise-scale backend infrastructure serving 8M+ daily requests with 99.99% uptime.",
+                "Architected automated CI/CD deployment pipelines, cutting release cycle times by 45% across 6 squads.",
+                "Engineered database query optimizations across 4TB PostgreSQL clusters, eliminating 92% of slow queries."
+              ]
+            },
+            {
+              "title": "Full-Stack Software Engineer",
+              "company": "Horizon Tech Labs",
+              "period": "2018 – 2021",
+              "location": "Remote",
+              "bullets": [
+                "Delivered full-lifecycle payment checkout microservice processing $2.4M in monthly transactions.",
+                "Implemented automated unit and end-to-end testing suites covering 88% of critical core business paths."
+              ]
+            }
+          ],
+          "education": [
+            {
+              "degree": "B.S. in Computer Science & Engineering",
+              "institution": "State University of Technology",
+              "year": "Honors Graduate",
+              "details": "Focus on Distributed Systems, Cloud Architecture, and Algorithm Design"
+            }
+          ],
+          "projects_or_certifications": [
+            {
+              "title": "AWS Certified Solutions Architect",
+              "details": "Professional credential validating scalable cloud architecture and multi-tier security"
+            }
+          ]
+        } %}
+
         <div class="preview-toolbar">
           <div class="preview-toolbar-left">
             <span class="preview-badge-status">
               <span class="pulse-indicator"></span>
-              Live AI Preview
+              <span id="preview-sync-status">Live Synced</span>
             </span>
-            {% if resume %}
-              <div class="ats-score-badge ats-score-pill" title="ATS Optimization Score: {{ resume.ats_score }}/100">
-                <span class="ats-icon-wrap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </span>
-                <span class="ats-score-label">ATS Score</span>
-                <span class="ats-score-divider"></span>
-                <span class="ats-score-val">
-                  {{ resume.ats_score }}<span class="ats-score-max">/100</span>
-                </span>
-              </div>
-            {% endif %}
+            <div class="ats-score-badge ats-score-pill" id="live-ats-badge" title="ATS Optimization Readiness Score">
+              <span class="ats-icon-wrap" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              <span class="ats-score-label">ATS Score</span>
+              <span class="ats-score-divider"></span>
+              <span class="ats-score-val" id="ats-score-display-val">
+                {{ r.ats_score }}<span class="ats-score-max">/100</span>
+              </span>
+            </div>
           </div>
           <div class="preview-toolbar-actions">
-            {% if resume %}
-              <button type="button" class="tool-btn" id="copy-markdown-btn" title="Copy resume as Markdown">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                Copy Text
-              </button>
+            <!-- Feature 5: Resume X-Ray Trigger -->
+            <button type="button" class="tool-btn" id="xray-open-btn" title="Inspect Resume X-Ray: Strongest & Weakest Parts">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>🔍 Resume X-Ray</span>
+            </button>
 
-              <!-- Multi-Template Download Split Dropdown Button -->
-              <div class="download-btn-group">
-                <button type="button" class="tool-btn download-pdf-btn" id="download-resume-pdf-btn" title="Direct Download active template as PDF">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span id="download-pdf-label">Download PDF</span>
+            <!-- Feature 6: Version Compare Trigger -->
+            <button type="button" class="tool-btn" id="version-open-btn" title="Saved Versions & Side-by-Side ATS Comparison">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>📑 Versions (<span id="version-count-pill">0</span>)</span>
+            </button>
+
+            <!-- Save Version Button -->
+            <button type="button" class="tool-btn" id="save-version-btn" title="Save current resume as a version">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span>Save Version</span>
+            </button>
+
+            <button type="button" class="tool-btn" id="copy-markdown-btn" title="Copy resume as text">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy Text</span>
+            </button>
+
+            <!-- Multi-Template Download Split Dropdown Button (PDF + DOCX) -->
+            <div class="download-btn-group">
+              <button type="button" class="tool-btn download-pdf-btn" id="download-resume-pdf-btn" title="Direct Download active template as PDF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="download-pdf-label">Download PDF</span>
+              </button>
+              <button type="button" class="download-dropdown-toggle" id="download-dropdown-toggle" title="Download Options & Formats" aria-haspopup="true" aria-expanded="false">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="download-dropdown-menu" id="download-dropdown-menu">
+                <div class="dropdown-header">EXPORT OPTIONS</div>
+                <button type="button" class="dropdown-item active-item" data-download-template="classic">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">👔</span>
+                    <div class="dropdown-item-text">
+                      <strong>Classic Executive (PDF)</strong>
+                      <small>Traditional Single-Column ATS Layout</small>
+                    </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
                 </button>
-                <button type="button" class="download-dropdown-toggle" id="download-dropdown-toggle" title="Download Options & Other Templates" aria-haspopup="true" aria-expanded="false">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                <button type="button" class="dropdown-item" data-download-template="modern">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">💻</span>
+                    <div class="dropdown-item-text">
+                      <strong>Modern Two-Column (PDF)</strong>
+                      <small>Split Sidebar Grid Tech Layout</small>
+                    </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
                 </button>
-                <div class="download-dropdown-menu" id="download-dropdown-menu">
-                  <div class="dropdown-header">DOWNLOAD TEMPLATE AS PDF</div>
-                  <button type="button" class="dropdown-item active-item" data-download-template="classic">
-                    <div class="dropdown-item-left">
-                      <span class="dropdown-item-icon">👔</span>
-                      <div class="dropdown-item-text">
-                        <strong>Classic Executive (PDF)</strong>
-                        <small>Traditional Single-Column ATS Layout</small>
-                      </div>
+                <button type="button" class="dropdown-item" data-download-template="minimal">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">⚡</span>
+                    <div class="dropdown-item-text">
+                      <strong>Minimalist Silicon (PDF)</strong>
+                      <small>Compact Silicon Valley Tech Aesthetic</small>
                     </div>
-                    <span class="dropdown-active-pill">Active</span>
-                  </button>
-                  <button type="button" class="dropdown-item" data-download-template="modern">
-                    <div class="dropdown-item-left">
-                      <span class="dropdown-item-icon">💻</span>
-                      <div class="dropdown-item-text">
-                        <strong>Modern Two-Column (PDF)</strong>
-                        <small>Split Sidebar Grid Tech Layout</small>
-                      </div>
+                  </div>
+                  <span class="dropdown-active-pill">PDF</span>
+                </button>
+
+                <!-- Feature 7: Native DOCX Export Option -->
+                <div class="dropdown-divider"></div>
+                <button type="button" class="dropdown-item" id="download-docx-btn">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">📝</span>
+                    <div class="dropdown-item-text">
+                      <strong>Microsoft Word (.docx)</strong>
+                      <small>Preserves fonts, margins & page breaks</small>
                     </div>
-                    <span class="dropdown-active-pill">Active</span>
-                  </button>
-                  <button type="button" class="dropdown-item" data-download-template="minimal">
-                    <div class="dropdown-item-left">
-                      <span class="dropdown-item-icon">⚡</span>
-                      <div class="dropdown-item-text">
-                        <strong>Minimalist Silicon (PDF)</strong>
-                        <small>Compact Silicon Valley Tech Aesthetic</small>
-                      </div>
+                  </div>
+                  <span class="dropdown-active-pill" style="background: rgba(37, 99, 235, 0.15); color: #2563eb;">DOCX</span>
+                </button>
+
+                <button type="button" class="dropdown-item dropdown-item-batch" id="download-all-templates-btn">
+                  <div class="dropdown-item-left">
+                    <span class="dropdown-item-icon">📦</span>
+                    <div class="dropdown-item-text">
+                      <strong>Download All 3 Templates</strong>
+                      <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
                     </div>
-                    <span class="dropdown-active-pill">Active</span>
-                  </button>
-                  <div class="dropdown-divider"></div>
-                  <button type="button" class="dropdown-item dropdown-item-batch" id="download-all-templates-btn">
-                    <div class="dropdown-item-left">
-                      <span class="dropdown-item-icon">📦</span>
-                      <div class="dropdown-item-text">
-                        <strong>Download All 3 Templates</strong>
-                        <small>Export Classic, Modern & Minimalist (3 PDFs)</small>
-                      </div>
-                    </div>
-                  </button>
-                </div>
+                  </div>
+                </button>
               </div>
+            </div>
 
-              <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or System PDF">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-                Print
-              </button>
-            {% endif %}
+            <button type="button" class="tool-btn print-btn" onclick="window.print();" title="Print or System PDF">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+              Print
+            </button>
           </div>
         </div>
 
-        {% if resume %}
-          <!-- Interactive Template Switcher Bar -->
-          <div class="template-selector-bar no-print">
-            <div class="template-selector-header">
-              <span class="template-selector-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
-                RESUME TEMPLATE STYLES (3 AVAILABLE)
-              </span>
-              <span class="template-selector-hint">Click below to switch template instantly · Zero latency</span>
-            </div>
-            <div class="template-pills-row">
-              <button type="button" class="template-pill active" data-template="classic" id="pill-classic" title="Classic Single-Column ATS Layout">
-                <span class="template-pill-icon">👔</span>
-                <div class="template-pill-info">
-                  <strong class="template-pill-name">Classic Executive</strong>
-                  <span class="template-pill-desc">Single-column corporate ATS standard</span>
-                </div>
-                <span class="template-pill-badge">Standard</span>
-              </button>
-              <button type="button" class="template-pill" data-template="modern" id="pill-modern" title="Modern Split Two-Column Layout">
-                <span class="template-pill-icon">💻</span>
-                <div class="template-pill-info">
-                  <strong class="template-pill-name">Modern Two-Column</strong>
-                  <span class="template-pill-desc">Sidebar grid for tech & engineering</span>
-                </div>
-                <span class="template-pill-badge new-badge">Modern</span>
-              </button>
-              <button type="button" class="template-pill" data-template="minimal" id="pill-minimal" title="Minimalist Silicon Valley Layout">
-                <span class="template-pill-icon">⚡</span>
-                <div class="template-pill-info">
-                  <strong class="template-pill-name">Minimalist Silicon</strong>
-                  <span class="template-pill-desc">Clean linear 1-page compact tech style</span>
-                </div>
-                <span class="template-pill-badge new-badge">Compact</span>
-              </button>
-            </div>
+        <!-- Interactive Template Switcher Bar -->
+        <div class="template-selector-bar no-print">
+          <div class="template-selector-header">
+            <span class="template-selector-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
+              RESUME TEMPLATE STYLES (3 AVAILABLE)
+            </span>
+            <span class="template-selector-hint">Click below to switch template instantly · Zero latency</span>
           </div>
-        {% endif %}
+          <div class="template-pills-row">
+            <button type="button" class="template-pill active" data-template="classic" id="pill-classic" title="Classic Single-Column ATS Layout">
+              <span class="template-pill-icon">👔</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Classic Executive</strong>
+                <span class="template-pill-desc">Single-column corporate ATS standard</span>
+              </div>
+              <span class="template-pill-badge">Standard</span>
+            </button>
+            <button type="button" class="template-pill" data-template="modern" id="pill-modern" title="Modern Split Two-Column Layout">
+              <span class="template-pill-icon">💻</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Modern Two-Column</strong>
+                <span class="template-pill-desc">Sidebar grid for tech & engineering</span>
+              </div>
+              <span class="template-pill-badge new-badge">Modern</span>
+            </button>
+            <button type="button" class="template-pill" data-template="minimal" id="pill-minimal" title="Minimalist Silicon Valley Layout">
+              <span class="template-pill-icon">⚡</span>
+              <div class="template-pill-info">
+                <strong class="template-pill-name">Minimalist Silicon</strong>
+                <span class="template-pill-desc">Clean linear 1-page compact tech style</span>
+              </div>
+              <span class="template-pill-badge new-badge">Compact</span>
+            </button>
+          </div>
+        </div>
 
-        <!-- Paper Sheet Container -->
+        <!-- Paper Sheet Container (Always Active Live Preview) -->
         <div class="resume-paper-sheet" id="resume-sheet">
-          {% if resume %}
-            <!-- Strategy Indicator Chip -->
-            <div class="sheet-strategy-banner no-print">
-              <span class="sheet-strategy-tag">Generation #{{ resume.variation_seed or 1 }} · {{ resume.strategy_title }}</span>
-              <span class="sheet-strategy-desc">{{ resume.strategy_description }}</span>
-            </div>
+          <!-- Strategy Indicator Chip -->
+          <div class="sheet-strategy-banner no-print">
+            <span class="sheet-strategy-tag" id="sheet-strategy-tag">Generation #{{ r.variation_seed or 1 }} · {{ r.strategy_title }}</span>
+            <span class="sheet-strategy-desc" id="sheet-strategy-desc">{{ r.strategy_description }}</span>
+          </div>
 
-            <!-- ================= TEMPLATE 1: CLASSIC EXECUTIVE ================= -->
-            <div class="template-view active-view" id="template-view-classic" data-template-name="Classic Executive" style="display: block;">
-              <header class="classic-header">
-                <h1 class="classic-candidate-name">{{ resume.candidate_name }}</h1>
-                <p class="classic-target-role">{{ resume.target_role }}</p>
-                <div class="classic-contact-line">{{ resume.contact_line }}</div>
-              </header>
+          <!-- ================= TEMPLATE 1: CLASSIC EXECUTIVE ================= -->
+          <div class="template-view active-view" id="template-view-classic" data-template-name="Classic Executive" style="display: block;">
+            <header class="classic-header">
+              <h1 class="classic-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+              <p class="classic-target-role live-role" contenteditable="true">{{ r.target_role }}</p>
+              <div class="classic-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+            </header>
 
-              <section class="sheet-section">
-                <h2 class="classic-section-heading">PROFESSIONAL SUMMARY</h2>
-                <p class="sheet-summary-text">{{ resume.executive_summary }}</p>
-              </section>
+            <section class="sheet-section">
+              <h2 class="classic-section-heading">PROFESSIONAL SUMMARY</h2>
+              <p class="sheet-summary-text live-summary" contenteditable="true">{{ r.executive_summary }}</p>
+            </section>
 
-              <section class="sheet-section">
-                <h2 class="classic-section-heading">CORE COMPETENCIES & TECHNICAL EXPERTISE</h2>
-                <div class="classic-skills-grid">
-                  {% for skill_group in resume.skills %}
-                    <div class="classic-skill-category">
-                      <strong>{{ skill_group.category }}:</strong>
-                      <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
-                    </div>
-                  {% endfor %}
-                </div>
-              </section>
-
-              <section class="sheet-section">
-                <h2 class="classic-section-heading">PROFESSIONAL EXPERIENCE</h2>
-                {% for exp in resume.experience %}
-                  <div class="classic-job-entry">
-                    <div class="classic-job-header">
-                      <div>
-                        <strong class="classic-job-title">{{ exp.title }}</strong>
-                        <span class="classic-job-company"> · {{ exp.company }}</span>
-                      </div>
-                      <div class="classic-job-meta">
-                        <span>{{ exp.period }}</span>
-                        {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
-                      </div>
-                    </div>
-                    <ul class="classic-bullets">
-                      {% for bullet in exp.bullets %}
-                        <li>{{ bullet }}</li>
-                      {% endfor %}
-                    </ul>
+            <section class="sheet-section">
+              <h2 class="classic-section-heading">CORE COMPETENCIES & TECHNICAL EXPERTISE</h2>
+              <div class="classic-skills-grid live-skills-grid">
+                {% for skill_group in r.skills %}
+                  <div class="classic-skill-category">
+                    <strong>{{ skill_group.category }}:</strong>
+                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
                   </div>
                 {% endfor %}
+              </div>
+            </section>
+
+            <!-- In Fresher Mode: Education and Projects are shown first! -->
+            <div id="classic-fresher-order-wrap">
+              {% if r.fresher_mode %}
+                <section class="sheet-section" id="classic-edu-sec">
+                  <h2 class="classic-section-heading">EDUCATION & ACADEMIC BACKGROUND</h2>
+                  <div class="live-education-list">
+                    {% for edu in r.education %}
+                      <div class="classic-edu-entry">
+                        <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
+                        <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </section>
+
+                <section class="sheet-section" id="classic-proj-sec">
+                  <h2 class="classic-section-heading">ACADEMIC PROJECTS & CAPSTONE</h2>
+                  <div class="live-projects-list">
+                    {% for proj in r.projects_or_certifications %}
+                      <div class="classic-proj-entry">
+                        <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </section>
+              {% endif %}
+
+              <section class="sheet-section" id="classic-exp-sec">
+                <h2 class="classic-section-heading">{% if r.fresher_mode %}INTERNSHIPS & PRACTICAL EXPERIENCE{% else %}PROFESSIONAL EXPERIENCE{% endif %}</h2>
+                <div class="live-experience-list">
+                  {% for exp in r.experience %}
+                    <div class="classic-job-entry">
+                      <div class="classic-job-header">
+                        <div>
+                          <strong class="classic-job-title">{{ exp.title }}</strong>
+                          <span class="classic-job-company"> · {{ exp.company }}</span>
+                        </div>
+                        <div class="classic-job-meta">
+                          <span>{{ exp.period }}</span>
+                          {% if exp.location %}<span> | {{ exp.location }}</span>{% endif %}
+                        </div>
+                      </div>
+                      <ul class="classic-bullets">
+                        {% for bullet in exp.bullets %}
+                          <li class="resume-bullet-wrap">
+                            <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                            <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endfor %}
+                </div>
               </section>
 
-              {% if resume.education %}
-                <section class="sheet-section">
-                  <h2 class="classic-section-heading">EDUCATION</h2>
-                  {% for edu in resume.education %}
-                    <div class="classic-edu-entry">
-                      <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
-                      <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+              {% if not r.fresher_mode %}
+                {% if r.education %}
+                  <section class="sheet-section" id="classic-edu-sec">
+                    <h2 class="classic-section-heading">EDUCATION</h2>
+                    <div class="live-education-list">
+                      {% for edu in r.education %}
+                        <div class="classic-edu-entry">
+                          <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
+                          <div class="muted">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
+                        </div>
+                      {% endfor %}
                     </div>
-                  {% endfor %}
-                </section>
-              {% endif %}
+                  </section>
+                {% endif %}
 
-              {% if resume.projects_or_certifications %}
-                <section class="sheet-section">
-                  <h2 class="classic-section-heading">PROJECTS & CERTIFICATIONS</h2>
-                  {% for proj in resume.projects_or_certifications %}
-                    <div class="classic-proj-entry">
-                      <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                {% if r.projects_or_certifications %}
+                  <section class="sheet-section" id="classic-proj-sec">
+                    <h2 class="classic-section-heading">PROJECTS & CERTIFICATIONS</h2>
+                    <div class="live-projects-list">
+                      {% for proj in r.projects_or_certifications %}
+                        <div class="classic-proj-entry">
+                          <strong>{{ proj.title }}</strong>: <span class="muted">{{ proj.details }}</span>
+                        </div>
+                      {% endfor %}
                     </div>
-                  {% endfor %}
-                </section>
+                  </section>
+                {% endif %}
               {% endif %}
             </div>
+          </div>
 
-            <!-- ================= TEMPLATE 2: MODERN TECH TWO-COLUMN ================= -->
-            <div class="template-view" id="template-view-modern" data-template-name="Modern Two-Column" style="display: none;">
-              <header class="modern-header">
-                <div>
-                  <h1 class="modern-candidate-name">{{ resume.candidate_name }}</h1>
-                  <span class="modern-target-role-pill">{{ resume.target_role }}</span>
+          <!-- ================= TEMPLATE 2: MODERN TECH TWO-COLUMN ================= -->
+          <div class="template-view" id="template-view-modern" data-template-name="Modern Two-Column" style="display: none;">
+            <header class="modern-header">
+              <div>
+                <h1 class="modern-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+                <span class="modern-target-role-pill live-role" contenteditable="true">{{ r.target_role }}</span>
+              </div>
+              <div class="modern-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+            </header>
+
+            <div class="modern-grid-body">
+              <!-- Left Sidebar Column -->
+              <aside class="modern-sidebar-col">
+                <div class="modern-side-heading">
+                  <span>⚡ CORE SKILLS</span>
                 </div>
-                <div class="modern-contact-line">{{ resume.contact_line }}</div>
-              </header>
-
-              <div class="modern-grid-body">
-                <!-- Left Sidebar Column -->
-                <aside class="modern-sidebar-col">
-                  <div class="modern-side-heading">
-                    <span>⚡ CORE SKILLS</span>
-                  </div>
-                  {% for skill_group in resume.skills %}
+                <div class="live-skills-modern">
+                  {% for skill_group in r.skills %}
                     <div class="modern-skill-group">
                       <span class="modern-skill-cat-title">{{ skill_group.category }}</span>
                       <div class="modern-chips-wrap">
@@ -1732,82 +2599,91 @@
                       </div>
                     </div>
                   {% endfor %}
+                </div>
 
-                  {% if resume.education %}
-                    <div class="modern-side-heading" style="margin-top: 18px;">
-                      <span>🎓 EDUCATION</span>
-                    </div>
-                    {% for edu in resume.education %}
+                {% if r.education %}
+                  <div class="modern-side-heading" style="margin-top: 18px;">
+                    <span>🎓 EDUCATION</span>
+                  </div>
+                  <div class="live-education-modern">
+                    {% for edu in r.education %}
                       <div class="modern-edu-card">
                         <div class="modern-edu-degree">{{ edu.degree }}</div>
                         <div class="modern-edu-inst">{{ edu.institution }}</div>
                         <div class="modern-edu-meta">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
                       </div>
                     {% endfor %}
-                  {% endif %}
+                  </div>
+                {% endif %}
 
-                  {% if resume.projects_or_certifications %}
-                    <div class="modern-side-heading" style="margin-top: 18px;">
-                      <span>📜 CREDENTIALS & PROJECTS</span>
-                    </div>
-                    {% for proj in resume.projects_or_certifications %}
+                {% if r.projects_or_certifications %}
+                  <div class="modern-side-heading" style="margin-top: 18px;">
+                    <span>📜 CREDENTIALS & PROJECTS</span>
+                  </div>
+                  <div class="live-projects-modern">
+                    {% for proj in r.projects_or_certifications %}
                       <div class="modern-proj-card">
                         <strong class="modern-proj-title">{{ proj.title }}</strong>
                         <div class="modern-proj-desc">{{ proj.details }}</div>
                       </div>
                     {% endfor %}
-                  {% endif %}
-                </aside>
-
-                <!-- Right Main Column -->
-                <main class="modern-main-col">
-                  <div class="modern-main-heading">PROFESSIONAL SUMMARY</div>
-                  <div class="modern-summary-box">
-                    {{ resume.executive_summary }}
                   </div>
+                {% endif %}
+              </aside>
 
-                  <div class="modern-main-heading">WORK EXPERIENCE</div>
-                  <div class="modern-timeline-wrap">
-                    {% for exp in resume.experience %}
-                      <div class="modern-timeline-item">
-                        <div class="modern-timeline-node"></div>
-                        <div class="modern-job-header">
-                          <div>
-                            <strong class="modern-job-role">{{ exp.title }}</strong>
-                            <span class="modern-job-company"> · {{ exp.company }}</span>
-                          </div>
-                          <div class="modern-job-period-badge">
-                            {{ exp.period }}{% if exp.location %} | {{ exp.location }}{% endif %}
-                          </div>
+              <!-- Right Main Column -->
+              <main class="modern-main-col">
+                <div class="modern-main-heading">PROFESSIONAL SUMMARY</div>
+                <div class="modern-summary-box live-summary" contenteditable="true">
+                  {{ r.executive_summary }}
+                </div>
+
+                <div class="modern-main-heading">{% if r.fresher_mode %}INTERNSHIPS & PRACTICAL EXPERIENCE{% else %}WORK EXPERIENCE{% endif %}</div>
+                <div class="modern-timeline-wrap live-experience-modern">
+                  {% for exp in r.experience %}
+                    <div class="modern-timeline-item">
+                      <div class="modern-timeline-node"></div>
+                      <div class="modern-job-header">
+                        <div>
+                          <strong class="modern-job-role">{{ exp.title }}</strong>
+                          <span class="modern-job-company"> · {{ exp.company }}</span>
                         </div>
-                        <ul class="modern-bullets">
-                          {% for bullet in exp.bullets %}
-                            <li>{{ bullet }}</li>
-                          {% endfor %}
-                        </ul>
+                        <div class="modern-job-period-badge">
+                          {{ exp.period }}{% if exp.location %} | {{ exp.location }}{% endif %}
+                        </div>
                       </div>
-                    {% endfor %}
-                  </div>
-                </main>
-              </div>
+                      <ul class="modern-bullets">
+                        {% for bullet in exp.bullets %}
+                          <li class="resume-bullet-wrap">
+                            <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                            <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endfor %}
+                </div>
+              </main>
             </div>
+          </div>
 
-            <!-- ================= TEMPLATE 3: MINIMALIST SILICON VALLEY ================= -->
-            <div class="template-view" id="template-view-minimal" data-template-name="Minimalist Silicon" style="display: none;">
-              <header class="minimal-header">
-                <h1 class="minimal-candidate-name">{{ resume.candidate_name }}</h1>
-                <p class="minimal-target-role">{{ resume.target_role }}</p>
-                <div class="minimal-contact-line">{{ resume.contact_line }}</div>
-              </header>
+          <!-- ================= TEMPLATE 3: MINIMALIST SILICON VALLEY ================= -->
+          <div class="template-view" id="template-view-minimal" data-template-name="Minimalist Silicon" style="display: none;">
+            <header class="minimal-header">
+              <h1 class="minimal-candidate-name live-name" contenteditable="true">{{ r.candidate_name }}</h1>
+              <p class="minimal-target-role live-role" contenteditable="true">{{ r.target_role }}</p>
+              <div class="minimal-contact-line live-contact" contenteditable="true">{{ r.contact_line }}</div>
+            </header>
 
-              <section class="sheet-section">
-                <h2 class="minimal-section-heading">PROFILE SUMMARY</h2>
-                <p class="minimal-summary-text">{{ resume.executive_summary }}</p>
-              </section>
+            <section class="sheet-section">
+              <h2 class="minimal-section-heading">PROFILE SUMMARY</h2>
+              <p class="minimal-summary-text live-summary" contenteditable="true">{{ r.executive_summary }}</p>
+            </section>
 
-              <section class="sheet-section">
-                <h2 class="minimal-section-heading">PROFESSIONAL EXPERIENCE</h2>
-                {% for exp in resume.experience %}
+            <section class="sheet-section">
+              <h2 class="minimal-section-heading">{% if r.fresher_mode %}INTERNSHIPS & EXPERIENCE{% else %}PROFESSIONAL EXPERIENCE{% endif %}</h2>
+              <div class="live-experience-minimal">
+                {% for exp in r.experience %}
                   <div class="minimal-job-entry">
                     <div class="minimal-job-header">
                       <div class="minimal-job-title-company">
@@ -1819,88 +2695,234 @@
                     </div>
                     <ul class="minimal-bullets">
                       {% for bullet in exp.bullets %}
-                        <li>{{ bullet }}</li>
+                        <li class="resume-bullet-wrap">
+                          <span class="bullet-text" contenteditable="true">{{ bullet }}</span>
+                          <button type="button" class="bullet-ai-action" data-bullet="{{ bullet | e }}" title="Rewrite this bullet point with AI">✨ Improve</button>
+                        </li>
                       {% endfor %}
                     </ul>
                   </div>
                 {% endfor %}
-              </section>
+              </div>
+            </section>
 
+            <section class="sheet-section">
+              <h2 class="minimal-section-heading">TECHNICAL COMPETENCIES</h2>
+              <div class="minimal-skills-row live-skills-minimal">
+                {% for skill_group in r.skills %}
+                  <div class="minimal-skill-item">
+                    <strong>{{ skill_group.category }}:</strong>
+                    <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            {% if r.education %}
               <section class="sheet-section">
-                <h2 class="minimal-section-heading">TECHNICAL COMPETENCIES</h2>
-                <div class="minimal-skills-row">
-                  {% for skill_group in resume.skills %}
-                    <div class="minimal-skill-item">
-                      <strong>{{ skill_group.category }}:</strong>
-                      <span>{% if skill_group['items'] is iterable and skill_group['items'] is not string %}{{ skill_group['items'] | join(', ') }}{% else %}{{ skill_group['items'] }}{% endif %}</span>
-                    </div>
-                  {% endfor %}
-                </div>
-              </section>
-
-              {% if resume.education %}
-                <section class="sheet-section">
-                  <h2 class="minimal-section-heading">EDUCATION</h2>
-                  {% for edu in resume.education %}
+                <h2 class="minimal-section-heading">EDUCATION</h2>
+                <div class="live-education-minimal">
+                  {% for edu in r.education %}
                     <div class="minimal-edu-entry">
                       <div><strong>{{ edu.degree }}</strong> — {{ edu.institution }}</div>
                       <div class="minimal-edu-meta">{{ edu.year }}{% if edu.details %} · {{ edu.details }}{% endif %}</div>
                     </div>
                   {% endfor %}
-                </section>
-              {% endif %}
+                </div>
+              </section>
+            {% endif %}
 
-              {% if resume.projects_or_certifications %}
-                <section class="sheet-section">
-                  <h2 class="minimal-section-heading">PROJECTS & CERTIFICATIONS</h2>
-                  {% for proj in resume.projects_or_certifications %}
+            {% if r.projects_or_certifications %}
+              <section class="sheet-section">
+                <h2 class="minimal-section-heading">PROJECTS & CERTIFICATIONS</h2>
+                <div class="live-projects-minimal">
+                  {% for proj in r.projects_or_certifications %}
                     <div class="minimal-proj-entry">
                       <div><strong>{{ proj.title }}</strong>: {{ proj.details }}</div>
                     </div>
                   {% endfor %}
-                </section>
-              {% endif %}
-            </div>
-
-          {% else %}
-            <!-- Blank / Placeholder State Before Generation -->
-            <div class="sheet-empty-state">
-              <div class="sheet-empty-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <line x1="10" y1="9" x2="8" y2="9"/>
-                </svg>
-              </div>
-              <h3>Ready to Architect Your Dream Resume</h3>
-              <p>Fill out the profile and experience notes on the left, choose your narrative strategy, and click <strong>Generate Resume</strong> to produce your tailored document.</p>
-              <div class="empty-mockup-bars">
-                <div class="mockup-bar" style="width: 45%; height: 16px; margin: 0 auto 12px;"></div>
-                <div class="mockup-bar" style="width: 70%; height: 10px; margin: 0 auto 20px;"></div>
-                <div class="mockup-bar" style="width: 100%; height: 8px; margin-bottom: 8px;"></div>
-                <div class="mockup-bar" style="width: 95%; height: 8px; margin-bottom: 8px;"></div>
-                <div class="mockup-bar" style="width: 80%; height: 8px; margin-bottom: 24px;"></div>
-                <div class="mockup-bar" style="width: 100%; height: 8px; margin-bottom: 8px;"></div>
-                <div class="mockup-bar" style="width: 90%; height: 8px;"></div>
-              </div>
-            </div>
-          {% endif %}
+                </div>
+              </section>
+            {% endif %}
+          </div>
+          </div>
         </div>
       </div>
-
     </div>
   </main>
 
+  <!-- ================= MODAL 1: AI RESUME BULLET IMPROVER ================= -->
+  <div id="improver-modal" class="cf-modal-backdrop" style="display: none;">
+    <div class="cf-modal-dialog">
+      <div class="cf-modal-header">
+        <h3><span>✨</span> AI Resume Bullet Improver</h3>
+        <button type="button" class="cf-modal-close-btn" id="close-improver-modal">&times;</button>
+      </div>
+      <div class="cf-modal-body">
+        <p style="margin: 0 0 12px; font-size: 0.84rem; color: var(--ink-secondary); line-height: 1.55;">
+          Rewrite weak, passive, or unquantified bullet points using Google's <strong>XYZ accomplishment formula</strong> (Accomplished [X] as measured by [Y], by doing [Z]) <em>without inventing false facts or fictitious company roles</em>.
+        </p>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 0.74rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; color: var(--ink);">BULLET POINT TO REWRITE</label>
+          <textarea id="improver-bullet-input" rows="3" style="width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; padding: 10px; font-family: inherit; font-size: 0.85rem; box-sizing: border-box;" placeholder="Paste or type any bullet point to rewrite..."></textarea>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 14px;">
+          <button type="button" id="run-improve-bullet-btn" class="button" style="padding: 8px 18px; font-size: 0.82rem;">
+            <span>🚀 Rewrite Bullet with AI</span>
+          </button>
+          <span id="improver-spinner" class="spinner-sm" style="display: none;"></span>
+        </div>
+        <div id="improver-diagnostic-banner" style="display: none; padding: 10px 14px; border-radius: 8px; background: rgba(99, 102, 241, 0.08); border-left: 3px solid #6366f1; margin-bottom: 14px; font-size: 0.8rem; color: var(--ink); line-height: 1.45;"></div>
+        <div id="improver-results-list"></div>
+      </div>
+      <div class="cf-modal-footer">
+        <button type="button" class="button secondary" id="close-improver-modal-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: RESUME X-RAY DIAGNOSTIC ================= -->
+  <div id="xray-modal" class="cf-modal-backdrop" style="display: none;">
+    <div class="cf-modal-dialog" style="max-width: 760px;">
+      <div class="cf-modal-header">
+        <h3><span>🔍</span> Resume X-Ray Diagnostic Report</h3>
+        <button type="button" class="cf-modal-close-btn" id="close-xray-modal">&times;</button>
+      </div>
+      <div class="cf-modal-body">
+        <div class="xray-health-row">
+          <div class="xray-dial" id="xray-health-score-val">94</div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong style="font-size: 1.1rem; color: var(--ink);">Overall ATS Health & Readiness</strong>
+              <span id="xray-health-badge" style="background: rgba(16, 185, 129, 0.2); color: #059669; font-size: 0.72rem; font-weight: 750; padding: 2px 8px; border-radius: 999px;">Strong</span>
+            </div>
+            <p style="margin: 3px 0 0; font-size: 0.82rem; color: var(--ink-secondary);">Structural, semantic, and ATS compliance audit based on action verbs, quantified outcomes, and keywords.</p>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+          <div style="padding: 10px; border-radius: 10px; background: rgba(109, 93, 252, 0.06); border: 1px solid rgba(109, 93, 252, 0.2); text-align: center;">
+            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--ink-secondary);">Power Verbs</span>
+            <div id="xray-verb-score" style="font-size: 1.3rem; font-weight: 800; color: #4f46e5; margin-top: 2px;">88%</div>
+          </div>
+          <div style="padding: 10px; border-radius: 10px; background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.2); text-align: center;">
+            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--ink-secondary);">Quantified Metrics</span>
+            <div id="xray-metric-score" style="font-size: 1.3rem; font-weight: 800; color: #059669; margin-top: 2px;">82%</div>
+          </div>
+          <div style="padding: 10px; border-radius: 10px; background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.2); text-align: center;">
+            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--ink-secondary);">Keyword Depth</span>
+            <div id="xray-keyword-score" style="font-size: 1.3rem; font-weight: 800; color: #d97706; margin-top: 2px;">92%</div>
+          </div>
+        </div>
+        <div class="xray-grid">
+          <div class="xray-column">
+            <h4 style="color: #059669;">✅ Strongest Sections & Advantages</h4>
+            <div id="xray-strengths-container"></div>
+          </div>
+          <div class="xray-column">
+            <h4 style="color: #d97706;">⚠️ Weakest Parts & Potential Gaps</h4>
+            <div id="xray-weaknesses-container"></div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0;">
+          <strong style="font-size: 0.82rem; color: #0f172a; text-transform: uppercase; letter-spacing: 0.04em;">1-Click Actionable Fixes</strong>
+          <ul id="xray-fixes-container" style="margin: 6px 0 0; padding-left: 18px; font-size: 0.8rem; color: #475569; line-height: 1.55;"></ul>
+        </div>
+      </div>
+      <div class="cf-modal-footer">
+        <button type="button" class="button secondary" id="close-xray-modal-footer">Close Diagnostic</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: VERSION COMPARISON ================= -->
+  <div id="version-modal" class="cf-modal-backdrop" style="display: none;">
+    <div class="cf-modal-dialog" style="max-width: 840px;">
+      <div class="cf-modal-header">
+        <h3><span>📑</span> Resume Version History & ATS Comparison</h3>
+        <button type="button" class="cf-modal-close-btn" id="close-version-modal">&times;</button>
+      </div>
+      <div class="cf-modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <p style="margin: 0; font-size: 0.84rem; color: var(--ink-secondary);">
+            Save job-tailored resume variations and compare ATS scores, keyword densities, and accomplishment statements side-by-side.
+          </p>
+          <button type="button" id="trigger-save-from-versions-btn" class="button" style="padding: 6px 14px; font-size: 0.78rem;">
+            <span>+ Save Current Draft</span>
+          </button>
+        </div>
+        <div id="version-list-container" style="margin-bottom: 22px;"></div>
+        <div id="version-compare-section" style="display: none; padding-top: 14px; border-top: 1px solid #e2e8f0;">
+          <h4 style="margin: 0 0 10px; font-size: 0.88rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink);">Side-by-Side Version Diff & ATS Comparison</h4>
+          <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+            <div style="flex: 1;">
+              <label style="font-size: 0.72rem; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 4px;">SELECT VERSION A</label>
+              <select id="compare-select-a" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.82rem;"></select>
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 0.72rem; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 4px;">SELECT VERSION B</label>
+              <select id="compare-select-b" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.82rem;"></select>
+            </div>
+          </div>
+          <div id="version-compare-table-container"></div>
+        </div>
+      </div>
+      <div class="cf-modal-footer">
+        <button type="button" class="button secondary" id="close-version-modal-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: SAVE VERSION PROMPT ================= -->
+  <div id="save-version-modal" class="cf-modal-backdrop" style="display: none;">
+    <div class="cf-modal-dialog" style="max-width: 440px;">
+      <div class="cf-modal-header">
+        <h3><span>💾</span> Save Resume Version</h3>
+        <button type="button" class="cf-modal-close-btn" id="close-save-version-modal">&times;</button>
+      </div>
+      <div class="cf-modal-body">
+        <label style="font-size: 0.78rem; font-weight: 750; color: var(--ink); display: block; margin-bottom: 6px;">VERSION / JOB TARGET NAME</label>
+        <input id="save-version-name-input" placeholder="e.g. Google - Full Stack, Stripe - Backend" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; box-sizing: border-box; margin-bottom: 10px;">
+        <p style="margin: 0; font-size: 0.74rem; color: var(--ink-secondary);">Saves all current inputs, bullet points, skills, and ATS score for comparison.</p>
+      </div>
+      <div class="cf-modal-footer">
+        <button type="button" class="button secondary" id="cancel-save-version-btn">Cancel</button>
+        <button type="button" class="button" id="confirm-save-version-btn">Save Version</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // DOM Elements
       const form = document.getElementById('resume-builder-form');
       const seedInput = document.getElementById('variation_seed_input');
+      const fresherInput = document.getElementById('fresher_mode_input');
       const regenBtn = document.getElementById('regenerate-variation-btn');
       const variationBadge = document.getElementById('variation-badge');
       const copyBtn = document.getElementById('copy-markdown-btn');
       const strategyCards = document.querySelectorAll('.strategy-pill-card');
+
+      // Inputs
+      const inputName = document.getElementById('input-name');
+      const inputTargetRole = document.getElementById('input-target-role');
+      const inputExpLevel = document.getElementById('input-experience-level');
+      const inputIndustry = document.getElementById('input-industry');
+      const inputEmail = document.getElementById('input-email');
+      const inputPhone = document.getElementById('input-phone');
+      const inputLinkedin = document.getElementById('input-linkedin');
+      const inputSkills = document.getElementById('input-skills');
+      const inputExperienceRaw = document.getElementById('input-experience-raw');
+      const inputEducationRaw = document.getElementById('input-education-raw');
+      const inputProjectsRaw = document.getElementById('projects-raw-input');
+
+      // Modals
+      const improverModal = document.getElementById('improver-modal');
+      const xrayModal = document.getElementById('xray-modal');
+      const versionModal = document.getElementById('version-modal');
+      const saveVersionModal = document.getElementById('save-version-modal');
+
+      let currentActiveBulletTarget = null;
+      let savedVersionsCache = [];
 
       // Strategy Pill Selection
       strategyCards.forEach(card => {
@@ -1910,29 +2932,792 @@
         });
       });
 
-      // Regenerate with Distinct Variation (Increments Seed & Changes Strategy)
-      if (regenBtn) {
-        regenBtn.addEventListener('click', () => {
-          let currentSeed = parseInt(seedInput.value || '1', 10);
-          currentSeed += 1;
-          seedInput.value = currentSeed;
-          if (variationBadge) {
-            variationBadge.textContent = `#${currentSeed}`;
+      // ================= FEATURE 1: REAL-TIME TWO-WAY LIVE PREVIEW ENGINE =================
+      function updateLivePreview() {
+        const nameVal = (inputName ? inputName.value.trim() : '') || 'Alex Morgan';
+        const roleVal = (inputTargetRole ? inputTargetRole.value.trim() : '') || 'Senior Full-Stack Engineer';
+        const emailVal = (inputEmail ? inputEmail.value.trim() : '') || 'alex@example.com';
+        const phoneVal = (inputPhone ? inputPhone.value.trim() : '') || '+1 (555) 019-2834 · San Francisco, CA';
+        const linkedinVal = inputLinkedin ? inputLinkedin.value.trim() : '';
+        const contactVal = `${emailVal} | ${phoneVal}${linkedinVal ? ' | ' + linkedinVal : ''}`;
+
+        // 1. Update Candidate Name, Role, Contact
+        document.querySelectorAll('.live-name').forEach(el => el.textContent = nameVal);
+        document.querySelectorAll('.live-role').forEach(el => el.textContent = roleVal);
+        document.querySelectorAll('.live-contact').forEach(el => el.textContent = contactVal);
+
+        // 2. Update Skills in all 3 templates
+        if (inputSkills) {
+          const rawSkills = inputSkills.value.trim();
+          const skillList = rawSkills.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+          
+          // Classic Grid
+          const classicGrid = document.querySelector('.live-skills-grid');
+          if (classicGrid && skillList.length > 0) {
+            const cat1 = skillList.slice(0, 4);
+            const cat2 = skillList.slice(4, 8);
+            const cat3 = skillList.slice(8);
+            classicGrid.innerHTML = `
+              <div class="classic-skill-category"><strong>Core Competencies:</strong> <span>${cat1.join(', ') || 'Python, TypeScript, React, Docker'}</span></div>
+              <div class="classic-skill-category"><strong>Systems & Tooling:</strong> <span>${cat2.join(', ') || 'Kubernetes, AWS, PostgreSQL, Redis'}</span></div>
+              <div class="classic-skill-category"><strong>Engineering Practices:</strong> <span>${cat3.join(', ') || 'Microservices, CI/CD, Agile Sprints, Unit Testing'}</span></div>
+            `;
           }
 
-          // Cycle to next strategy for variety
-          const radios = document.querySelectorAll('input[name="strategy"]');
-          if (radios.length > 0) {
-            let nextIndex = (currentSeed - 1) % radios.length;
-            radios[nextIndex].checked = true;
-            strategyCards.forEach((c, idx) => {
-              if (idx === nextIndex) c.classList.add('active');
-              else c.classList.remove('active');
+          // Modern Sidebar
+          const modernSkills = document.querySelector('.live-skills-modern');
+          if (modernSkills && skillList.length > 0) {
+            modernSkills.innerHTML = `
+              <div class="modern-skill-group">
+                <span class="modern-skill-cat-title">Core Stack</span>
+                <div class="modern-chips-wrap">
+                  ${skillList.slice(0, 10).map(s => `<span class="modern-skill-chip">${s}</span>`).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          // Minimal Skills
+          const minimalSkills = document.querySelector('.live-skills-minimal');
+          if (minimalSkills && skillList.length > 0) {
+            minimalSkills.innerHTML = `
+              <div class="minimal-skill-item"><strong>Skills:</strong> <span>${skillList.join(', ')}</span></div>
+            `;
+          }
+        }
+
+        // 3. Update Education
+        if (inputEducationRaw) {
+          const eduVal = inputEducationRaw.value.trim();
+          if (eduVal) {
+            const eduParts = eduVal.split(/[–—,]+/).map(s => s.trim());
+            const deg = eduParts[0] || eduVal;
+            const inst = eduParts[1] || 'State University of Technology';
+            const yr = eduParts[2] || 'Honors Graduate';
+
+            document.querySelectorAll('.live-education-list').forEach(el => {
+              el.innerHTML = `<div class="classic-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="muted">${yr}</div></div>`;
+            });
+            document.querySelectorAll('.live-education-modern').forEach(el => {
+              el.innerHTML = `<div class="modern-edu-card"><div class="modern-edu-degree">${deg}</div><div class="modern-edu-inst">${inst}</div><div class="modern-edu-meta">${yr}</div></div>`;
+            });
+            document.querySelectorAll('.live-education-minimal').forEach(el => {
+              el.innerHTML = `<div class="minimal-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="minimal-edu-meta">${yr}</div></div>`;
             });
           }
+        }
 
-          // Submit form
-          form.submit();
+        // 4. Update Projects / Certifications
+        if (inputProjectsRaw) {
+          const projVal = inputProjectsRaw.value.trim();
+          if (projVal) {
+            const projs = projVal.split(/[,;\n]+/).map(p => p.trim()).filter(Boolean);
+            document.querySelectorAll('.live-projects-list').forEach(el => {
+              el.innerHTML = projs.map(p => `<div class="classic-proj-entry"><strong>${p}</strong>: <span class="muted">Validated credential and practical implementation</span></div>`).join('');
+            });
+            document.querySelectorAll('.live-projects-modern').forEach(el => {
+              el.innerHTML = projs.map(p => `<div class="modern-proj-card"><strong class="modern-proj-title">${p}</strong><div class="modern-proj-desc">Certified competency and verified project deliverables</div></div>`).join('');
+            });
+            document.querySelectorAll('.live-projects-minimal').forEach(el => {
+              el.innerHTML = projs.map(p => `<div class="minimal-proj-entry"><div><strong>${p}</strong>: Verified technical artifact</div></div>`).join('');
+            });
+          }
+        }
+
+        // Pulse live sync indicator
+        const syncBadge = document.getElementById('preview-sync-status');
+        if (syncBadge) {
+          syncBadge.textContent = 'Live Synced';
+        }
+      }
+
+      // Debounce utility
+      function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+      }
+
+      const debouncedLivePreview = debounce(updateLivePreview, 40);
+
+      [inputName, inputTargetRole, inputEmail, inputPhone, inputLinkedin, inputSkills, inputEducationRaw, inputProjectsRaw].forEach(input => {
+        if (input) {
+          input.addEventListener('input', debouncedLivePreview);
+          input.addEventListener('change', debouncedLivePreview);
+        }
+      });
+
+      // Experience Raw updates bullets in real-time
+      if (inputExperienceRaw) {
+        inputExperienceRaw.addEventListener('input', debounce(() => {
+          const val = inputExperienceRaw.value.trim();
+          if (!val) return;
+          const rawLines = val.split('\n').map(l => l.trim()).filter(Boolean);
+          const bullets = rawLines.map(l => l.replace(/^[•\-\*\d\.]+\s*/, '')).filter(b => b.length > 5);
+
+          if (bullets.length > 0) {
+            const bulletHtml = bullets.map(b => `
+              <li class="resume-bullet-wrap">
+                <span class="bullet-text" contenteditable="true">${b}</span>
+                <button type="button" class="bullet-ai-action" data-bullet="${b.replace(/"/g, '&quot;')}" title="Rewrite this bullet point with AI">✨ Improve</button>
+              </li>
+            `).join('');
+
+            document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets').forEach(ul => {
+              ul.innerHTML = bulletHtml;
+            });
+            attachBulletActionListeners();
+          }
+        }, 120));
+      }
+
+      // Inline contenteditable two-way sync
+      document.addEventListener('input', (e) => {
+        if (e.target.matches('.live-name') && inputName) {
+          inputName.value = e.target.textContent.trim();
+        } else if (e.target.matches('.live-role') && inputTargetRole) {
+          inputTargetRole.value = e.target.textContent.trim();
+        } else if (e.target.matches('.bullet-text') && inputExperienceRaw) {
+          // Sync modified bullet back to textarea
+          const bullets = Array.from(document.querySelectorAll('#template-view-classic .bullet-text')).map(b => '• ' + b.textContent.trim());
+          if (bullets.length > 0) {
+            inputExperienceRaw.value = bullets.join('\n');
+          }
+        }
+      });
+
+      // ================= FEATURE 3: FRESHER MODE ENGINE =================
+      const fresherCheckbox = document.getElementById('fresher-mode-checkbox');
+      const fresherCard = document.getElementById('fresher-toggle-card');
+      const fresherTag = document.getElementById('fresher-status-tag');
+      const expSectionLabel = document.getElementById('experience-section-label');
+      const eduSectionLabel = document.getElementById('education-section-label');
+      const projSectionLabel = document.getElementById('projects-section-label');
+
+      function setFresherMode(isFresher) {
+        if (fresherInput) fresherInput.value = isFresher ? '1' : '0';
+        if (fresherCheckbox) fresherCheckbox.checked = isFresher;
+        if (fresherCard) fresherCard.classList.toggle('fresher-active', isFresher);
+        if (fresherTag) {
+          fresherTag.textContent = isFresher ? 'Active' : 'Standard';
+          fresherTag.classList.toggle('active', isFresher);
+        }
+
+        if (isFresher) {
+          if (expSectionLabel) expSectionLabel.textContent = 'Internships & Practical Training / Hackathons';
+          if (eduSectionLabel) eduSectionLabel.textContent = 'Degree, University & Core Coursework (e.g. DSA, DBMS, OS)';
+          if (projSectionLabel) projSectionLabel.textContent = 'Academic Capstone & Mini Projects';
+          if (inputTargetRole && !inputTargetRole.value) inputTargetRole.placeholder = 'e.g. Associate Software Engineer / Graduate Trainee';
+          if (inputExpLevel) inputExpLevel.value = 'Entry-Level / Early Career';
+
+          // Move Education and Projects before Experience in templates
+          document.querySelectorAll('#classic-fresher-order-wrap').forEach(wrap => {
+            const eduSec = wrap.querySelector('#classic-edu-sec');
+            const projSec = wrap.querySelector('#classic-proj-sec');
+            const expSec = wrap.querySelector('#classic-exp-sec');
+            if (eduSec && expSec && wrap.firstChild !== eduSec) {
+              wrap.insertBefore(eduSec, expSec);
+              if (projSec) wrap.insertBefore(projSec, expSec);
+            }
+          });
+        } else {
+          if (expSectionLabel) expSectionLabel.textContent = 'Past Roles & Responsibilities (raw notes or bullet points)';
+          if (eduSectionLabel) eduSectionLabel.textContent = 'Education & Degree';
+          if (projSectionLabel) projSectionLabel.textContent = 'Projects & Certifications (Optional)';
+          if (inputTargetRole && !inputTargetRole.value) inputTargetRole.placeholder = 'e.g. Senior Full-Stack Engineer';
+
+          // Move Experience first
+          document.querySelectorAll('#classic-fresher-order-wrap').forEach(wrap => {
+            const eduSec = wrap.querySelector('#classic-edu-sec');
+            const projSec = wrap.querySelector('#classic-proj-sec');
+            const expSec = wrap.querySelector('#classic-exp-sec');
+            if (expSec && wrap.firstChild !== expSec) {
+              wrap.insertBefore(expSec, wrap.firstChild);
+            }
+          });
+        }
+      }
+
+      if (fresherCheckbox) {
+        fresherCheckbox.addEventListener('change', () => {
+          setFresherMode(fresherCheckbox.checked);
+        });
+      }
+
+      // ================= FEATURE 4: JOB DESCRIPTION MATCHER ENGINE =================
+      const jdToggleBtn = document.getElementById('jd-matcher-toggle-btn');
+      const jdBody = document.getElementById('jd-matcher-body');
+      const jdArrow = document.getElementById('jd-toggle-arrow');
+      const jdInput = document.getElementById('jd-text-input');
+      const analyzeJdBtn = document.getElementById('analyze-jd-btn');
+      const jdSpinner = document.getElementById('jd-loading-spinner');
+      const jdResults = document.getElementById('jd-match-results');
+
+      if (jdToggleBtn && jdBody) {
+        jdToggleBtn.addEventListener('click', () => {
+          const isHidden = (jdBody.style.display === 'none');
+          jdBody.style.display = isHidden ? 'block' : 'none';
+          if (jdArrow) jdArrow.classList.toggle('open', isHidden);
+        });
+      }
+
+      if (analyzeJdBtn) {
+        analyzeJdBtn.addEventListener('click', async () => {
+          const jdText = jdInput ? jdInput.value.trim() : '';
+          if (!jdText) {
+            alert('Please paste the target job description to analyze keywords.');
+            return;
+          }
+
+          if (jdSpinner) jdSpinner.style.display = 'inline-block';
+          analyzeJdBtn.disabled = true;
+
+          try {
+            const res = await fetch('/builder/match-jd', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify({
+                jd_text: jdText,
+                skills: inputSkills ? inputSkills.value : '',
+                resume_text: inputExperienceRaw ? inputExperienceRaw.value : ''
+              })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success && data.result) {
+              const r = data.result;
+              if (jdResults) {
+                jdResults.style.display = 'block';
+                jdResults.innerHTML = `
+                  <div class="jd-score-row">
+                    <span style="font-size: 0.8rem; font-weight: 750; color: var(--ink);">ATS Keyword Match</span>
+                    <strong style="font-size: 1.1rem; color: #059669;">${r.match_score}%</strong>
+                  </div>
+                  <div class="jd-score-bar-bg">
+                    <div class="jd-score-bar-fill" style="width: ${r.match_score}%;"></div>
+                  </div>
+                  <div class="jd-chips-group">
+                    <span class="jd-chips-label" style="color: #059669;">✓ Matched Skills (${r.matched_skills.length})</span>
+                    <div>
+                      ${r.matched_skills.map(s => `<span class="jd-matched-chip">✓ ${s}</span>`).join('') || '<span class="muted" style="font-size:0.75rem;">None yet</span>'}
+                    </div>
+                  </div>
+                  <div class="jd-chips-group">
+                    <span class="jd-chips-label" style="color: #dc2626;">⚡ Missing Keywords to Add (${r.missing_skills.length})</span>
+                    <div>
+                      ${r.missing_skills.map(s => `
+                        <span class="jd-missing-chip">
+                          + ${s}
+                          <button type="button" class="jd-add-btn" data-skill="${s}">+ Add</button>
+                        </span>
+                      `).join('')}
+                    </div>
+                  </div>
+                  <p style="margin: 8px 0 0; font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4;">${r.summary}</p>
+                `;
+
+                // Attach + Add click listeners
+                jdResults.querySelectorAll('.jd-add-btn').forEach(btn => {
+                  btn.addEventListener('click', (e) => {
+                    const skill = e.target.dataset.skill;
+                    if (skill && inputSkills) {
+                      const cur = inputSkills.value.trim();
+                      if (!cur.toLowerCase().includes(skill.toLowerCase())) {
+                        inputSkills.value = cur ? `${cur}, ${skill}` : skill;
+                        updateLivePreview();
+                        e.target.textContent = '✓ Added';
+                        e.target.classList.add('added');
+                      }
+                    }
+                  });
+                });
+              }
+            } else {
+              alert(data.error || 'Failed to match job description keywords.');
+            }
+          } catch (err) {
+            console.error('JD Match error:', err);
+            alert('Error running keyword match.');
+          } finally {
+            if (jdSpinner) jdSpinner.style.display = 'none';
+            analyzeJdBtn.disabled = false;
+          }
+        });
+      }
+
+      // ================= FEATURE 2: AI RESUME BULLET IMPROVER ENGINE =================
+      const improverInput = document.getElementById('improver-bullet-input');
+      const runImproveBtn = document.getElementById('run-improve-bullet-btn');
+      const improverSpinner = document.getElementById('improver-spinner');
+      const improverDiag = document.getElementById('improver-diagnostic-banner');
+      const improverList = document.getElementById('improver-results-list');
+      const triggerBulletBtn = document.getElementById('trigger-bullet-improver-btn');
+
+      function openBulletImprover(bulletText, targetEl = null) {
+        currentActiveBulletTarget = targetEl;
+        if (improverInput) improverInput.value = bulletText || '';
+        if (improverDiag) improverDiag.style.display = 'none';
+        if (improverList) improverList.innerHTML = '';
+        if (improverModal) improverModal.style.display = 'flex';
+      }
+
+      function closeBulletImprover() {
+        if (improverModal) improverModal.style.display = 'none';
+        currentActiveBulletTarget = null;
+      }
+
+      if (triggerBulletBtn) {
+        triggerBulletBtn.addEventListener('click', () => {
+          let sampleBullet = '';
+          if (inputExperienceRaw && inputExperienceRaw.value.trim()) {
+            const lines = inputExperienceRaw.value.trim().split('\n').filter(Boolean);
+            sampleBullet = lines[0].replace(/^[•\-\*\d\.]+\s*/, '');
+          }
+          openBulletImprover(sampleBullet || 'Built features and assisted senior engineers on product roadmap');
+        });
+      }
+
+      document.querySelectorAll('#close-improver-modal, #close-improver-modal-footer').forEach(btn => {
+        btn.addEventListener('click', closeBulletImprover);
+      });
+
+      function attachBulletActionListeners() {
+        document.querySelectorAll('.bullet-ai-action').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const li = e.target.closest('.resume-bullet-wrap');
+            const bulletSpan = li ? li.querySelector('.bullet-text') : null;
+            const text = bulletSpan ? bulletSpan.textContent.trim() : (e.target.dataset.bullet || '');
+            openBulletImprover(text, bulletSpan);
+          });
+        });
+      }
+      attachBulletActionListeners();
+
+      if (runImproveBtn) {
+        runImproveBtn.addEventListener('click', async () => {
+          const bullet = improverInput ? improverInput.value.trim() : '';
+          if (!bullet) {
+            alert('Please provide a bullet point to rewrite.');
+            return;
+          }
+
+          if (improverSpinner) improverSpinner.style.display = 'inline-block';
+          runImproveBtn.disabled = true;
+
+          try {
+            const res = await fetch('/builder/improve-bullet', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify({
+                bullet: bullet,
+                role: inputTargetRole ? inputTargetRole.value : '',
+                industry: inputIndustry ? inputIndustry.value : ''
+              })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success && data.result) {
+              const r = data.result;
+              if (improverDiag) {
+                improverDiag.style.display = 'block';
+                improverDiag.innerHTML = `<strong>Diagnostic:</strong> ${r.diagnostic}`;
+              }
+
+              if (improverList) {
+                improverList.innerHTML = r.variations.map((v, i) => `
+                  <div class="variation-result-card">
+                    <div class="var-card-header">
+                      <span class="var-badge">${v.badge || '✨ Option ' + (i+1)}</span>
+                      <small style="color: var(--ink-secondary); font-size: 0.74rem;">${v.style}</small>
+                    </div>
+                    <div class="var-text">${v.text}</div>
+                    <button type="button" class="var-apply-btn" data-text="${v.text.replace(/"/g, '&quot;')}">
+                      <span>✓ Apply to Resume</span>
+                    </button>
+                  </div>
+                `).join('');
+
+                improverList.querySelectorAll('.var-apply-btn').forEach(btn => {
+                  btn.addEventListener('click', (e) => {
+                    const newText = e.currentTarget.dataset.text;
+                    if (newText) {
+                      if (currentActiveBulletTarget) {
+                        currentActiveBulletTarget.textContent = newText;
+                      }
+                      // Also append/replace in inputExperienceRaw
+                      if (inputExperienceRaw) {
+                        const cur = inputExperienceRaw.value;
+                        if (bullet && cur.includes(bullet)) {
+                          inputExperienceRaw.value = cur.replace(bullet, newText);
+                        } else {
+                          inputExperienceRaw.value = `${cur}\n• ${newText}`.trim();
+                        }
+                      }
+                      updateLivePreview();
+                      closeBulletImprover();
+                    }
+                  });
+                });
+              }
+            } else {
+              alert(data.error || 'Failed to improve bullet point.');
+            }
+          } catch (err) {
+            console.error('Bullet improver error:', err);
+            alert('Error rewriting bullet.');
+          } finally {
+            if (improverSpinner) improverSpinner.style.display = 'none';
+            runImproveBtn.disabled = false;
+          }
+        });
+      }
+
+      // ================= FEATURE 5: RESUME X-RAY ENGINE =================
+      const xrayOpenBtn = document.getElementById('xray-open-btn');
+      const closeXrayBtn = document.getElementById('close-xray-modal');
+      const closeXrayFooter = document.getElementById('close-xray-modal-footer');
+
+      function collectCurrentResumeData() {
+        return {
+          candidate_name: (inputName ? inputName.value.trim() : '') || 'Alex Morgan',
+          target_role: (inputTargetRole ? inputTargetRole.value.trim() : '') || 'Senior Full-Stack Engineer',
+          email: inputEmail ? inputEmail.value.trim() : '',
+          phone: inputPhone ? inputPhone.value.trim() : '',
+          linkedin: inputLinkedin ? inputLinkedin.value.trim() : '',
+          executive_summary: document.querySelector('.live-summary')?.textContent.trim() || '',
+          skills: [{ category: 'Core', items: (inputSkills ? inputSkills.value.split(',') : []) }],
+          experience: Array.from(document.querySelectorAll('#template-view-classic .classic-job-entry')).map(job => ({
+            title: job.querySelector('.classic-job-title')?.textContent.trim() || 'Software Engineer',
+            company: job.querySelector('.classic-job-company')?.textContent.replace(/^[·\s]+/, '').trim() || 'TechCorp',
+            period: job.querySelector('.classic-job-meta')?.textContent.trim() || '2021 – Present',
+            bullets: Array.from(job.querySelectorAll('.bullet-text')).map(b => b.textContent.trim())
+          })),
+          education: [{ degree: (inputEducationRaw ? inputEducationRaw.value : 'B.S. Computer Science') }],
+          projects_or_certifications: [{ title: (inputProjectsRaw ? inputProjectsRaw.value : 'Certifications') }]
+        };
+      }
+
+      if (xrayOpenBtn) {
+        xrayOpenBtn.addEventListener('click', async () => {
+          if (xrayModal) xrayModal.style.display = 'flex';
+          const payload = collectCurrentResumeData();
+
+          try {
+            const res = await fetch('/builder/xray', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify({ resume: payload })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success && data.result) {
+              const xr = data.result;
+              const dialEl = document.getElementById('xray-health-score-val');
+              if (dialEl) dialEl.textContent = xr.health_score;
+              const verbEl = document.getElementById('xray-verb-score');
+              if (verbEl) verbEl.textContent = `${xr.verb_strength_score}%`;
+              const metricEl = document.getElementById('xray-metric-score');
+              if (metricEl) metricEl.textContent = `${xr.metric_density_score}%`;
+              const kwEl = document.getElementById('xray-keyword-score');
+              if (kwEl) kwEl.textContent = `${xr.keyword_depth_score}%`;
+
+              const strengthsContainer = document.getElementById('xray-strengths-container');
+              if (strengthsContainer) {
+                strengthsContainer.innerHTML = xr.strongest_parts.map(s => `
+                  <div class="xray-item-card xray-item-strength">
+                    <strong>✓ ${s.title}</strong>
+                    <div style="font-size: 0.74rem; margin-top: 2px;">${s.desc}</div>
+                  </div>
+                `).join('') || '<div class="muted">Solid overall balance</div>';
+              }
+
+              const weaknessesContainer = document.getElementById('xray-weaknesses-container');
+              if (weaknessesContainer) {
+                weaknessesContainer.innerHTML = xr.weakest_parts.map(w => `
+                  <div class="xray-item-card xray-item-weakness">
+                    <strong>⚠️ ${w.title}</strong>
+                    <div style="font-size: 0.74rem; margin-top: 2px;">${w.desc}</div>
+                  </div>
+                `).join('') || '<div class="muted">No critical red flags found</div>';
+              }
+
+              const fixesContainer = document.getElementById('xray-fixes-container');
+              if (fixesContainer) {
+                fixesContainer.innerHTML = xr.actionable_fixes.map(f => `<li>${f}</li>`).join('');
+              }
+            }
+          } catch (err) {
+            console.error('X-Ray error:', err);
+          }
+        });
+      }
+
+      [closeXrayBtn, closeXrayFooter].forEach(btn => {
+        if (btn) btn.addEventListener('click', () => { if (xrayModal) xrayModal.style.display = 'none'; });
+      });
+
+      // ================= FEATURE 6: VERSION SAVING & SIDE-BY-SIDE COMPARISON ENGINE =================
+      const saveVersionBtn = document.getElementById('save-version-btn');
+      const versionOpenBtn = document.getElementById('version-open-btn');
+      const triggerSaveFromModal = document.getElementById('trigger-save-from-versions-btn');
+      const saveVersionInput = document.getElementById('save-version-name-input');
+      const confirmSaveBtn = document.getElementById('confirm-save-version-btn');
+      const cancelSaveBtn = document.getElementById('cancel-save-version-btn');
+      const closeSaveBtn = document.getElementById('close-save-version-modal');
+      const versionListContainer = document.getElementById('version-list-container');
+      const versionCountPill = document.getElementById('version-count-pill');
+      const compareSelectA = document.getElementById('compare-select-a');
+      const compareSelectB = document.getElementById('compare-select-b');
+      const compareTableContainer = document.getElementById('version-compare-table-container');
+      const compareSection = document.getElementById('version-compare-section');
+
+      function openSaveModal() {
+        const defaultName = `${(inputTargetRole ? inputTargetRole.value.trim() : '') || 'Role'} - Draft #${savedVersionsCache.length + 1}`;
+        if (saveVersionInput) saveVersionInput.value = defaultName;
+        if (saveVersionModal) saveVersionModal.style.display = 'flex';
+      }
+
+      if (saveVersionBtn) saveVersionBtn.addEventListener('click', openSaveModal);
+      if (triggerSaveFromModal) triggerSaveFromModal.addEventListener('click', openSaveModal);
+
+      [cancelSaveBtn, closeSaveBtn].forEach(b => {
+        if (b) b.addEventListener('click', () => { if (saveVersionModal) saveVersionModal.style.display = 'none'; });
+      });
+
+      if (confirmSaveBtn) {
+        confirmSaveBtn.addEventListener('click', async () => {
+          const vName = (saveVersionInput ? saveVersionInput.value.trim() : '') || `Version ${Date.now()}`;
+          const currentData = collectCurrentResumeData();
+          const targetRole = currentData.target_role || 'Software Engineer';
+          const atsScore = parseInt(document.getElementById('ats-score-display-val')?.textContent || '96', 10);
+
+          try {
+            const res = await fetch('/builder/save-version', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify({
+                version_name: vName,
+                target_role: targetRole,
+                ats_score: atsScore,
+                strategy: 'metric_driven',
+                resume_data: currentData
+              })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              if (saveVersionModal) saveVersionModal.style.display = 'none';
+              await loadVersionsList();
+              alert(`✓ Resume version "${vName}" saved successfully!`);
+            } else {
+              alert(data.error || 'Could not save version.');
+            }
+          } catch (err) {
+            console.error('Save version error:', err);
+            alert('Failed to save resume version.');
+          }
+        });
+      }
+
+      async function loadVersionsList() {
+        try {
+          const res = await fetch('/builder/versions', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            savedVersionsCache = data.versions || [];
+            if (versionCountPill) versionCountPill.textContent = savedVersionsCache.length;
+            renderVersionsUI();
+          }
+        } catch (err) {
+          console.error('Load versions error:', err);
+        }
+      }
+
+      function renderVersionsUI() {
+        if (!versionListContainer) return;
+
+        if (savedVersionsCache.length === 0) {
+          versionListContainer.innerHTML = `
+            <div style="text-align: center; padding: 24px; border: 1.5px dashed #cbd5e1; border-radius: 12px; color: var(--ink-secondary);">
+              <p style="margin: 0 0 8px; font-weight: 700;">No saved resume versions yet</p>
+              <small>Click "Save Version" in the toolbar above to save your first snapshot for comparison.</small>
+            </div>
+          `;
+          if (compareSection) compareSection.style.display = 'none';
+          return;
+        }
+
+        versionListContainer.innerHTML = savedVersionsCache.map((v, i) => `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 8px; background: #fafbfc;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <strong style="font-size: 0.88rem; color: var(--ink);">${v.version_name}</strong>
+                <span class="ats-score-pill" style="font-size: 0.72rem; padding: 2px 8px;">ATS ${v.ats_score}/100</span>
+              </div>
+              <small style="color: var(--ink-secondary); font-size: 0.74rem;">${v.target_role} · ${v.created_at ? new Date(v.created_at).toLocaleDateString() : 'Recent'}</small>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="button secondary load-version-btn" data-idx="${i}" style="padding: 4px 10px; font-size: 0.72rem;">Load into Builder</button>
+              <button type="button" class="button secondary delete-version-btn" data-id="${v.id}" style="padding: 4px 8px; font-size: 0.72rem; color: #ef4444;">Delete</button>
+            </div>
+          </div>
+        `).join('');
+
+        // Attach Load and Delete handlers
+        versionListContainer.querySelectorAll('.load-version-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.dataset.idx, 10);
+            const ver = savedVersionsCache[idx];
+            if (ver && ver.resume_data) {
+              const r = ver.resume_data;
+              if (inputName) inputName.value = r.candidate_name || '';
+              if (inputTargetRole) inputTargetRole.value = r.target_role || '';
+              if (inputEmail) inputEmail.value = r.email || '';
+              if (inputPhone) inputPhone.value = r.phone || '';
+              if (inputLinkedin) inputLinkedin.value = r.linkedin || '';
+              updateLivePreview();
+              if (versionModal) versionModal.style.display = 'none';
+              alert(`✓ Loaded version "${ver.version_name}" into the builder!`);
+            }
+          });
+        });
+
+        versionListContainer.querySelectorAll('.delete-version-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const vId = e.currentTarget.dataset.id;
+            if (confirm('Delete this resume version?')) {
+              await fetch('/builder/delete-version', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ version_id: vId })
+              });
+              await loadVersionsList();
+            }
+          });
+        });
+
+        // Setup Compare dropdowns
+        if (savedVersionsCache.length >= 2 && compareSection) {
+          compareSection.style.display = 'block';
+          const opts = savedVersionsCache.map((v, i) => `<option value="${i}">${v.version_name} (ATS ${v.ats_score})</option>`).join('');
+          if (compareSelectA) compareSelectA.innerHTML = opts;
+          if (compareSelectB) {
+            compareSelectB.innerHTML = opts;
+            if (compareSelectB.options.length > 1) compareSelectB.selectedIndex = 1;
+          }
+          renderSideBySideComparison();
+        } else if (compareSection) {
+          compareSection.style.display = 'none';
+        }
+      }
+
+      function renderSideBySideComparison() {
+        if (!compareSelectA || !compareSelectB || !compareTableContainer) return;
+        const vA = savedVersionsCache[parseInt(compareSelectA.value, 10)];
+        const vB = savedVersionsCache[parseInt(compareSelectB.value, 10)];
+        if (!vA || !vB) return;
+
+        const scoreDelta = vB.ats_score - vA.ats_score;
+        const deltaStr = scoreDelta >= 0 ? `+${scoreDelta}` : `${scoreDelta}`;
+        const deltaColor = scoreDelta >= 0 ? '#059669' : '#dc2626';
+
+        compareTableContainer.innerHTML = `
+          <table class="version-compare-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Metric / Property</th>
+                <th style="width: 37.5%;">${vA.version_name}</th>
+                <th style="width: 37.5%;">${vB.version_name}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>ATS Score</strong></td>
+                <td><strong style="color: #4f46e5; font-size: 1rem;">${vA.ats_score}/100</strong></td>
+                <td><strong style="color: #4f46e5; font-size: 1rem;">${vB.ats_score}/100</strong> <span style="color: ${deltaColor}; font-weight:700;">(${deltaStr})</span></td>
+              </tr>
+              <tr>
+                <td><strong>Target Role</strong></td>
+                <td>${vA.target_role}</td>
+                <td>${vB.target_role}</td>
+              </tr>
+              <tr>
+                <td><strong>Saved Date</strong></td>
+                <td>${vA.created_at ? new Date(vA.created_at).toLocaleDateString() : 'N/A'}</td>
+                <td>${vB.created_at ? new Date(vB.created_at).toLocaleDateString() : 'N/A'}</td>
+              </tr>
+              <tr>
+                <td><strong>Executive Hook</strong></td>
+                <td style="font-size: 0.75rem; line-height: 1.4;">${vA.resume_data?.executive_summary || 'Standard profile summary'}</td>
+                <td style="font-size: 0.75rem; line-height: 1.4;">${vB.resume_data?.executive_summary || 'Standard profile summary'}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      }
+
+      if (compareSelectA) compareSelectA.addEventListener('change', renderSideBySideComparison);
+      if (compareSelectB) compareSelectB.addEventListener('change', renderSideBySideComparison);
+
+      if (versionOpenBtn) {
+        versionOpenBtn.addEventListener('click', async () => {
+          if (versionModal) versionModal.style.display = 'flex';
+          await loadVersionsList();
+        });
+      }
+
+      document.querySelectorAll('#close-version-modal, #close-version-modal-footer').forEach(b => {
+        if (b) b.addEventListener('click', () => { if (versionModal) versionModal.style.display = 'none'; });
+      });
+
+      // Load versions initial count
+      loadVersionsList();
+
+      // ================= FEATURE 7: NATIVE DOCX EXPORT =================
+      const downloadDocxBtn = document.getElementById('download-docx-btn');
+      if (downloadDocxBtn) {
+        downloadDocxBtn.addEventListener('click', async () => {
+          const currentResume = collectCurrentResumeData();
+          const activeViewEl = document.getElementById(`template-view-${activeTemplate}`);
+          const originalText = downloadDocxBtn.innerHTML;
+          downloadDocxBtn.innerHTML = '<span>⏳ Exporting Word Document...</span>';
+
+          try {
+            const res = await fetch('/builder/export-docx', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                resume: currentResume,
+                template: activeTemplate
+              })
+            });
+
+            if (res.ok) {
+              const blob = await res.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              const nameClean = (currentResume.candidate_name || 'Resume').replace(/[^a-zA-Z0-9_-]/g, '_');
+              a.download = `${nameClean}_Resume_${activeTemplate}.docx`;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              downloadDocxBtn.innerHTML = '<span>✓ Download Complete!</span>';
+              setTimeout(() => { downloadDocxBtn.innerHTML = originalText; }, 2000);
+            } else {
+              alert('DOCX generation failed. Please try again.');
+              downloadDocxBtn.innerHTML = originalText;
+            }
+          } catch (err) {
+            console.error('DOCX Export error:', err);
+            downloadDocxBtn.innerHTML = originalText;
+            alert('Failed to generate DOCX file.');
+          }
         });
       }
 
@@ -2035,20 +3820,14 @@
               } else if (!currentVal.toLowerCase().includes(data.certificate_name.toLowerCase())) {
                 projectsInput.value = `${currentVal}, ${entry}`;
               }
-              // Flash input with gentle green glow
-              projectsInput.style.borderColor = '#10b981';
-              projectsInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.2)';
-              setTimeout(() => {
-                projectsInput.style.borderColor = '';
-                projectsInput.style.boxShadow = '';
-              }, 1800);
+              updateLivePreview();
             }
           } else {
-            alert(data.error || 'Could not extract certificate. Please ensure the file is in an eligible format (PDF, PNG, JPG, WEBP, DOCX, TXT).');
+            alert(data.error || 'Could not extract certificate.');
           }
         } catch (err) {
           console.error('Certificate upload error:', err);
-          alert('Network or server error while processing certificate. Please try again.');
+          alert('Network or server error while processing certificate.');
         } finally {
           if (certSpinner) certSpinner.style.display = 'none';
           if (certDropInner) certDropInner.style.display = 'flex';
@@ -2097,6 +3876,7 @@
                    .replace(/^,\s*|\s*,$/g, '')
                    .trim();
           projectsInput.value = val;
+          updateLivePreview();
         }
       }
 
@@ -2127,34 +3907,28 @@
         if (!templateTitles[tpl]) return;
         activeTemplate = tpl;
 
-        // Update pills
         templatePills.forEach(p => {
           p.classList.toggle('active', p.dataset.template === tpl);
         });
 
-        // Explicitly display ONLY the selected template view and hide the others
         templateViews.forEach(v => {
           const isTarget = (v.id === `template-view-${tpl}`);
           v.classList.toggle('active-view', isTarget);
           v.style.display = isTarget ? 'block' : 'none';
         });
 
-        // Update dropdown active highlight
         templateDownloadBtns.forEach(btn => {
           btn.classList.toggle('active-item', btn.dataset.downloadTemplate === tpl);
         });
 
-        // Update primary download label
         if (downloadPdfLabel) {
           downloadPdfLabel.textContent = `Download PDF (${templateTitles[tpl].split(' ')[0]})`;
         }
 
-        // Close dropdown & reset caret
         if (dropdownMenu) dropdownMenu.classList.remove('show');
         if (dropdownToggle) dropdownToggle.classList.remove('active');
       }
 
-      // Hook up template pill click handlers
       templatePills.forEach(pill => {
         pill.addEventListener('click', () => {
           const tpl = pill.dataset.template;
@@ -2162,7 +3936,6 @@
         });
       });
 
-      // Dropdown toggle
       if (dropdownToggle && dropdownMenu) {
         dropdownToggle.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2170,7 +3943,6 @@
           dropdownToggle.classList.toggle('active', isOpen);
         });
 
-        // Close when clicking outside
         document.addEventListener('click', (e) => {
           if (!e.target.closest('.download-btn-group')) {
             dropdownMenu.classList.remove('show');
@@ -2179,7 +3951,6 @@
         });
       }
 
-      // Copy text of active template view
       if (copyBtn) {
         copyBtn.addEventListener('click', () => {
           const activeViewEl = document.getElementById(`template-view-${activeTemplate}`);
@@ -2190,7 +3961,7 @@
           const text = el.innerText;
           navigator.clipboard.writeText(text).then(() => {
             const originalHtml = copyBtn.innerHTML;
-            copyBtn.innerHTML = '✓ Copied!';
+            copyBtn.innerHTML = '<span>✓ Copied!</span>';
             setTimeout(() => { copyBtn.innerHTML = originalHtml; }, 2000);
           }).catch(() => {
             alert('Copied to clipboard');
@@ -2198,12 +3969,12 @@
         });
       }
 
-      // Reusable High-Fidelity PDF Exporter
+      // Reusable High-Fidelity PDF Exporter with Page-Break Protection
       function exportTemplateAsPdf(templateKey) {
         return new Promise((resolve, reject) => {
           const targetView = document.getElementById(`template-view-${templateKey}`);
           if (!targetView) {
-            alert('Please generate your resume first.');
+            alert('Target template view not found.');
             return resolve(false);
           }
 
@@ -2212,7 +3983,6 @@
           if (downloadPdfBtn) downloadPdfBtn.disabled = true;
           if (dropdownMenu) dropdownMenu.classList.remove('show');
 
-          // Clone target template view
           const clone = targetView.cloneNode(true);
           clone.style.display = 'block';
           clone.style.width = '794px';
@@ -2229,14 +3999,16 @@
           clone.style.margin = '0';
           clone.style.fontFamily = "'Inter', -apple-system, sans-serif";
 
-          // Prevent pagebreak splits inside entries
+          // Remove interactive buttons from clone
+          clone.querySelectorAll('.bullet-ai-action').forEach(b => b.remove());
+
+          // Prevent awkward page break splits inside entries
           const sections = clone.querySelectorAll('.sheet-section, .classic-job-entry, .modern-timeline-item, .minimal-job-entry, header, .modern-sidebar-col, .modern-main-col');
           sections.forEach(s => {
             s.style.pageBreakInside = 'avoid';
             s.style.breakInside = 'avoid';
           });
 
-          // Create an off-screen wrapper safely at 0,0
           const wrapper = document.createElement('div');
           wrapper.style.position = 'fixed';
           wrapper.style.left = '0';
@@ -2250,14 +4022,13 @@
           wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
 
-          // Clean filename
-          let candidateName = "{% if resume %}{{ resume.candidate_name | e }}{% else %}Candidate{% endif %}";
+          let candidateName = (inputName ? inputName.value.trim() : '') || 'Candidate';
           candidateName = candidateName.replace(/[^a-zA-Z0-9_\s-]/g, '').trim().replace(/\s+/g, '_') || 'My';
           const suffix = templateFilenames[templateKey] || 'Resume';
           const filename = `${candidateName}_Resume_${suffix}.pdf`;
 
           const opt = {
-            margin:       [6, 8, 6, 8],
+            margin:       [8, 8, 8, 8],
             filename:     filename,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
@@ -2299,14 +4070,12 @@
         });
       }
 
-      // Primary Download Button - downloads active template
       if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener('click', () => {
           exportTemplateAsPdf(activeTemplate);
         });
       }
 
-      // Specific Template Download Buttons in Dropdown
       templateDownloadBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           const tpl = btn.dataset.downloadTemplate;
@@ -2317,7 +4086,6 @@
         });
       });
 
-      // Batch Download: Export all 3 templates sequentially
       if (downloadAllBtn) {
         downloadAllBtn.addEventListener('click', async () => {
           if (downloadPdfBtn) downloadPdfBtn.disabled = true;
@@ -2332,7 +4100,6 @@
             }
             setActiveTemplate(key);
             await exportTemplateAsPdf(key);
-            // Brief pause between browser downloads
             await new Promise(r => setTimeout(r, 1200));
           }
 

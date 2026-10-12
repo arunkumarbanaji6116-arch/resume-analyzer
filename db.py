@@ -50,6 +50,17 @@ def init_db():
             expires_at TEXT NOT NULL,
             created_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS resume_versions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            version_name TEXT NOT NULL,
+            target_role TEXT,
+            ats_score INTEGER,
+            strategy TEXT,
+            resume_data TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
         """
     )
     db.commit()
