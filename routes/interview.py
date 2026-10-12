@@ -1,25 +1,28 @@
 from datetime import datetime, timezone
 
-from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for
+from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for, Response
 
 from config import Config
 from ai.interview_ai import assess_answer, questions_for, mcq_questions_for
 from ai.voice_ai import generate_speech, VOICES
 from db import get_db, record_activity
-from flask import Response
+from services.limiter import limiter
+from services.security import login_required, sanitize_text
 
 interview_bp = Blueprint("interview", __name__)
 
 
 @interview_bp.route("/interview", methods=["GET", "POST"])
+@login_required
 def setup():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
     if request.method == "POST":
-        session["interview_role"] = request.form.get("role", "General")
-        session["interview_type"] = request.form.get("interview_type", "star")
-        session["interview_count"] = int(request.form.get("question_count", 5))
-        session["interview_voice"] = request.form.get("voice", "arun")
+        session["interview_role"] = sanitize_text(request.form.get("role", "General"), max_length=100)
+        session["interview_type"] = sanitize_text(request.form.get("interview_type", "star"), max_length=50)
+        try:
+            session["interview_count"] = min(max(int(request.form.get("question_count", 5)), 1), 20)
+        except (ValueError, TypeError):
+            session["interview_count"] = 5
+        session["interview_voice"] = sanitize_text(request.form.get("voice", "arun"), max_length=50)
         session["interview_auto_speak"] = request.form.get("auto_speak") != "off"
         return redirect(url_for("interview.room"))
     return render_template(
@@ -30,16 +33,14 @@ def setup():
 
 
 @interview_bp.route("/interview/refresh", methods=["GET", "POST"])
+@login_required
 def refresh():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
     return redirect(url_for("interview.room"))
 
 
 @interview_bp.get("/interview/room")
+@login_required
 def room():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
     role = session.get("interview_role", "General")
     interview_type = session.get("interview_type", "star")
     count = session.get("interview_count", 5)
@@ -89,12 +90,12 @@ def room():
 
 
 @interview_bp.post("/interview/speak")
+@login_required
+@limiter.limit("30 per minute")
 def speak():
-    if "user_id" not in session:
-        return jsonify({"error": "Please sign in."}), 401
     payload = request.get_json(silent=True) or {}
-    text = payload.get("text", "").strip()
-    voice = payload.get("voice") or session.get("interview_voice", "arun")
+    text = sanitize_text(payload.get("text", "").strip(), max_length=2000)
+    voice = sanitize_text(payload.get("voice") or session.get("interview_voice", "arun"), max_length=50)
 
     if not text:
         return jsonify({"error": "Text is required."}), 400
@@ -110,16 +111,16 @@ def speak():
 
 
 @interview_bp.post("/interview/assess")
+@login_required
+@limiter.limit("30 per minute")
 def assess():
-    if "user_id" not in session:
-        return jsonify({"error": "Please sign in."}), 401
     payload = request.get_json(silent=True) or {}
     interview_type = payload.get("interview_type") or session.get("interview_type", "star")
     
     if interview_type == "mcq":
-        selected = payload.get("selected_option", "")
-        correct = payload.get("correct_option", "")
-        explanation = payload.get("explanation", "")
+        selected = sanitize_text(payload.get("selected_option", ""), max_length=50)
+        correct = sanitize_text(payload.get("correct_option", ""), max_length=50)
+        explanation = sanitize_text(payload.get("explanation", ""), max_length=1000)
         is_correct = selected.strip().upper() == correct.strip().upper()
         score = 100 if is_correct else 0
         return jsonify({
@@ -131,20 +132,26 @@ def assess():
             "feedback": "Outstanding! You chose the optimal engineering solution." if is_correct else f"Incorrect. The optimal answer was Option {correct}."
         })
 
-    answer = payload.get("answer", "")
-    question = payload.get("question", "")
+    answer = sanitize_text(payload.get("answer", ""), max_length=10000)
+    question = sanitize_text(payload.get("question", ""), max_length=1000)
     result = assess_answer(answer, question)
     return jsonify(result)
 
 
 @interview_bp.post("/interview/complete")
+@login_required
+@limiter.limit("30 per minute")
 def complete():
-    if "user_id" not in session:
-        return jsonify({"error": "Please sign in."}), 401
     payload = request.get_json(silent=True) or {}
-    overall_score = payload.get("overall_score", 0)
+    try:
+        overall_score = min(max(int(payload.get("overall_score", 0)), 0), 100)
+    except (ValueError, TypeError):
+        overall_score = 0
     role = session.get("interview_role", "General")
-    count = payload.get("question_count", session.get("interview_count", 5))
+    try:
+        count = min(max(int(payload.get("question_count", session.get("interview_count", 5))), 1), 50)
+    except (ValueError, TypeError):
+        count = 5
 
     record_activity(
         session["user_id"],
@@ -153,3 +160,4 @@ def complete():
         overall_score,
     )
     return jsonify({"success": True, "score": overall_score})
+

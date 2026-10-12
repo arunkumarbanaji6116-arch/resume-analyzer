@@ -14,6 +14,8 @@ from ai.gemini_client import (
 from ai.resume_ai import ResumeImageError, extract_text_from_file
 from db import get_db, record_activity
 from services.docx_exporter import generate_resume_docx
+from services.limiter import limiter
+from services.security import login_required, sanitize_text
 
 logger = logging.getLogger(__name__)
 
@@ -37,10 +39,8 @@ def get_builder_prefill(user_id):
 
 
 @builder_bp.get("/builder")
+@login_required
 def builder_view():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
     user_id = session.get("user_id")
     saved_prefill = session.pop("builder_prefill", None) or get_builder_prefill(user_id) or {}
 
@@ -52,17 +52,17 @@ def builder_view():
         user_name_fallback = current_user_obj
 
     prefill = {
-        "name": request.args.get("name") or saved_prefill.get("name") or user_name_fallback,
-        "target_role": request.args.get("role") or saved_prefill.get("target_role", ""),
-        "experience_level": request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level"),
-        "industry": request.args.get("industry") or saved_prefill.get("industry", "Technology & Software"),
-        "email": request.args.get("email") or saved_prefill.get("email", ""),
-        "phone": request.args.get("phone") or saved_prefill.get("phone", ""),
-        "linkedin": request.args.get("linkedin") or saved_prefill.get("linkedin", ""),
-        "skills": request.args.get("skills") or saved_prefill.get("skills", ""),
-        "experience_raw": saved_prefill.get("experience_raw", ""),
-        "education_raw": request.args.get("education") or saved_prefill.get("education_raw", ""),
-        "projects_raw": request.args.get("projects") or saved_prefill.get("projects_raw", ""),
+        "name": sanitize_text(request.args.get("name") or saved_prefill.get("name") or user_name_fallback, max_length=150),
+        "target_role": sanitize_text(request.args.get("role") or saved_prefill.get("target_role", ""), max_length=150),
+        "experience_level": sanitize_text(request.args.get("level") or saved_prefill.get("experience_level", "Mid-Level"), max_length=50),
+        "industry": sanitize_text(request.args.get("industry") or saved_prefill.get("industry", "Technology & Software"), max_length=100),
+        "email": sanitize_text(request.args.get("email") or saved_prefill.get("email", ""), max_length=254),
+        "phone": sanitize_text(request.args.get("phone") or saved_prefill.get("phone", ""), max_length=50),
+        "linkedin": sanitize_text(request.args.get("linkedin") or saved_prefill.get("linkedin", ""), max_length=255),
+        "skills": sanitize_text(request.args.get("skills") or saved_prefill.get("skills", ""), max_length=2000),
+        "experience_raw": sanitize_text(saved_prefill.get("experience_raw", ""), max_length=15000),
+        "education_raw": sanitize_text(request.args.get("education") or saved_prefill.get("education_raw", ""), max_length=5000),
+        "projects_raw": sanitize_text(request.args.get("projects") or saved_prefill.get("projects_raw", ""), max_length=8000),
         "missing_keywords": saved_prefill.get("missing_keywords", []),
         "from_job_analyzer": saved_prefill.get("from_job_analyzer", False),
     }
@@ -70,10 +70,10 @@ def builder_view():
 
 
 @builder_bp.post("/builder/upload-certificate")
+@login_required
+@limiter.limit("20 per minute")
 def upload_certificate():
     """Extract and parse professional certificates from PDF, DOCX, DOC, Images (PNG/JPG/WEBP), or TXT."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
 
     uploaded_file = request.files.get("file") or request.files.get("certificate_file")
     if not uploaded_file or not uploaded_file.filename:
@@ -122,23 +122,22 @@ def upload_certificate():
 
 
 @builder_bp.post("/builder/generate")
+@login_required
+@limiter.limit("15 per minute")
 def generate_resume():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
     data = {
-        "name": request.form.get("name", "").strip() or session.get("user", "Candidate"),
-        "email": request.form.get("email", "").strip(),
-        "phone": request.form.get("phone", "").strip(),
-        "location": request.form.get("location", "").strip(),
-        "linkedin": request.form.get("linkedin", "").strip(),
-        "target_role": request.form.get("target_role", "").strip() or "Software Engineer",
-        "experience_level": request.form.get("experience_level", "Mid-Senior"),
-        "industry": request.form.get("industry", "Technology"),
-        "skills": request.form.get("skills", "").strip(),
-        "experience_raw": request.form.get("experience_raw", "").strip(),
-        "education_raw": request.form.get("education_raw", "").strip(),
-        "projects_raw": request.form.get("projects_raw", "").strip(),
+        "name": sanitize_text(request.form.get("name", "").strip(), max_length=150) or session.get("user", "Candidate"),
+        "email": sanitize_text(request.form.get("email", "").strip(), max_length=254),
+        "phone": sanitize_text(request.form.get("phone", "").strip(), max_length=50),
+        "location": sanitize_text(request.form.get("location", "").strip(), max_length=150),
+        "linkedin": sanitize_text(request.form.get("linkedin", "").strip(), max_length=255),
+        "target_role": sanitize_text(request.form.get("target_role", "").strip(), max_length=150) or "Software Engineer",
+        "experience_level": sanitize_text(request.form.get("experience_level", "Mid-Senior"), max_length=50),
+        "industry": sanitize_text(request.form.get("industry", "Technology"), max_length=100),
+        "skills": sanitize_text(request.form.get("skills", "").strip(), max_length=2000),
+        "experience_raw": sanitize_text(request.form.get("experience_raw", "").strip(), max_length=15000),
+        "education_raw": sanitize_text(request.form.get("education_raw", "").strip(), max_length=5000),
+        "projects_raw": sanitize_text(request.form.get("projects_raw", "").strip(), max_length=8000),
     }
 
     fresher_mode = request.form.get("fresher_mode") in ("true", "1", "True")
@@ -159,7 +158,7 @@ def generate_resume():
                     txt = extract_text_from_file(cert_file)
                     info = gemini_extract_certificate_info(txt, cert_file.filename)
                     if info.get("formatted_entry"):
-                        extracted_certs.append(info["formatted_entry"])
+                        extracted_certs.append(sanitize_text(info["formatted_entry"], max_length=300))
                 except Exception as e:
                     logger.warning(f"Could not parse multipart cert {cert_file.filename}: {e}")
 
@@ -171,7 +170,7 @@ def generate_resume():
         else:
             data["projects_raw"] = joined_certs
 
-    strategy = request.form.get("strategy", "metric_driven")
+    strategy = sanitize_text(request.form.get("strategy", "metric_driven"), max_length=50)
     try:
         variation_seed = int(request.form.get("variation_seed", 1))
     except (ValueError, TypeError):
@@ -194,15 +193,14 @@ def generate_resume():
 
 
 @builder_bp.post("/builder/improve-bullet")
+@login_required
+@limiter.limit("30 per minute")
 def improve_bullet():
     """Rewrite weak bullet points using action verbs & metrics without inventing facts."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     payload = request.get_json(silent=True) or request.form
-    bullet = payload.get("bullet", "").strip()
-    role = payload.get("role", "").strip()
-    industry = payload.get("industry", "").strip()
+    bullet = sanitize_text(payload.get("bullet", "").strip(), max_length=2000)
+    role = sanitize_text(payload.get("role", "").strip(), max_length=150)
+    industry = sanitize_text(payload.get("industry", "").strip(), max_length=150)
 
     if not bullet:
         return {"success": False, "error": "No bullet text provided"}, 400
@@ -216,15 +214,14 @@ def improve_bullet():
 
 
 @builder_bp.post("/builder/match-jd")
+@login_required
+@limiter.limit("20 per minute")
 def match_jd():
     """Highlight matched and missing keywords for a target job description."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     payload = request.get_json(silent=True) or request.form
-    jd_text = payload.get("jd_text", "").strip()
-    skills = payload.get("skills", "").strip()
-    resume_text = payload.get("resume_text", "").strip()
+    jd_text = sanitize_text(payload.get("jd_text", "").strip(), max_length=10000)
+    skills = sanitize_text(payload.get("skills", "").strip(), max_length=3000)
+    resume_text = sanitize_text(payload.get("resume_text", "").strip(), max_length=15000)
 
     if not jd_text:
         return {"success": False, "error": "Job description text is required"}, 400
@@ -238,11 +235,10 @@ def match_jd():
 
 
 @builder_bp.post("/builder/xray")
+@login_required
+@limiter.limit("20 per minute")
 def resume_xray():
     """Explain the strongest and weakest parts of the candidate's resume."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     payload = request.get_json(silent=True) or {}
     resume_data = payload.get("resume") or session.get("last_generated_resume")
     if not resume_data:
@@ -257,16 +253,18 @@ def resume_xray():
 
 
 @builder_bp.post("/builder/save-version")
+@login_required
+@limiter.limit("30 per minute")
 def save_version():
     """Save a job-specific resume draft/version for ATS comparison."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     payload = request.get_json(silent=True) or {}
-    version_name = payload.get("version_name", "").strip() or f"Draft {datetime.now().strftime('%b %d, %H:%M')}"
-    target_role = payload.get("target_role", "").strip() or "Software Engineer"
-    ats_score = int(payload.get("ats_score", 95))
-    strategy = payload.get("strategy", "metric_driven")
+    version_name = sanitize_text(payload.get("version_name", "").strip(), max_length=150) or f"Draft {datetime.now().strftime('%b %d, %H:%M')}"
+    target_role = sanitize_text(payload.get("target_role", "").strip(), max_length=150) or "Software Engineer"
+    try:
+        ats_score = int(payload.get("ats_score", 95))
+    except (ValueError, TypeError):
+        ats_score = 95
+    strategy = sanitize_text(payload.get("strategy", "metric_driven"), max_length=50)
     resume_data = payload.get("resume_data")
 
     if not resume_data:
@@ -304,11 +302,9 @@ def save_version():
 
 
 @builder_bp.get("/builder/versions")
+@login_required
 def get_versions():
     """Retrieve saved resume versions for comparison."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     user_id = session["user_id"]
     try:
         db = get_db()
@@ -345,15 +341,18 @@ def get_versions():
 
 
 @builder_bp.post("/builder/delete-version")
+@login_required
 def delete_version():
-    """Delete a saved resume version."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
+    """Delete a saved resume version with ownership verification."""
     payload = request.get_json(silent=True) or request.form
-    version_id = payload.get("version_id")
-    if not version_id:
+    raw_id = payload.get("version_id")
+    if not raw_id:
         return {"success": False, "error": "Version ID required"}, 400
+
+    try:
+        version_id = int(raw_id)
+    except (ValueError, TypeError):
+        return {"success": False, "error": "Invalid version ID format"}, 400
 
     user_id = session["user_id"]
     try:
@@ -367,14 +366,13 @@ def delete_version():
 
 
 @builder_bp.post("/builder/export-docx")
+@login_required
+@limiter.limit("30 per minute")
 def export_docx():
     """Native ATS-compliant Microsoft Word (.docx) export preserving format and margins."""
-    if "user_id" not in session:
-        return {"success": False, "error": "Authentication required"}, 401
-
     payload = request.get_json(silent=True) or {}
     resume_data = payload.get("resume")
-    template_style = payload.get("template") or request.form.get("template") or "classic"
+    template_style = sanitize_text(payload.get("template") or request.form.get("template") or "classic", max_length=50)
 
     if not resume_data and request.form.get("resume_json"):
         try:
@@ -403,5 +401,6 @@ def export_docx():
     except Exception as exc:
         logger.error(f"DOCX export error: {exc}")
         return {"success": False, "error": f"Failed to generate DOCX: {str(exc)}"}, 500
+
 
 

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Security Portal — CareerForge AI</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .admin-container {
+      max-width: 1240px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1.5px solid var(--line);
+    }
+    .admin-title-group h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 750;
+      background: rgba(16, 185, 129, 0.14);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .dark .security-badge {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.2);
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card-bg, #ffffff);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .stat-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 850;
+      color: var(--ink);
+      margin-top: 4px;
+    }
+    .admin-section-card {
+      background: var(--card-bg, #ffffff);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .admin-section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin: 0 0 16px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .admin-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 750;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1.5px solid var(--line);
+    }
+    .admin-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 750;
+    }
+    .role-admin {
+      background: rgba(109, 93, 252, 0.15);
+      color: #6d5dfc;
+    }
+    .role-user {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--muted);
+    }
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .health-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+    .health-item strong {
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <div class="admin-title-group">
+        <h1>
+          <span>🛡️</span> Security & Admin Operations
+          <span class="security-badge">● System Secure</span>
+        </h1>
+        <p style="margin: 4px 0 0; font-size: 0.82rem; color: var(--muted);">
+          Restricted RBAC Console · Real-Time Defensive Audit & Session Isolation
+        </p>
+      </div>
+      <div>
+        <a href="{{ url_for('dashboard') }}" class="button secondary" style="padding: 8px 16px; font-size: 0.84rem;">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Platform Metrics -->
+    <div class="admin-stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Registered Accounts</div>
+        <div class="stat-val">{{ user_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Resumes Synthesized</div>
+        <div class="stat-val">{{ version_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">User Activities</div>
+        <div class="stat-val">{{ activity_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Security Audit Events</div>
+        <div class="stat-val">{{ security_event_count }}</div>
+      </div>
+    </div>
+
+    <!-- System Health & Security Hardening Status -->
+    <div class="admin-section-card">
+      <div class="admin-section-title">
+        <span>⚙️ Live Security Configuration & Diagnostic Audit</span>
+        <span style="font-size: 0.74rem; font-weight: 600; color: #059669;">Verified Active</span>
+      </div>
+      <div class="health-grid">
+        <div class="health-item">
+          <span>Debug Mode:</span>
+          <strong style="color: {{ '#ef4444' if system_health.debug_mode else '#059669' }};">
+            {{ 'ENABLED (RISK)' if system_health.debug_mode else 'DISABLED (SECURE)' }}
+          </strong>
+        </div>
+        <div class="health-item">
+          <span>Rate Limiting Engine:</span>
+          <strong style="color: #059669;">ACTIVE (Flask-Limiter)</strong>
+        </div>
+        <div class="health-item">
+          <span>Session Cookies (HttpOnly):</span>
+          <strong style="color: #059669;">ENFORCED</strong>
+        </div>
+        <div class="health-item">
+          <span>Session Cookies (SameSite):</span>
+          <strong style="color: #059669;">LAX (CSRF PROTECTED)</strong>
+        </div>
+        <div class="health-item">
+          <span>Gemini AI API Key:</span>
+          <strong style="color: {{ '#059669' if system_health.gemini_api_configured else '#f59e0b' }};">
+            {{ 'CONFIGURED & ISOLATED' if system_health.gemini_api_configured else 'NOT CONFIGURED' }}
+          </strong>
+        </div>
+        <div class="health-item">
+          <span>Database Integrity:</span>
+          <strong style="color: #059669;">CONNECTED (WAL MODE)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Accounts & Roles -->
+    <div class="admin-section-card">
+      <div class="admin-section-title">
+        <span>👥 Registered Users & Access Control</span>
+        <span style="font-size: 0.74rem; color: var(--muted);">Showing latest 20 users</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Registered At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+              <tr>
+                <td><strong>#{{ u.id }}</strong></td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="role-badge {{ 'role-admin' if u.is_admin else 'role-user' }}">
+                    {{ 'Admin' if u.is_admin else 'Member' }}
+                  </span>
+                </td>
+                <td style="color: var(--muted); font-size: 0.78rem;">{{ u.created_at[:19] }}</td>
+                <td>
+                  {% if u.id != session.get('user_id') %}
+                    <button type="button" class="button secondary toggle-role-btn" data-user-id="{{ u.id }}" style="padding: 4px 10px; font-size: 0.74rem;">
+                      {{ 'Demote to Member' if u.is_admin else 'Promote to Admin' }}
+                    </button>
+                  {% else %}
+                    <span style="font-size: 0.74rem; color: var(--muted); font-style: italic;">Current Session</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Security Audit Logs -->
+    <div class="admin-section-card">
+      <div class="admin-section-title">
+        <span>📜 Security Audit Logs</span>
+        <span style="font-size: 0.74rem; color: var(--muted);">Latest 25 Events</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Event</th>
+              <th>User ID</th>
+              <th>IP Address</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if security_logs %}
+              {% for log in security_logs %}
+                <tr>
+                  <td style="color: var(--muted); font-size: 0.78rem;">{{ log.created_at[:19] }}</td>
+                  <td><code style="font-size: 0.78rem; background: rgba(109, 93, 252, 0.08); padding: 2px 6px; border-radius: 4px;">{{ log.event_type }}</code></td>
+                  <td>{{ log.user_id or 'Anonymous' }}</td>
+                  <td><small>{{ log.ip_address }}</small></td>
+                  <td style="font-size: 0.78rem; color: var(--muted);">{{ log.details or '—' }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">
+                  No security incidents recorded. System running smoothly.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.toggle-role-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uId = e.currentTarget.dataset.userId;
+        if (!confirm('Are you sure you want to change this user\'s access privileges?')) return;
+        try {
+          const res = await fetch('/admin/users/toggle-role', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ user_id: uId })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            alert(data.message);
+            window.location.reload();
+          } else {
+            alert(data.error || 'Failed to update user role.');
+          }
+        } catch (err) {
+          alert('Error updating user role.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

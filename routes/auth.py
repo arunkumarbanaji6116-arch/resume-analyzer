@@ -8,7 +8,9 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from db import get_db
+from db import get_db, log_security_event
+from services.limiter import limiter
+from services.security import is_safe_url, sanitize_text, validate_password_strength
 from services.smtp_service import (
     is_smtp_configured,
     send_github_otp_email,
@@ -29,9 +31,11 @@ auth_bp = Blueprint("auth", __name__)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute; 60 per hour")
 def login():
+    next_url = request.args.get("next", "")
     if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
+        email = sanitize_text(request.form.get("email", ""), max_length=120).lower()
         password = request.form.get("password", "")
         remember = bool(request.form.get("remember"))
 
@@ -55,18 +59,29 @@ def login():
             session.permanent = bool(remember)
             session["user_id"] = user["id"]
             session["user"] = user["name"]
-            resp = redirect(url_for("dashboard"))
+            session["is_admin"] = bool(user.get("is_admin", 0)) if isinstance(user, dict) else bool(dict(user).get("is_admin", 0))
+
+            target = next_url if is_safe_url(next_url) else url_for("dashboard")
+            resp = redirect(target)
             if remember:
-                resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+                resp.set_cookie(
+                    "remember_email",
+                    email,
+                    max_age=30 * 86400,
+                    samesite="Lax",
+                    httponly=True,
+                    secure=Config.SESSION_COOKIE_SECURE,
+                )
             else:
                 resp.delete_cookie("remember_email")
             return resp
 
         # Helpful hint if user exists but has google auth
-        if user and user["password_hash"] == "google_smtp_verified":
-            flash("This account was created with Google Sign-In. Click 'Google' below to log in or reset your password.", "error")
+        if user and user["password_hash"] in ("google_smtp_verified", "github_oauth_verified"):
+            flash("This account was created with SSO. Click Google or GitHub below to log in.", "error")
         else:
             flash("Email or password is incorrect.", "error")
+            log_security_event("failed_login_attempt", f"Email: {email}")
 
         return render_template("login.html", email=email, password=password if remember else "", remember=remember)
 
@@ -75,15 +90,23 @@ def login():
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
+@limiter.limit("8 per minute; 40 per hour")
 def register():
     if request.method == "GET":
         return redirect(url_for("auth.login", mode="signup"))
-    name = request.form.get("name", "").strip()
-    email = request.form.get("email", "").strip().lower()
+    name = sanitize_text(request.form.get("name", ""), max_length=80)
+    email = sanitize_text(request.form.get("email", ""), max_length=120).lower()
     password = request.form.get("password", "")
-    if not name or not email or len(password) < 8:
-        flash("Enter a name, a valid email, and a password of at least 8 characters.", "error")
+
+    if not name or not email or "@" not in email:
+        flash("Please enter your name and a valid email address.", "error")
         return redirect(url_for("auth.login", mode="signup"))
+
+    is_valid_pwd, pwd_err = validate_password_strength(password)
+    if not is_valid_pwd:
+        flash(pwd_err, "error")
+        return redirect(url_for("auth.login", mode="signup"))
+
     try:
         db = get_db()
         now_iso = datetime.now(timezone.utc).isoformat()
@@ -103,8 +126,16 @@ def register():
         session.permanent = True
         session["user_id"] = user_id
         session["user"] = name
+        session["is_admin"] = False
         resp = redirect(url_for("dashboard"))
-        resp.set_cookie("remember_email", email, max_age=30 * 86400, samesite="Lax")
+        resp.set_cookie(
+            "remember_email",
+            email,
+            max_age=30 * 86400,
+            samesite="Lax",
+            httponly=True,
+            secure=Config.SESSION_COOKIE_SECURE,
+        )
         return resp
     except Exception:
         flash("An account with that email already exists.", "error")
@@ -124,9 +155,10 @@ def _format_email_error(status_or_msg: str) -> str:
 
 @auth_bp.route("/google-otp/send", methods=["POST"])
 @auth_bp.route("/auth/google-otp/send", methods=["POST"])
+@limiter.limit("5 per minute; 25 per hour")
 def send_google_otp():
     data = request.get_json(silent=True) or request.form
-    email = (data.get("email") or "").strip().lower()
+    email = sanitize_text(data.get("email") or "", max_length=120).lower()
 
     if not email or "@" not in email or "." not in email:
         return jsonify({"success": False, "message": "Please enter a valid Google email address."}), 400
@@ -172,9 +204,10 @@ def send_google_otp():
 
 @auth_bp.route("/google-otp/verify", methods=["POST"])
 @auth_bp.route("/auth/google-otp/verify", methods=["POST"])
+@limiter.limit("10 per minute; 50 per hour")
 def verify_google_otp():
     data = request.get_json(silent=True) or request.form
-    email = (data.get("email") or session.get("google_auth_email") or "").strip().lower()
+    email = sanitize_text(data.get("email") or session.get("google_auth_email") or "", max_length=120).lower()
     otp_code = (data.get("otp") or "").strip()
     clean_otp = re.sub(r"[^0-9]", "", otp_code)
 
@@ -267,9 +300,10 @@ def verify_google_otp():
 
 @auth_bp.route("/github-otp/send", methods=["POST"])
 @auth_bp.route("/auth/github-otp/send", methods=["POST"])
+@limiter.limit("5 per minute; 25 per hour")
 def send_github_otp():
     data = request.get_json(silent=True) or request.form
-    raw_input = (data.get("identifier") or data.get("email") or "").strip()
+    raw_input = sanitize_text(data.get("identifier") or data.get("email") or "", max_length=120)
 
     if not raw_input:
         return jsonify({"success": False, "message": "Please enter your GitHub email address or username."}), 400
@@ -341,9 +375,10 @@ def send_github_otp():
 
 @auth_bp.route("/github-otp/verify", methods=["POST"])
 @auth_bp.route("/auth/github-otp/verify", methods=["POST"])
+@limiter.limit("10 per minute; 50 per hour")
 def verify_github_otp():
     data = request.get_json(silent=True) or request.form
-    email = (data.get("email") or session.get("github_auth_email") or "").strip().lower()
+    email = sanitize_text(data.get("email") or session.get("github_auth_email") or "", max_length=120).lower()
     otp_code = (data.get("otp") or "").strip()
     clean_otp = re.sub(r"[^0-9]", "", otp_code)
 
@@ -527,9 +562,10 @@ def github_oauth_callback():
 
 @auth_bp.route("/forgot-password/send", methods=["POST"])
 @auth_bp.route("/auth/forgot-password/send", methods=["POST"])
+@limiter.limit("5 per minute; 20 per hour")
 def send_forgot_password_otp():
     data = request.get_json(silent=True) or request.form
-    email = (data.get("email") or "").strip().lower()
+    email = sanitize_text(data.get("email") or "", max_length=120).lower()
 
     if not email or "@" not in email or "." not in email:
         return jsonify({"success": False, "message": "Please enter a valid email address."}), 400
@@ -572,17 +608,19 @@ def send_forgot_password_otp():
 
 @auth_bp.route("/forgot-password/reset", methods=["POST"])
 @auth_bp.route("/auth/forgot-password/reset", methods=["POST"])
+@limiter.limit("10 per minute; 40 per hour")
 def reset_forgot_password():
     data = request.get_json(silent=True) or request.form
-    email = (data.get("email") or "").strip().lower()
+    email = sanitize_text(data.get("email") or "", max_length=120).lower()
     otp_code = (data.get("otp") or "").strip()
     new_password = (data.get("password") or "").strip()
 
     if not email or not otp_code or not new_password:
         return jsonify({"success": False, "message": "Email, verification code, and new password are required."}), 400
 
-    if len(new_password) < 8:
-        return jsonify({"success": False, "message": "New password must be at least 8 characters long."}), 400
+    is_valid_pwd, pwd_err = validate_password_strength(new_password)
+    if not is_valid_pwd:
+        return jsonify({"success": False, "message": pwd_err}), 400
 
     now_iso = datetime.now(timezone.utc).isoformat()
     db = get_db()

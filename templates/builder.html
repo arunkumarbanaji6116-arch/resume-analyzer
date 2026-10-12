@@ -4212,6 +4212,17 @@
   </div>
 
   <script>
+    // Defensive client-side HTML escaping to protect against DOM-based XSS
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       // DOM Elements
       const form = document.getElementById('resume-builder-form');
@@ -4394,8 +4405,8 @@
           if (classicGrid) {
             classicGrid.innerHTML = r.skills.map(g => `
               <div class="classic-skill-category">
-                <strong>${g.category}:</strong>
-                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+                <strong>${escapeHtml(g.category)}:</strong>
+                <span>${Array.isArray(g.items) ? g.items.map(escapeHtml).join(', ') : escapeHtml(g.items)}</span>
               </div>
             `).join('');
           }
@@ -4404,9 +4415,9 @@
           if (modernSkills) {
             modernSkills.innerHTML = r.skills.map(g => `
               <div class="modern-skill-group">
-                <span class="modern-skill-cat-title">${g.category}</span>
+                <span class="modern-skill-cat-title">${escapeHtml(g.category)}</span>
                 <div class="modern-chips-wrap">
-                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="modern-skill-chip">${item}</span>`).join('')}
+                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="modern-skill-chip">${escapeHtml(item)}</span>`).join('')}
                 </div>
               </div>
             `).join('');
@@ -4416,8 +4427,8 @@
           if (minimalSkills) {
             minimalSkills.innerHTML = r.skills.map(g => `
               <div class="minimal-skill-item">
-                <strong>${g.category}:</strong>
-                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+                <strong>${escapeHtml(g.category)}:</strong>
+                <span>${Array.isArray(g.items) ? g.items.map(escapeHtml).join(', ') : escapeHtml(g.items)}</span>
               </div>
             `).join('');
           }
@@ -4426,9 +4437,9 @@
           if (photoSkills) {
             photoSkills.innerHTML = r.skills.map(g => `
               <div style="margin-bottom: 8px;">
-                <span style="font-size: 0.72rem; font-weight: 750; color: #0f172a; display: block; margin-bottom: 3px;">${g.category}</span>
+                <span style="font-size: 0.72rem; font-weight: 750; color: #0f172a; display: block; margin-bottom: 3px;">${escapeHtml(g.category)}</span>
                 <div>
-                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="photo-cv-chip">${item}</span>`).join('')}
+                  ${(Array.isArray(g.items) ? g.items : [g.items]).map(item => `<span class="photo-cv-chip">${escapeHtml(item)}</span>`).join('')}
                 </div>
               </div>
             `).join('');
@@ -4438,8 +4449,8 @@
           if (nordicSkills) {
             nordicSkills.innerHTML = r.skills.map(g => `
               <div class="nordic-skill-box">
-                <strong>${g.category}</strong>
-                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+                <strong>${escapeHtml(g.category)}</strong>
+                <span>${Array.isArray(g.items) ? g.items.map(escapeHtml).join(', ') : escapeHtml(g.items)}</span>
               </div>
             `).join('');
           }
@@ -4448,8 +4459,8 @@
           if (ivySkills) {
             ivySkills.innerHTML = r.skills.map(g => `
               <div class="ivy-skill-category">
-                <span class="ivy-skill-label">${g.category}:</span>
-                <span>${Array.isArray(g.items) ? g.items.join(', ') : g.items}</span>
+                <span class="ivy-skill-label">${escapeHtml(g.category)}:</span>
+                <span>${Array.isArray(g.items) ? g.items.map(escapeHtml).join(', ') : escapeHtml(g.items)}</span>
               </div>
             `).join('');
           }
@@ -4467,12 +4478,16 @@
 
         // 6. Experience across all 6 templates
         if (r.experience && Array.isArray(r.experience)) {
-          const makeBulletHtml = (bullets) => bullets.map(b => `
-            <li class="resume-bullet-wrap">
-              <span class="bullet-text" contenteditable="true">${b}</span>
-              <button type="button" class="bullet-ai-action" data-bullet="${b.replace(/"/g, '&quot;')}" title="Rewrite this bullet point with AI">✨ Improve</button>
-            </li>
-          `).join('');
+          const makeBulletHtml = (bullets) => bullets.map(b => {
+            const safeB = escapeHtml(b);
+            const safeAttr = safeB.replace(/"/g, '&quot;');
+            return `
+              <li class="resume-bullet-wrap">
+                <span class="bullet-text" contenteditable="true">${safeB}</span>
+                <button type="button" class="bullet-ai-action" data-bullet="${safeAttr}" title="Rewrite this bullet point with AI">✨ Improve</button>
+              </li>
+            `;
+          }).join('');
 
           // Classic Experience
           const classicExpList = document.querySelector('.live-experience-list');
@@ -4481,10 +4496,10 @@
               <div class="classic-job-entry">
                 <div class="classic-job-header">
                   <div>
-                    <strong class="classic-job-title">${job.title}</strong>
-                    <span class="classic-job-company"> · ${job.company}</span>
+                    <strong class="classic-job-title">${escapeHtml(job.title)}</strong>
+                    <span class="classic-job-company"> · ${escapeHtml(job.company)}</span>
                   </div>
-                  <span class="classic-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                  <span class="classic-job-meta">${escapeHtml(job.period)}${job.location ? ' · ' + escapeHtml(job.location) : ''}</span>
                 </div>
                 <ul class="classic-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4501,10 +4516,10 @@
                 <div class="modern-timeline-node"></div>
                 <div class="modern-job-header">
                   <div>
-                    <strong class="modern-job-role">${job.title}</strong>
-                    <span class="modern-job-company"> · ${job.company}</span>
+                    <strong class="modern-job-role">${escapeHtml(job.title)}</strong>
+                    <span class="modern-job-company"> · ${escapeHtml(job.company)}</span>
                   </div>
-                  <span class="modern-job-period-badge">${job.period}</span>
+                  <span class="modern-job-period-badge">${escapeHtml(job.period)}</span>
                 </div>
                 <ul class="modern-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4520,9 +4535,9 @@
               <div class="minimal-job-entry">
                 <div class="minimal-job-header">
                   <div class="minimal-job-title-company">
-                    <strong>${job.title}</strong> — ${job.company}
+                    <strong>${escapeHtml(job.title)}</strong> — ${escapeHtml(job.company)}
                   </div>
-                  <div class="minimal-job-meta">${job.period}</div>
+                  <div class="minimal-job-meta">${escapeHtml(job.period)}</div>
                 </div>
                 <ul class="minimal-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4538,10 +4553,10 @@
               <div class="photo-cv-job-entry">
                 <div class="photo-cv-job-header">
                   <div>
-                    <strong class="photo-cv-job-title">${job.title}</strong>
-                    <span class="photo-cv-job-company"> · ${job.company}</span>
+                    <strong class="photo-cv-job-title">${escapeHtml(job.title)}</strong>
+                    <span class="photo-cv-job-company"> · ${escapeHtml(job.company)}</span>
                   </div>
-                  <span class="photo-cv-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                  <span class="photo-cv-job-meta">${escapeHtml(job.period)}${job.location ? ' · ' + escapeHtml(job.location) : ''}</span>
                 </div>
                 <ul class="photo-cv-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4557,10 +4572,10 @@
               <div class="nordic-job-entry">
                 <div class="nordic-job-header">
                   <div>
-                    <strong class="nordic-job-title">${job.title}</strong>
-                    <span class="nordic-job-company"> — ${job.company}</span>
+                    <strong class="nordic-job-title">${escapeHtml(job.title)}</strong>
+                    <span class="nordic-job-company"> — ${escapeHtml(job.company)}</span>
                   </div>
-                  <span class="nordic-job-meta">${job.period}${job.location ? ' · ' + job.location : ''}</span>
+                  <span class="nordic-job-meta">${escapeHtml(job.period)}${job.location ? ' · ' + escapeHtml(job.location) : ''}</span>
                 </div>
                 <ul class="nordic-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4575,12 +4590,12 @@
             ivyExpList.innerHTML = r.experience.map(job => `
               <div class="ivy-job-entry">
                 <div class="ivy-job-top">
-                  <span class="ivy-job-company">${job.company}</span>
-                  <span class="ivy-job-location">${job.location || 'United States'}</span>
+                  <span class="ivy-job-company">${escapeHtml(job.company)}</span>
+                  <span class="ivy-job-location">${escapeHtml(job.location || 'United States')}</span>
                 </div>
                 <div class="ivy-job-sub">
-                  <span class="ivy-job-title">${job.title}</span>
-                  <span class="ivy-job-period">${job.period}</span>
+                  <span class="ivy-job-title">${escapeHtml(job.title)}</span>
+                  <span class="ivy-job-period">${escapeHtml(job.period)}</span>
                 </div>
                 <ul class="ivy-bullets">
                   ${makeBulletHtml(job.bullets || [])}
@@ -4798,22 +4813,22 @@
             const yr = eduParts[2] || 'Honors Graduate';
 
             document.querySelectorAll('.live-education-list').forEach(el => {
-              el.innerHTML = `<div class="classic-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="muted">${yr}</div></div>`;
+              el.innerHTML = `<div class="classic-edu-entry"><div><strong>${escapeHtml(deg)}</strong> — ${escapeHtml(inst)}</div><div class="muted">${escapeHtml(yr)}</div></div>`;
             });
             document.querySelectorAll('.live-education-modern').forEach(el => {
-              el.innerHTML = `<div class="modern-edu-card"><div class="modern-edu-degree">${deg}</div><div class="modern-edu-inst">${inst}</div><div class="modern-edu-meta">${yr}</div></div>`;
+              el.innerHTML = `<div class="modern-edu-card"><div class="modern-edu-degree">${escapeHtml(deg)}</div><div class="modern-edu-inst">${escapeHtml(inst)}</div><div class="modern-edu-meta">${escapeHtml(yr)}</div></div>`;
             });
             document.querySelectorAll('.live-education-minimal').forEach(el => {
-              el.innerHTML = `<div class="minimal-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="minimal-edu-meta">${yr}</div></div>`;
+              el.innerHTML = `<div class="minimal-edu-entry"><div><strong>${escapeHtml(deg)}</strong> — ${escapeHtml(inst)}</div><div class="minimal-edu-meta">${escapeHtml(yr)}</div></div>`;
             });
             document.querySelectorAll('.live-education-photo').forEach(el => {
-              el.innerHTML = `<div style="margin-bottom: 8px; font-size: 0.78rem;"><strong style="color: #0f172a; display: block;">${deg}</strong><div style="color: #2563eb; font-weight: 600;">${inst}</div><div class="muted" style="font-size: 0.72rem;">${yr}</div></div>`;
+              el.innerHTML = `<div style="margin-bottom: 8px; font-size: 0.78rem;"><strong style="color: #0f172a; display: block;">${escapeHtml(deg)}</strong><div style="color: #2563eb; font-weight: 600;">${escapeHtml(inst)}</div><div class="muted" style="font-size: 0.72rem;">${escapeHtml(yr)}</div></div>`;
             });
             document.querySelectorAll('.live-education-nordic').forEach(el => {
-              el.innerHTML = `<div class="nordic-edu-entry"><div><strong>${deg}</strong> — ${inst}</div><div class="nordic-job-meta">${yr}</div></div>`;
+              el.innerHTML = `<div class="nordic-edu-entry"><div><strong>${escapeHtml(deg)}</strong> — ${escapeHtml(inst)}</div><div class="nordic-job-meta">${escapeHtml(yr)}</div></div>`;
             });
             document.querySelectorAll('.live-education-ivy').forEach(el => {
-              el.innerHTML = `<div class="ivy-edu-entry"><div class="ivy-job-top"><span class="ivy-job-company">${inst}</span><span class="ivy-job-location">${yr}</span></div><div class="ivy-job-sub"><span class="ivy-job-title">${deg}</span></div></div>`;
+              el.innerHTML = `<div class="ivy-edu-entry"><div class="ivy-job-top"><span class="ivy-job-company">${escapeHtml(inst)}</span><span class="ivy-job-location">${escapeHtml(yr)}</span></div><div class="ivy-job-sub"><span class="ivy-job-title">${escapeHtml(deg)}</span></div></div>`;
             });
           }
         }
@@ -4824,22 +4839,22 @@
           if (projVal) {
             const projs = projVal.split(/[,;\n]+/).map(p => p.trim()).filter(Boolean);
             document.querySelectorAll('.live-projects-list').forEach(el => {
-              el.innerHTML = projs.map(p => `<div class="classic-proj-entry"><strong>${p}</strong>: <span class="muted">Validated credential and practical implementation</span></div>`).join('');
+              el.innerHTML = projs.map(p => `<div class="classic-proj-entry"><strong>${escapeHtml(p)}</strong>: <span class="muted">Validated credential and practical implementation</span></div>`).join('');
             });
             document.querySelectorAll('.live-projects-modern').forEach(el => {
-              el.innerHTML = projs.map(p => `<div class="modern-proj-card"><strong class="modern-proj-title">${p}</strong><div class="modern-proj-desc">Certified competency and verified project deliverables</div></div>`).join('');
+              el.innerHTML = projs.map(p => `<div class="modern-proj-card"><strong class="modern-proj-title">${escapeHtml(p)}</strong><div class="modern-proj-desc">Certified competency and verified project deliverables</div></div>`).join('');
             });
             document.querySelectorAll('.live-projects-minimal').forEach(el => {
-              el.innerHTML = projs.map(p => `<div class="minimal-proj-entry"><div><strong>${p}</strong>: Verified technical artifact</div></div>`).join('');
+              el.innerHTML = projs.map(p => `<div class="minimal-proj-entry"><div><strong>${escapeHtml(p)}</strong>: Verified technical artifact</div></div>`).join('');
             });
             document.querySelectorAll('.live-projects-photo').forEach(el => {
-              el.innerHTML = projs.map(p => `<div style="margin-bottom: 6px; font-size: 0.76rem;"><strong style="color: #0f172a;">${p}</strong><div class="muted" style="font-size: 0.71rem;">Verified credential</div></div>`).join('');
+              el.innerHTML = projs.map(p => `<div style="margin-bottom: 6px; font-size: 0.76rem;"><strong style="color: #0f172a;">${escapeHtml(p)}</strong><div class="muted" style="font-size: 0.71rem;">Verified credential</div></div>`).join('');
             });
             document.querySelectorAll('.live-projects-nordic').forEach(el => {
-              el.innerHTML = projs.map(p => `<div class="nordic-proj-entry"><div><strong>${p}</strong>: Verified credential</div></div>`).join('');
+              el.innerHTML = projs.map(p => `<div class="nordic-proj-entry"><div><strong>${escapeHtml(p)}</strong>: Verified credential</div></div>`).join('');
             });
             document.querySelectorAll('.live-projects-ivy').forEach(el => {
-              el.innerHTML = projs.map(p => `<div class="ivy-proj-entry"><strong>${p}</strong>: <span class="muted">Verified credential and technical deliverable</span></div>`).join('');
+              el.innerHTML = projs.map(p => `<div class="ivy-proj-entry"><strong>${escapeHtml(p)}</strong>: <span class="muted">Verified credential and technical deliverable</span></div>`).join('');
             });
           }
         }

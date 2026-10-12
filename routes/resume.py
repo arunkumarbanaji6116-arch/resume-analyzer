@@ -4,17 +4,18 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 
 from ai.resume_ai import ResumeImageError, analyze_resume, extract_text_from_resume_image
 from db import get_db, record_activity
+from services.limiter import limiter
+from services.security import login_required, sanitize_text
 
 resume_bp = Blueprint("resume", __name__)
 
 
 @resume_bp.route("/resume", methods=["GET", "POST"])
+@login_required
 def resume():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
     analysis = None
     if request.method == "POST":
-        role = request.form.get("target_role", "").strip()
+        role = sanitize_text(request.form.get("target_role", "").strip(), max_length=150)
         resume_image = request.files.get("resume_image")
 
         if not resume_image or not resume_image.filename:
@@ -38,17 +39,16 @@ def resume():
 
 
 @resume_bp.post("/resume/improve")
+@login_required
+@limiter.limit("20 per minute")
 def improve():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-    
-    text = request.form.get("resume_text", "").strip()
-    role = request.form.get("target_role", "").strip()
+    text = sanitize_text(request.form.get("resume_text", "").strip(), max_length=15000)
+    role = sanitize_text(request.form.get("target_role", "").strip(), max_length=150)
     try:
         initial_score = int(request.form.get("initial_score", 70))
     except (ValueError, TypeError):
         initial_score = 70
-    notes = request.form.getlist("notes")
+    notes = [sanitize_text(n, max_length=500) for n in request.form.getlist("notes")]
     try:
         variation_index = int(request.form.get("variation_index", 1))
     except (ValueError, TypeError):
@@ -77,4 +77,5 @@ def improve():
         "metrics": 2,
     }
     return render_template("resume.html", analysis=synthetic_analysis, improved=improved_data)
+
 

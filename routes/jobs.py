@@ -6,20 +6,22 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from ai.job_analyzer import analyze_job
 from ai.resume_ai import ResumeImageError, extract_text_from_resume_image
 from db import get_db, record_activity
+from services.limiter import limiter
+from services.security import login_required, sanitize_text
 
 jobs_bp = Blueprint("jobs", __name__)
 
 
 @jobs_bp.route("/jobs", methods=["GET", "POST"])
+@login_required
+@limiter.limit("20 per minute")
 def jobs():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
     analysis = None
     job_description = ""
     resume_text = ""
     if request.method == "POST":
-        job_description = request.form.get("job_description", "").strip()
-        resume_text = request.form.get("resume_text", "").strip()
+        job_description = sanitize_text(request.form.get("job_description", "").strip(), max_length=15000)
+        resume_text = sanitize_text(request.form.get("resume_text", "").strip(), max_length=15000)
 
         job_image = request.files.get("job_image")
         resume_image = request.files.get("resume_image")
@@ -28,7 +30,7 @@ def jobs():
         if job_image and job_image.filename:
             try:
                 extracted_job_text = extract_text_from_resume_image(job_image)
-                job_description = "\n".join(filter(None, (job_description, extracted_job_text)))
+                job_description = "\n".join(filter(None, (job_description, sanitize_text(extracted_job_text, max_length=15000))))
             except ResumeImageError as err:
                 flash(f"Job posting error: {err}")
 
@@ -36,7 +38,7 @@ def jobs():
         if resume_image and resume_image.filename:
             try:
                 extracted_resume_text = extract_text_from_resume_image(resume_image)
-                resume_text = "\n".join(filter(None, (resume_text, extracted_resume_text)))
+                resume_text = "\n".join(filter(None, (resume_text, sanitize_text(extracted_resume_text, max_length=15000))))
             except ResumeImageError as err:
                 flash(f"Resume upload error: {err}")
 
@@ -57,14 +59,12 @@ def jobs():
 
 
 @jobs_bp.route("/jobs/bridge-to-builder", methods=["POST", "GET"])
+@login_required
 def bridge_to_builder():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
-    missing_keywords_str = request.form.get("missing_keywords", "") or request.args.get("missing", "")
-    matched_skills_str = request.form.get("matched_skills", "") or request.args.get("matched", "")
-    job_description = request.form.get("job_description", "") or request.args.get("jd", "")
-    resume_text = request.form.get("resume_text", "") or request.args.get("resume", "")
+    missing_keywords_str = sanitize_text(request.form.get("missing_keywords", "") or request.args.get("missing", ""), max_length=2000)
+    matched_skills_str = sanitize_text(request.form.get("matched_skills", "") or request.args.get("matched", ""), max_length=2000)
+    job_description = sanitize_text(request.form.get("job_description", "") or request.args.get("jd", ""), max_length=15000)
+    resume_text = sanitize_text(request.form.get("resume_text", "") or request.args.get("resume", ""), max_length=15000)
 
     # Parse lists
     missing_list = [k.strip() for k in missing_keywords_str.split(",") if k.strip()]
@@ -91,4 +91,5 @@ def bridge_to_builder():
         pass
 
     return redirect(url_for("builder.builder_view"))
+
 
