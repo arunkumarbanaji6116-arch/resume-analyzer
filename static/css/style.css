@@ -3652,26 +3652,100 @@ hr {
    AI Resume Builder & Score Booster Styling
    ========================================================================== */
 
-/* Dual Grid Builder Layout */
+/* Dual Grid Builder Layout with Independent Pane Scrolling */
 .resume-builder-grid {
   display: grid;
-  grid-template-columns: 480px 1fr;
-  gap: 28px;
-  align-items: start;
+  grid-template-columns: 485px 1fr;
+  gap: 24px;
+  align-items: stretch;
 }
 
-@media (max-width: 1100px) {
+@media (min-width: 1024px) {
   .resume-builder-grid {
-    grid-template-columns: 1fr;
+    height: calc(100vh - 165px);
+    max-height: calc(100vh - 165px);
+    min-height: 580px;
+  }
+
+  /* 1st Pane: Form Panel Separate Independent Scrolling */
+  .builder-form-panel {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 24px 20px;
+    background: var(--surface);
+    backdrop-filter: blur(28px) saturate(190%);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  }
+
+  /* 2nd Pane: Preview Panel Separate Independent Scrolling */
+  .builder-preview-panel {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    position: static !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  }
+
+  /* Custom Clean Scrollbars for Dual Independent Panes */
+  .builder-form-panel::-webkit-scrollbar,
+  .builder-preview-panel::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .builder-form-panel::-webkit-scrollbar-track,
+  .builder-preview-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .builder-form-panel::-webkit-scrollbar-thumb,
+  .builder-preview-panel::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 999px;
+  }
+
+  .builder-form-panel::-webkit-scrollbar-thumb:hover,
+  .builder-preview-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(109, 93, 252, 0.6);
+  }
+
+  .dark .builder-form-panel::-webkit-scrollbar-thumb,
+  .dark .builder-preview-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .builder-form-panel::-webkit-scrollbar-thumb:hover,
+  .dark .builder-preview-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(167, 139, 250, 0.6);
   }
 }
 
-.builder-form-panel {
-  padding: 26px 22px;
-  background: var(--surface);
-  backdrop-filter: blur(28px) saturate(190%);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
+@media (max-width: 1023px) {
+  .resume-builder-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+
+  .builder-form-panel,
+  .builder-preview-panel {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    position: static;
+  }
 }
 
 .builder-section {
@@ -3854,8 +3928,6 @@ hr {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: sticky;
-  top: 80px;
 }
 
 .preview-toolbar {
