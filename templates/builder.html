@@ -1431,9 +1431,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* --- Form Passport Photo Card --- */
+    /* --- Form Passport Photo Card (Hidden unless Photo CV template is active) --- */
     .passport-photo-upload-card {
-      display: flex;
+      display: none !important;
       align-items: center;
       gap: 16px;
       padding: 12px 14px;
@@ -1442,6 +1442,9 @@
       border-radius: 12px;
       margin-top: 12px;
       transition: all 0.2s ease;
+    }
+    .passport-photo-upload-card.photo-template-active {
+      display: flex !important;
     }
     .dark .passport-photo-upload-card {
       background: rgba(30, 41, 59, 0.7);
@@ -4300,6 +4303,7 @@
       function updatePhotoUploadVisibility(tpl) {
         const isPhotoRequired = PHOTO_REQUIRED_TEMPLATES.includes(tpl);
         if (photoUploadCard) {
+          photoUploadCard.classList.toggle('photo-template-active', isPhotoRequired);
           photoUploadCard.style.display = isPhotoRequired ? 'flex' : 'none';
         }
       }
@@ -4307,6 +4311,7 @@
       function validatePhotoForTemplate(tpl = activeTemplate) {
         if (PHOTO_REQUIRED_TEMPLATES.includes(tpl) && !currentPhotoDataUrl) {
           if (photoUploadCard) {
+            photoUploadCard.classList.add('photo-template-active');
             photoUploadCard.style.display = 'flex';
             photoUploadCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             photoUploadCard.style.borderColor = '#dc2626';
