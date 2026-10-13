@@ -396,7 +396,9 @@ def gemini_build_resume_from_scratch(data: dict, strategy: str = "metric_driven"
     industry = data.get("industry", "Technology")
     skills_raw = data.get("skills", "")
     exp_raw = data.get("experience_raw", "")
-    edu_raw = data.get("education_raw", "")
+    edu_raw = data.get("education_raw", "").strip()
+    university_raw = data.get("university", "").strip()
+    grad_year_raw = data.get("graduation_year", "").strip()
     projects_raw = data.get("projects_raw", "")
     contact_parts = [data.get(k, "").strip() for k in ("email", "phone", "location", "linkedin") if data.get(k, "").strip()]
     contact = " | ".join(contact_parts)
@@ -432,7 +434,9 @@ Candidate Profile:
 - Industry / Domain: {industry}
 - Key Skills Provided: {skills_raw}
 - Raw Experience Notes: {exp_raw}
-- Education Notes: {edu_raw}
+- Qualification / Degree Notes: {edu_raw}
+- University / College Qualified From: {university_raw}
+- Graduation Year / CGPA / Honors: {grad_year_raw}
 - Projects & Achievements: {projects_raw}
 
 CRITICAL DIVERSITY DIRECTIVE:
@@ -475,7 +479,7 @@ Respond ONLY with valid JSON matching this exact structure:
   "education": [
     {{
       "degree": "<Degree Name>",
-      "institution": "<University / Institution>",
+      "institution": "<University / College Name>",
       "year": "<Graduation Year / Honors>",
       "details": "<Relevant coursework or GPA>"
     }}
@@ -496,6 +500,13 @@ Respond ONLY with valid JSON matching this exact structure:
         result["contact_line"] = contact
         result["variation_seed"] = variation_seed
         result["fresher_mode"] = is_fresher
+        if (edu_raw or university_raw or grad_year_raw) and isinstance(result.get("education"), list) and result["education"]:
+            if edu_raw:
+                result["education"][0]["degree"] = edu_raw.split(",")[0].strip() or edu_raw
+            if university_raw:
+                result["education"][0]["institution"] = university_raw
+            if grad_year_raw:
+                result["education"][0]["year"] = grad_year_raw
         return result
 
     return _heuristic_build_resume(data, strategy, variation_seed)
@@ -526,29 +537,39 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
     contact_parts = [data.get(k, "").strip() for k in ("email", "phone", "location", "linkedin") if data.get(k, "").strip()]
     contact = " | ".join(contact_parts) or f"{data.get('email', 'alex@example.com')} | {data.get('phone', '+1 (555) 234-5678')} | {data.get('location', 'San Francisco, CA')}".strip(" |")
 
-    # User-provided custom education if present
+    # User-provided custom education / university / graduation year if present
     custom_edu = []
     edu_raw = data.get("education_raw", "").strip()
-    if edu_raw:
-        for line in edu_raw.split("\n"):
-            line = line.strip().lstrip("•-* ")
-            if not line:
-                continue
-            parts = [p.strip() for p in line.split(",") if p.strip()]
-            if len(parts) >= 2:
-                custom_edu.append({
-                    "degree": parts[0],
-                    "institution": parts[1],
-                    "year": parts[2] if len(parts) > 2 else "Graduated with Honors",
-                    "details": ", ".join(parts[3:]) if len(parts) > 3 else "Relevant Coursework: Computer Systems & Software Architecture"
-                })
-            else:
-                custom_edu.append({
-                    "degree": line,
-                    "institution": "Accredited University",
-                    "year": "Graduated",
-                    "details": "Major in Computer Science / Engineering"
-                })
+    university_raw = data.get("university", "").strip()
+    grad_year_raw = data.get("graduation_year", "").strip()
+    if edu_raw or university_raw or grad_year_raw:
+        if edu_raw:
+            for idx_line, line in enumerate(edu_raw.split("\n")):
+                line = line.strip().lstrip("•-* ")
+                if not line:
+                    continue
+                parts = [p.strip() for p in line.split(",") if p.strip()]
+                if len(parts) >= 2:
+                    custom_edu.append({
+                        "degree": parts[0],
+                        "institution": university_raw if (idx_line == 0 and university_raw) else parts[1],
+                        "year": grad_year_raw if (idx_line == 0 and grad_year_raw) else (parts[2] if len(parts) > 2 else "Graduated with Honors"),
+                        "details": ", ".join(parts[3:]) if len(parts) > 3 else "Relevant Coursework: Computer Systems & Software Architecture"
+                    })
+                else:
+                    custom_edu.append({
+                        "degree": line,
+                        "institution": university_raw or "State University of Technology",
+                        "year": grad_year_raw or "Graduated with Honors",
+                        "details": "Major in Computer Science / Engineering"
+                    })
+        else:
+            custom_edu.append({
+                "degree": "B.S. / B.Tech in Computer Science & Engineering",
+                "institution": university_raw or "State University of Technology",
+                "year": grad_year_raw or "Graduated with Honors",
+                "details": "Relevant Coursework: Computer Systems & Software Architecture"
+            })
 
     # User-provided custom projects/certs if present
     custom_proj = []

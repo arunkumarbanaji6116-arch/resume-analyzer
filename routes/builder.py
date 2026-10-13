@@ -56,6 +56,8 @@ def builder_view():
         "skills": sanitize_text(request.args.get("skills") or saved_prefill.get("skills", ""), max_length=2000),
         "experience_raw": sanitize_text(request.args.get("experience") or saved_prefill.get("experience_raw", ""), max_length=15000),
         "education_raw": sanitize_text(request.args.get("education") or saved_prefill.get("education_raw", ""), max_length=5000),
+        "university": sanitize_text(request.args.get("university") or saved_prefill.get("university", ""), max_length=250),
+        "graduation_year": sanitize_text(request.args.get("graduation_year") or saved_prefill.get("graduation_year", ""), max_length=100),
         "projects_raw": sanitize_text(request.args.get("projects") or saved_prefill.get("projects_raw", ""), max_length=8000),
         "missing_keywords": saved_prefill.get("missing_keywords", []),
         "from_job_analyzer": saved_prefill.get("from_job_analyzer", False),
@@ -136,6 +138,8 @@ def generate_resume():
         "skills": sanitize_text(request.form.get("skills", "").strip(), max_length=2000),
         "experience_raw": sanitize_text(request.form.get("experience_raw", "").strip(), max_length=15000),
         "education_raw": sanitize_text(request.form.get("education_raw", "").strip(), max_length=5000),
+        "university": sanitize_text(request.form.get("university", "").strip(), max_length=250),
+        "graduation_year": sanitize_text(request.form.get("graduation_year", "").strip(), max_length=100),
         "projects_raw": sanitize_text(request.form.get("projects_raw", "").strip(), max_length=8000),
     }
 

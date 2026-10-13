@@ -3199,12 +3199,23 @@
 
             <div class="form-row-2col">
               <div>
-                <label id="education-section-label">Education & Degree</label>
-                <input id="input-education-raw" name="education_raw" value="{{ prefill.education_raw if prefill and prefill.education_raw else '' }}" placeholder="e.g. B.S. in Computer Science, State University, 2018" autocomplete="off">
+                <label id="education-section-label">Education &amp; Degree / Qualification</label>
+                <input id="input-education-raw" name="education_raw" value="{{ prefill.education_raw if prefill and prefill.education_raw else '' }}" placeholder="e.g. B.Tech / B.S. in Computer Science &amp; Engineering" autocomplete="off">
+              </div>
+              <div>
+                <label id="university-section-label">University / College (Qualified From)</label>
+                <input id="input-university" name="university" value="{{ prefill.university if prefill and prefill.university else '' }}" placeholder="e.g. Stanford University / IIT / State University" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="form-row-2col" style="margin-top: 10px;">
+              <div>
+                <label id="graduation-year-label">Graduation Year &amp; CGPA / Honors (Optional)</label>
+                <input id="input-graduation-year" name="graduation_year" value="{{ prefill.graduation_year if prefill and prefill.graduation_year else '' }}" placeholder="e.g. 2024 · CGPA 8.9/10 (or Honors Graduate)" autocomplete="off">
               </div>
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                  <label id="projects-section-label" style="margin-bottom: 0;">Projects & Certifications (Optional)</label>
+                  <label id="projects-section-label" style="margin-bottom: 0;">Projects &amp; Certifications (Optional)</label>
                   <button type="button" id="trigger-cert-upload-btn" class="cert-upload-pill-btn" title="Upload Certificate in PDF, Image, Word, or Text format">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -3294,9 +3305,9 @@
           ],
           "education": [
             {
-              "degree": "B.S. in Computer Science & Engineering",
-              "institution": "State University of Technology",
-              "year": "Honors Graduate",
+              "degree": prefill.education_raw if (prefill and prefill.education_raw) else "B.S. in Computer Science & Engineering",
+              "institution": prefill.university if (prefill and prefill.university) else "State University of Technology",
+              "year": prefill.graduation_year if (prefill and prefill.graduation_year) else "Honors Graduate",
               "details": "Focus on Distributed Systems, Cloud Architecture, and Algorithm Design"
             }
           ],
@@ -4261,6 +4272,8 @@
       const inputSkills = document.getElementById('input-skills');
       const inputExperienceRaw = document.getElementById('input-experience-raw');
       const inputEducationRaw = document.getElementById('input-education-raw');
+      const inputUniversity = document.getElementById('input-university');
+      const inputGraduationYear = document.getElementById('input-graduation-year');
       const inputProjectsRaw = document.getElementById('projects-raw-input');
 
       // Modals
@@ -4675,6 +4688,99 @@
           }
         }
 
+        // 7. Education & University/College across all 6 templates
+        if (r.education && Array.isArray(r.education) && r.education.length > 0) {
+          document.querySelectorAll('.live-education-list').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div class="classic-edu-entry">
+                <div><strong>${escapeHtml(edu.degree)}</strong> — ${escapeHtml(edu.institution)}</div>
+                <div class="muted">${escapeHtml(edu.year)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</div>
+              </div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-education-modern').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div class="modern-edu-card">
+                <div class="modern-edu-degree">${escapeHtml(edu.degree)}</div>
+                <div class="modern-edu-inst">${escapeHtml(edu.institution)}</div>
+                <div class="modern-edu-meta">${escapeHtml(edu.year)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</div>
+              </div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-education-minimal').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div class="minimal-edu-entry">
+                <div><strong>${escapeHtml(edu.degree)}</strong> — ${escapeHtml(edu.institution)}</div>
+                <div class="minimal-edu-meta">${escapeHtml(edu.year)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</div>
+              </div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-education-photo').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div style="margin-bottom: 8px; font-size: 0.78rem;">
+                <strong style="color: #0f172a; display: block;">${escapeHtml(edu.degree)}</strong>
+                <div style="color: #2563eb; font-weight: 600;">${escapeHtml(edu.institution)}</div>
+                <div class="muted" style="font-size: 0.72rem;">${escapeHtml(edu.year)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</div>
+              </div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-education-nordic').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div class="nordic-edu-entry">
+                <div><strong>${escapeHtml(edu.degree)}</strong> — ${escapeHtml(edu.institution)}</div>
+                <div class="nordic-job-meta">${escapeHtml(edu.year)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</div>
+              </div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-education-ivy').forEach(el => {
+            el.innerHTML = r.education.map(edu => `
+              <div class="ivy-edu-entry">
+                <div class="ivy-job-top">
+                  <span class="ivy-job-company">${escapeHtml(edu.institution)}</span>
+                  <span class="ivy-job-location">${escapeHtml(edu.year)}</span>
+                </div>
+                <div class="ivy-job-sub">
+                  <span class="ivy-job-title">${escapeHtml(edu.degree)}${edu.details ? ' · ' + escapeHtml(edu.details) : ''}</span>
+                </div>
+              </div>
+            `).join('');
+          });
+        }
+
+        // 8. Projects & Certifications across all 6 templates
+        if (r.projects_or_certifications && Array.isArray(r.projects_or_certifications) && r.projects_or_certifications.length > 0) {
+          document.querySelectorAll('.live-projects-list').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div class="classic-proj-entry"><strong>${escapeHtml(p.title)}</strong>: <span class="muted">${escapeHtml(p.details)}</span></div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-projects-modern').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div class="modern-proj-card"><strong class="modern-proj-title">${escapeHtml(p.title)}</strong><div class="modern-proj-desc">${escapeHtml(p.details)}</div></div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-projects-minimal').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div class="minimal-proj-entry"><div><strong>${escapeHtml(p.title)}</strong>: ${escapeHtml(p.details)}</div></div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-projects-photo').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div style="margin-bottom: 6px; font-size: 0.76rem;"><strong style="color: #0f172a;">${escapeHtml(p.title)}</strong><div class="muted" style="font-size: 0.71rem;">${escapeHtml(p.details)}</div></div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-projects-nordic').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div class="nordic-proj-entry"><div><strong>${escapeHtml(p.title)}</strong>: ${escapeHtml(p.details)}</div></div>
+            `).join('');
+          });
+          document.querySelectorAll('.live-projects-ivy').forEach(el => {
+            el.innerHTML = r.projects_or_certifications.map(p => `
+              <div class="ivy-proj-entry"><strong>${escapeHtml(p.title)}</strong>: <span class="muted">${escapeHtml(p.details)}</span></div>
+            `).join('');
+          });
+        }
+
         // Re-attach bullet action listeners
         attachBulletActionListeners();
 
@@ -4792,7 +4898,7 @@
         document.querySelectorAll('.live-role').forEach(el => el.textContent = roleVal);
         document.querySelectorAll('.live-contact').forEach(el => el.textContent = contactVal);
 
-        // 2. Update Skills in all 3 templates
+        // 2. Update Skills in all 6 templates
         if (inputSkills) {
           const rawSkills = inputSkills.value.trim();
           const skillList = rawSkills.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
@@ -4867,14 +4973,17 @@
           }
         }
 
-        // 3. Update Education
-        if (inputEducationRaw) {
-          const eduVal = inputEducationRaw.value.trim();
-          if (eduVal) {
-            const eduParts = eduVal.split(/[–—,]+/).map(s => s.trim());
-            const deg = eduParts[0] || eduVal;
-            const inst = eduParts[1] || 'State University of Technology';
-            const yr = eduParts[2] || 'Honors Graduate';
+        // 3. Update Education & University/College across all 6 templates
+        if (inputEducationRaw || inputUniversity || inputGraduationYear) {
+          const eduVal = inputEducationRaw ? inputEducationRaw.value.trim() : '';
+          const uniVal = inputUniversity ? inputUniversity.value.trim() : '';
+          const gradVal = inputGraduationYear ? inputGraduationYear.value.trim() : '';
+
+          if (eduVal || uniVal || gradVal) {
+            const eduParts = eduVal ? eduVal.split(/[–—,]+/).map(s => s.trim()).filter(Boolean) : [];
+            const deg = eduParts[0] || eduVal || 'B.S. in Computer Science & Engineering';
+            const inst = uniVal || eduParts[1] || 'State University of Technology';
+            const yr = gradVal || eduParts[2] || 'Honors Graduate';
 
             document.querySelectorAll('.live-education-list').forEach(el => {
               el.innerHTML = `<div class="classic-edu-entry"><div><strong>${escapeHtml(deg)}</strong> — ${escapeHtml(inst)}</div><div class="muted">${escapeHtml(yr)}</div></div>`;
@@ -4941,7 +5050,7 @@
 
       const debouncedLivePreview = debounce(updateLivePreview, 40);
 
-      [inputName, inputTargetRole, inputEmail, inputPhone, inputLinkedin, inputSkills, inputEducationRaw, inputProjectsRaw].forEach(input => {
+      [inputName, inputTargetRole, inputEmail, inputPhone, inputLinkedin, inputSkills, inputEducationRaw, inputUniversity, inputGraduationYear, inputProjectsRaw].forEach(input => {
         if (input) {
           input.addEventListener('input', debouncedLivePreview);
           input.addEventListener('change', debouncedLivePreview);
@@ -5006,7 +5115,7 @@
 
         if (isFresher) {
           if (expSectionLabel) expSectionLabel.textContent = 'Internships & Practical Training / Hackathons';
-          if (eduSectionLabel) eduSectionLabel.textContent = 'Degree, University & Core Coursework (e.g. DSA, DBMS, OS)';
+          if (eduSectionLabel) eduSectionLabel.textContent = 'Degree & Core Coursework (e.g. B.Tech CS · DSA, DBMS, OS)';
           if (projSectionLabel) projSectionLabel.textContent = 'Academic Capstone & Mini Projects';
           if (inputTargetRole && !inputTargetRole.value) inputTargetRole.placeholder = 'e.g. Associate Software Engineer / Graduate Trainee';
           if (inputExpLevel) inputExpLevel.value = 'Entry-Level / Early Career';
@@ -5023,7 +5132,7 @@
           });
         } else {
           if (expSectionLabel) expSectionLabel.textContent = 'Past Roles & Responsibilities (raw notes or bullet points)';
-          if (eduSectionLabel) eduSectionLabel.textContent = 'Education & Degree';
+          if (eduSectionLabel) eduSectionLabel.textContent = 'Education & Degree / Qualification';
           if (projSectionLabel) projSectionLabel.textContent = 'Projects & Certifications (Optional)';
           if (inputTargetRole && !inputTargetRole.value) inputTargetRole.placeholder = 'e.g. Senior Full-Stack Engineer';
 
@@ -5112,6 +5221,8 @@
         if (inputTargetRole) inputTargetRole.value = '';
         if (inputIndustry) inputIndustry.value = '';
         if (inputEducationRaw) inputEducationRaw.value = '';
+        if (inputUniversity) inputUniversity.value = '';
+        if (inputGraduationYear) inputGraduationYear.value = '';
         if (inputProjectsRaw) inputProjectsRaw.value = '';
         updateLivePreview();
       }
@@ -5478,7 +5589,11 @@
             period: job.querySelector('.classic-job-meta')?.textContent.trim() || '2021 – Present',
             bullets: Array.from(job.querySelectorAll('.bullet-text')).map(b => b.textContent.trim())
           })),
-          education: [{ degree: (inputEducationRaw ? inputEducationRaw.value : 'B.S. Computer Science') }],
+          education: [{
+            degree: (inputEducationRaw && inputEducationRaw.value.trim()) ? inputEducationRaw.value.trim() : 'B.S. in Computer Science & Engineering',
+            institution: (inputUniversity && inputUniversity.value.trim()) ? inputUniversity.value.trim() : 'State University of Technology',
+            year: (inputGraduationYear && inputGraduationYear.value.trim()) ? inputGraduationYear.value.trim() : 'Honors Graduate'
+          }],
           projects_or_certifications: [{ title: (inputProjectsRaw ? inputProjectsRaw.value : 'Certifications') }],
           photo: currentPhotoDataUrl || ''
         };
