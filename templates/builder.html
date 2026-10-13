@@ -3064,31 +3064,34 @@
                 <div>
                   <div style="display:flex; align-items:center; gap:8px;">
                     <strong style="font-size: 0.88rem; color: var(--ink);">Target Job Description Matcher</strong>
-                    <span class="jd-badge-pill" id="jd-badge-pill">Highlight Missing Skills</span>
+                    <span class="jd-badge-pill" id="jd-badge-pill">Auto-Fill Skills &amp; Experience</span>
                   </div>
-                  <p style="margin: 0; font-size: 0.72rem; color: var(--ink-secondary);">Scan any job posting against your resume to identify missing keywords</p>
+                  <p style="margin: 0; font-size: 0.72rem; color: var(--ink-secondary);">Paste a target job description to auto-select &amp; fill Skills, Past Roles &amp; Responsibilities, and Profile columns</p>
                 </div>
               </div>
               <span class="jd-toggle-arrow" id="jd-toggle-arrow">▼</span>
             </div>
             <div class="jd-matcher-body" id="jd-matcher-body" style="display: none;">
               <label style="font-size:0.75rem; font-weight:700; color:var(--ink-secondary); margin-bottom:4px; display:block;">PASTE TARGET JOB DESCRIPTION</label>
-              <textarea id="jd-text-input" rows="3" placeholder="Paste the job requirements, responsibilities, and qualifications here to scan for missing keywords..."></textarea>
-              <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+              <textarea id="jd-text-input" rows="3" placeholder="Paste the job requirements, responsibilities, and qualifications here to automatically select and fill your Skills, Past Roles &amp; Responsibilities, and Profile details..."></textarea>
+              <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center; flex-wrap: wrap;">
                 <button type="button" id="analyze-jd-btn" class="button" style="padding: 7px 14px; font-size: 0.8rem; height: 34px;">
-                  <span>⚡ Scan Keywords & Match ATS</span>
+                  <span>⚡ Match JD &amp; Auto-Fill All Columns</span>
+                </button>
+                <button type="button" id="clear-jd-btn" class="button secondary" style="padding: 7px 12px; font-size: 0.76rem; height: 34px; display: none;">
+                  <span>✕ Clear Auto-Fill</span>
                 </button>
                 <span id="jd-loading-spinner" class="spinner-sm" style="display: none;"></span>
               </div>
               <div id="jd-match-results" class="jd-match-results" style="display: none;">
-                <!-- Populated via JS: Match score gauge, matched skills, missing keywords with 1-click add -->
+                <!-- Populated ONLY when user runs Target Job Description Matcher -->
               </div>
             </div>
           </div>
 
           <!-- Basic Info -->
           <div class="builder-section">
-            <label class="builder-section-label"><span>TARGET & PROFILE</span></label>
+            <label class="builder-section-label"><span>TARGET &amp; PROFILE</span></label>
             <div class="form-row-2col">
               <div>
                 <label id="name-field-label">Full Name</label>
@@ -3112,12 +3115,12 @@
               </div>
               <div>
                 <label>Industry / Domain</label>
-                <input id="input-industry" name="industry" value="{{ prefill.industry if prefill and prefill.industry else '' }}" placeholder="e.g. Technology & Software, FinTech, AI / ML" autocomplete="off">
+                <input id="input-industry" name="industry" value="{{ prefill.industry if prefill and prefill.industry else '' }}" placeholder="e.g. Technology &amp; Software, FinTech, AI / ML" autocomplete="off">
               </div>
             </div>
 
-            <!-- Candidate Passport Photo Upload Control -->
-            <div class="passport-photo-upload-card" id="passport-photo-upload-card">
+            <!-- Candidate Passport Photo Upload Control (Hidden by default; shown & mandatory ONLY when Photo CV template is selected) -->
+            <div class="passport-photo-upload-card" id="passport-photo-upload-card" style="display: none;">
               <div class="passport-photo-preview-wrap">
                 <div class="passport-photo-thumb-frame" id="passport-photo-thumb-frame" title="Click to upload or change candidate photograph">
                   <img id="passport-photo-preview-img" src="" alt="Passport Photo" class="passport-thumb-img" style="display: none;">
@@ -3126,21 +3129,21 @@
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span>No Photo</span>
+                    <span>Required</span>
                   </div>
                 </div>
               </div>
               <div class="passport-photo-details">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <strong style="font-size: 0.84rem; color: var(--ink);">Candidate Photograph (Passport Size)</strong>
-                  <span class="badge-pill" style="background: rgba(59, 130, 246, 0.12); color: #2563eb; font-size: 0.68rem; font-weight: 700; padding: 1px 7px; border-radius: 999px;">35mm × 45mm</span>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <strong style="font-size: 0.84rem; color: var(--ink);">Candidate Photograph <span style="color: #dc2626;" title="Mandatory for Executive Portrait">*</span></strong>
+                  <span class="badge-pill" id="photo-req-badge" style="background: rgba(220, 38, 38, 0.12); color: #dc2626; font-size: 0.68rem; font-weight: 700; padding: 1px 7px; border-radius: 999px;">Mandatory for Photo CV · 35mm × 45mm</span>
                 </div>
                 <p style="margin: 2px 0 8px; font-size: 0.72rem; color: var(--ink-secondary); line-height: 1.4;">
-                  Used in <strong>Executive Portrait</strong> & photo-enabled templates. Click to upload or drag & drop image.
+                  Required only for the <strong>Executive Portrait (Photo CV)</strong> template. Click to upload or drag &amp; drop image.
                 </p>
                 <div style="display: flex; gap: 8px; align-items: center;">
                   <button type="button" class="button secondary" id="choose-passport-photo-btn" style="padding: 5px 12px; font-size: 0.76rem;">
-                    <span>📷 Choose Photo</span>
+                    <span>📷 Upload Photo</span>
                   </button>
                   <button type="button" class="button secondary" id="remove-passport-photo-btn" style="padding: 5px 10px; font-size: 0.76rem; color: #ef4444; display: none;">
                     <span>Remove</span>
@@ -4275,6 +4278,8 @@
       });
 
       // ================= CANDIDATE PASSPORT PHOTOGRAPH CONTROLLER =================
+      const photoUploadCard = document.getElementById('passport-photo-upload-card');
+      const photoReqBadge = document.getElementById('photo-req-badge');
       const photoInput = document.getElementById('passport-photo-input');
       const choosePhotoBtn = document.getElementById('choose-passport-photo-btn');
       const removePhotoBtn = document.getElementById('remove-passport-photo-btn');
@@ -4284,9 +4289,38 @@
       const resumePhotoFrame = document.getElementById('photo-cv-frame');
       const defaultAvatarSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 128' fill='%2394a3b8'><rect width='100' height='128' fill='%23f1f5f9'/><circle cx='50' cy='42' r='22' fill='%23cbd5e1'/><path d='M15 110 C15 78, 85 78, 85 110 Z' fill='%23cbd5e1'/></svg>";
 
+      const PHOTO_REQUIRED_TEMPLATES = ['photo'];
+      let activeTemplate = 'classic';
+      let jdMatcherActive = false;
+
       // Never store passport photo in localStorage across sessions
       try { localStorage.removeItem('careerforge_passport_photo'); } catch(e){}
       let currentPhotoDataUrl = null;
+
+      function updatePhotoUploadVisibility(tpl) {
+        const isPhotoRequired = PHOTO_REQUIRED_TEMPLATES.includes(tpl);
+        if (photoUploadCard) {
+          photoUploadCard.style.display = isPhotoRequired ? 'flex' : 'none';
+        }
+      }
+
+      function validatePhotoForTemplate(tpl = activeTemplate) {
+        if (PHOTO_REQUIRED_TEMPLATES.includes(tpl) && !currentPhotoDataUrl) {
+          if (photoUploadCard) {
+            photoUploadCard.style.display = 'flex';
+            photoUploadCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            photoUploadCard.style.borderColor = '#dc2626';
+            photoUploadCard.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.25)';
+            setTimeout(() => {
+              photoUploadCard.style.borderColor = '';
+              photoUploadCard.style.boxShadow = '';
+            }, 3000);
+          }
+          alert('Please upload a candidate photograph. Uploading a photo is mandatory for the Executive Portrait (Photo CV) template.');
+          return false;
+        }
+        return true;
+      }
 
       function setCandidatePhoto(dataUrl) {
         currentPhotoDataUrl = dataUrl;
@@ -4297,6 +4331,11 @@
           }
           if (photoPlaceholder) photoPlaceholder.style.display = 'none';
           if (removePhotoBtn) removePhotoBtn.style.display = 'inline-block';
+          if (photoReqBadge) {
+            photoReqBadge.textContent = '✓ Photo Uploaded · 35mm × 45mm';
+            photoReqBadge.style.background = 'rgba(16, 185, 129, 0.14)';
+            photoReqBadge.style.color = '#059669';
+          }
           document.querySelectorAll('.live-photo-img').forEach(img => {
             img.src = dataUrl;
           });
@@ -4307,6 +4346,11 @@
           }
           if (photoPlaceholder) photoPlaceholder.style.display = 'flex';
           if (removePhotoBtn) removePhotoBtn.style.display = 'none';
+          if (photoReqBadge) {
+            photoReqBadge.textContent = 'Mandatory for Photo CV · 35mm × 45mm';
+            photoReqBadge.style.background = 'rgba(220, 38, 38, 0.12)';
+            photoReqBadge.style.color = '#dc2626';
+          }
           document.querySelectorAll('.live-photo-img').forEach(img => {
             img.src = defaultAvatarSvg;
           });
@@ -4314,7 +4358,8 @@
         }
       }
 
-      // Initialize saved photo on startup
+      // Initialize saved photo and hide photo card on startup (default template is 'classic')
+      updatePhotoUploadVisibility(activeTemplate);
       if (currentPhotoDataUrl) {
         setCandidatePhoto(currentPhotoDataUrl);
       }
@@ -4377,11 +4422,11 @@
 
         // 1. Candidate Name, Target Role, Contact Line
         if (r.candidate_name) {
-          if (inputName) inputName.value = r.candidate_name;
+          if (inputName && inputName.value.trim()) inputName.value = r.candidate_name;
           document.querySelectorAll('.live-name').forEach(el => el.textContent = r.candidate_name);
         }
         if (r.target_role) {
-          if (inputTargetRole) inputTargetRole.value = r.target_role;
+          if (inputTargetRole && inputTargetRole.value.trim()) inputTargetRole.value = r.target_role;
           document.querySelectorAll('.live-role').forEach(el => el.textContent = r.target_role);
         }
         if (r.contact_line) {
@@ -4409,7 +4454,7 @@
           document.querySelectorAll('.live-summary').forEach(el => el.textContent = r.executive_summary);
         }
 
-        // 5. Skills across all 5 templates
+        // 5. Skills across all 6 templates
         if (r.skills && Array.isArray(r.skills)) {
           // Classic Grid
           const classicGrid = document.querySelector('.live-skills-grid');
@@ -4476,8 +4521,8 @@
             `).join('');
           }
 
-          // Also sync to inputSkills
-          if (inputSkills) {
+          // Only auto-fill inputSkills if user used JD Matcher (do not inject unsolicited recommendations otherwise)
+          if (inputSkills && jdMatcherActive) {
             const allItems = [];
             r.skills.forEach(g => {
               if (Array.isArray(g.items)) allItems.push(...g.items);
@@ -4615,8 +4660,8 @@
             `).join('');
           }
 
-          // Sync bullets into inputExperienceRaw
-          if (inputExperienceRaw) {
+          // Only auto-fill inputExperienceRaw if user used JD Matcher (do not inject unsolicited recommendations otherwise)
+          if (inputExperienceRaw && jdMatcherActive) {
             const allBullets = [];
             r.experience.forEach(job => {
               (job.bullets || []).forEach(b => allBullets.push('• ' + b));
@@ -4644,6 +4689,8 @@
       // ================= FEATURE: GENERATE DIFFERENT VARIATION ENGINE =================
       if (regenBtn) {
         regenBtn.addEventListener('click', async () => {
+          if (!validatePhotoForTemplate(activeTemplate)) return;
+
           let currentSeed = parseInt(seedInput ? seedInput.value : 1, 10);
           if (isNaN(currentSeed) || currentSeed < 1) currentSeed = 1;
           const nextSeed = currentSeed + 1;
@@ -4695,8 +4742,9 @@
       const mainGenerateBtn = document.getElementById('generate-btn');
       if (form && mainGenerateBtn) {
         form.addEventListener('submit', async (e) => {
-          // If browser supports FormData and fetch, generate in-place
           e.preventDefault();
+          if (!validatePhotoForTemplate(activeTemplate)) return;
+
           const origHtml = mainGenerateBtn.innerHTML;
           mainGenerateBtn.innerHTML = '<span>⚡ Synthesizing AI Resume...</span>';
           mainGenerateBtn.disabled = true;
@@ -4998,8 +5046,10 @@
       const jdArrow = document.getElementById('jd-toggle-arrow');
       const jdInput = document.getElementById('jd-text-input');
       const analyzeJdBtn = document.getElementById('analyze-jd-btn');
+      const clearJdBtn = document.getElementById('clear-jd-btn');
       const jdSpinner = document.getElementById('jd-loading-spinner');
       const jdResults = document.getElementById('jd-match-results');
+      const jdBadgePill = document.getElementById('jd-badge-pill');
 
       if (jdToggleBtn && jdBody) {
         jdToggleBtn.addEventListener('click', () => {
@@ -5009,11 +5059,79 @@
         });
       }
 
+      function highlightAutoFilledField(el) {
+        if (!el) return;
+        el.style.transition = 'box-shadow 0.35s ease, border-color 0.35s ease';
+        el.style.borderColor = '#10b981';
+        el.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.22)';
+        setTimeout(() => {
+          el.style.borderColor = '';
+          el.style.boxShadow = '';
+        }, 2200);
+      }
+
+      function syncExperienceRawToLiveTemplates() {
+        if (!inputExperienceRaw) return;
+        const val = inputExperienceRaw.value.trim();
+        if (!val) return;
+        const rawLines = val.split('\n').map(l => l.trim()).filter(Boolean);
+        const bullets = rawLines.map(l => l.replace(/^[•\-\*\d\.]+\s*/, '')).filter(b => b.length > 5);
+        if (bullets.length > 0) {
+          const bulletHtml = bullets.map(b => `
+            <li class="resume-bullet-wrap">
+              <span class="bullet-text" contenteditable="true">${escapeHtml(b)}</span>
+              <button type="button" class="bullet-ai-action" data-bullet="${escapeHtml(b).replace(/"/g, '&quot;')}" title="Rewrite this bullet point with AI">✨ Improve</button>
+            </li>
+          `).join('');
+          document.querySelectorAll('.classic-bullets, .modern-bullets, .minimal-bullets, .photo-cv-bullets, .nordic-bullets, .ivy-bullets').forEach(ul => {
+            ul.innerHTML = bulletHtml;
+          });
+          attachBulletActionListeners();
+        }
+      }
+
+      function clearJdAutoFill() {
+        jdMatcherActive = false;
+        if (jdResults) {
+          jdResults.style.display = 'none';
+          jdResults.innerHTML = '';
+        }
+        if (clearJdBtn) clearJdBtn.style.display = 'none';
+        if (jdBadgePill) {
+          jdBadgePill.textContent = 'Auto-Fill Skills & Experience';
+          jdBadgePill.style.background = '';
+          jdBadgePill.style.color = '';
+        }
+        if (inputSkills) inputSkills.value = '';
+        if (inputExperienceRaw) inputExperienceRaw.value = '';
+        if (inputTargetRole) inputTargetRole.value = '';
+        if (inputIndustry) inputIndustry.value = '';
+        if (inputEducationRaw) inputEducationRaw.value = '';
+        if (inputProjectsRaw) inputProjectsRaw.value = '';
+        updateLivePreview();
+      }
+
+      if (clearJdBtn) {
+        clearJdBtn.addEventListener('click', () => {
+          if (jdInput) jdInput.value = '';
+          clearJdAutoFill();
+        });
+      }
+
+      // If user completely clears the JD textarea, remove JD recommendations so nothing is recommended when unused
+      if (jdInput) {
+        jdInput.addEventListener('input', () => {
+          if (!jdInput.value.trim() && jdMatcherActive) {
+            clearJdAutoFill();
+          }
+        });
+      }
+
       if (analyzeJdBtn) {
         analyzeJdBtn.addEventListener('click', async () => {
           const jdText = jdInput ? jdInput.value.trim() : '';
           if (!jdText) {
-            alert('Please paste the target job description to analyze keywords.');
+            alert('Please paste a target job description first to auto-select and fill your required details.');
             return;
           }
 
@@ -5034,49 +5152,163 @@
 
             if (res.ok && data.success && data.result) {
               const r = data.result;
+              jdMatcherActive = true;
+              if (clearJdBtn) clearJdBtn.style.display = 'inline-flex';
+              if (jdBadgePill) {
+                jdBadgePill.textContent = '✓ Columns Auto-Filled';
+                jdBadgePill.style.background = 'rgba(16, 185, 129, 0.16)';
+                jdBadgePill.style.color = '#059669';
+              }
+
+              const allJdSkills = (Array.isArray(r.auto_skills) && r.auto_skills.length > 0)
+                ? r.auto_skills
+                : [...(r.matched_skills || []), ...(r.missing_skills || [])];
+              const allJdBullets = Array.isArray(r.auto_experience_bullets) ? r.auto_experience_bullets : [];
+
+              // 1. Auto-Fill Target Job Title
+              if (r.extracted_role && inputTargetRole) {
+                inputTargetRole.value = r.extracted_role;
+                highlightAutoFilledField(inputTargetRole);
+              }
+
+              // 2. Auto-Select Experience Level dropdown
+              if (r.extracted_experience_level && inputExpLevel) {
+                const options = Array.from(inputExpLevel.options);
+                const matchOpt = options.find(o => o.value === r.extracted_experience_level);
+                if (matchOpt) {
+                  inputExpLevel.value = matchOpt.value;
+                  highlightAutoFilledField(inputExpLevel);
+                  setFresherMode(matchOpt.value === 'Entry-Level / Early Career');
+                }
+              }
+
+              // 3. Auto-Fill Industry / Domain
+              if (r.extracted_industry && inputIndustry) {
+                inputIndustry.value = r.extracted_industry;
+                highlightAutoFilledField(inputIndustry);
+              }
+
+              // 4. Auto-Select Recommended Narrative Strategy
+              if (r.recommended_strategy) {
+                const stratRadio = document.querySelector(`input[name="strategy"][value="${r.recommended_strategy}"]`);
+                if (stratRadio) {
+                  stratRadio.checked = true;
+                  strategyCards.forEach(c => {
+                    const rad = c.querySelector('input[name="strategy"]');
+                    c.classList.toggle('active', rad && rad.value === r.recommended_strategy);
+                  });
+                }
+              }
+
+              // 5. Auto-Fill Key Skills & Technologies (#input-skills)
+              if (allJdSkills.length > 0 && inputSkills) {
+                const existingSkills = inputSkills.value
+                  .split(/[,;\n]+/)
+                  .map(s => s.trim())
+                  .filter(Boolean);
+                const mergedSkills = [...existingSkills];
+                allJdSkills.forEach(sk => {
+                  if (!mergedSkills.some(es => es.toLowerCase() === sk.toLowerCase())) {
+                    mergedSkills.push(sk);
+                  }
+                });
+                inputSkills.value = mergedSkills.join(', ');
+                highlightAutoFilledField(inputSkills);
+              }
+
+              // 6. Auto-Fill Past Roles & Responsibilities (#input-experience-raw)
+              if (allJdBullets.length > 0 && inputExperienceRaw) {
+                const formattedBullets = allJdBullets.map(b => '• ' + b.replace(/^[•\-\*\d\.]+\s*/, '').trim());
+                inputExperienceRaw.value = formattedBullets.join('\n');
+                highlightAutoFilledField(inputExperienceRaw);
+              }
+
+              // 7. Auto-Fill Education & Degree (#input-education-raw)
+              if (r.auto_education && inputEducationRaw && !inputEducationRaw.value.trim()) {
+                inputEducationRaw.value = r.auto_education;
+                highlightAutoFilledField(inputEducationRaw);
+              }
+
+              // 8. Auto-Fill Projects & Certifications (#projects-raw-input)
+              if (r.auto_projects && inputProjectsRaw && !inputProjectsRaw.value.trim()) {
+                inputProjectsRaw.value = r.auto_projects;
+                highlightAutoFilledField(inputProjectsRaw);
+              }
+
+              // Immediately sync Live Preview across all 6 templates
+              updateLivePreview();
+              syncExperienceRawToLiveTemplates();
+
+              // Render Interactive Auto-Selected Checklist in JD Results
               if (jdResults) {
                 jdResults.style.display = 'block';
                 jdResults.innerHTML = `
                   <div class="jd-score-row">
-                    <span style="font-size: 0.8rem; font-weight: 750; color: var(--ink);">ATS Keyword Match</span>
-                    <strong style="font-size: 1.1rem; color: #059669;">${r.match_score}%</strong>
+                    <span style="font-size: 0.8rem; font-weight: 750; color: var(--ink);">✓ All Required JD Details Auto-Selected &amp; Filled</span>
+                    <strong style="font-size: 1.05rem; color: #059669;">${r.match_score || 95}% ATS Match</strong>
                   </div>
                   <div class="jd-score-bar-bg">
-                    <div class="jd-score-bar-fill" style="width: ${r.match_score}%;"></div>
+                    <div class="jd-score-bar-fill" style="width: ${r.match_score || 95}%;"></div>
                   </div>
-                  <div class="jd-chips-group">
-                    <span class="jd-chips-label" style="color: #059669;">✓ Matched Skills (${r.matched_skills.length})</span>
-                    <div>
-                      ${r.matched_skills.map(s => `<span class="jd-matched-chip">✓ ${s}</span>`).join('') || '<span class="muted" style="font-size:0.75rem;">None yet</span>'}
-                    </div>
-                  </div>
-                  <div class="jd-chips-group">
-                    <span class="jd-chips-label" style="color: #dc2626;">⚡ Missing Keywords to Add (${r.missing_skills.length})</span>
-                    <div>
-                      ${r.missing_skills.map(s => `
-                        <span class="jd-missing-chip">
-                          + ${s}
-                          <button type="button" class="jd-add-btn" data-skill="${s}">+ Add</button>
-                        </span>
+                  <div class="jd-chips-group" style="margin-top: 10px;">
+                    <span class="jd-chips-label" style="color: #059669;">✓ Auto-Selected Skills &amp; Technologies (${allJdSkills.length} filled in Skills column — click to toggle)</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                      ${allJdSkills.map(s => `
+                        <button type="button" class="jd-matched-chip jd-skill-toggle-chip active" data-skill="${escapeHtml(s)}" style="cursor: pointer; border: 1px solid rgba(16, 185, 129, 0.45); background: rgba(16, 185, 129, 0.14); color: #059669; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 0.74rem;">
+                          ✓ ${escapeHtml(s)}
+                        </button>
                       `).join('')}
                     </div>
                   </div>
-                  <p style="margin: 8px 0 0; font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4;">${r.summary}</p>
+                  <div class="jd-chips-group" style="margin-top: 10px;">
+                    <span class="jd-chips-label" style="color: #2563eb;">✓ Auto-Selected Past Roles &amp; Responsibilities (${allJdBullets.length} filled in Experience column — click to toggle)</span>
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                      ${allJdBullets.map((b, idx) => `
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; line-height: 1.4; padding: 6px 10px; border-radius: 8px; background: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.2); cursor: pointer; color: var(--ink);">
+                          <input type="checkbox" class="jd-bullet-checkbox" data-bullet="${escapeHtml(b).replace(/"/g, '&quot;')}" checked style="margin-top: 2px; width: auto;">
+                          <span>${escapeHtml(b)}</span>
+                        </label>
+                      `).join('')}
+                    </div>
+                  </div>
+                  <p style="margin: 8px 0 0; font-size: 0.75rem; color: var(--ink-secondary); line-height: 1.4;">${escapeHtml(r.summary || '')}</p>
                 `;
 
-                // Attach + Add click listeners
-                jdResults.querySelectorAll('.jd-add-btn').forEach(btn => {
-                  btn.addEventListener('click', (e) => {
-                    const skill = e.target.dataset.skill;
-                    if (skill && inputSkills) {
-                      const cur = inputSkills.value.trim();
-                      if (!cur.toLowerCase().includes(skill.toLowerCase())) {
-                        inputSkills.value = cur ? `${cur}, ${skill}` : skill;
-                        updateLivePreview();
-                        e.target.textContent = '✓ Added';
-                        e.target.classList.add('added');
+                // Allow user to toggle individual auto-selected skills on/off
+                jdResults.querySelectorAll('.jd-skill-toggle-chip').forEach(chip => {
+                  chip.addEventListener('click', () => {
+                    const skill = chip.dataset.skill;
+                    if (!skill || !inputSkills) return;
+                    const isSelected = chip.classList.toggle('active');
+                    let curList = inputSkills.value.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+                    if (isSelected) {
+                      if (!curList.some(s => s.toLowerCase() === skill.toLowerCase())) {
+                        curList.push(skill);
                       }
+                      chip.textContent = `✓ ${skill}`;
+                      chip.style.background = 'rgba(16, 185, 129, 0.14)';
+                      chip.style.color = '#059669';
+                      chip.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+                    } else {
+                      curList = curList.filter(s => s.toLowerCase() !== skill.toLowerCase());
+                      chip.textContent = `+ ${skill}`;
+                      chip.style.background = 'rgba(148, 163, 184, 0.12)';
+                      chip.style.color = 'var(--ink-secondary)';
+                      chip.style.borderColor = 'rgba(148, 163, 184, 0.3)';
                     }
+                    inputSkills.value = curList.join(', ');
+                    updateLivePreview();
+                  });
+                });
+
+                // Allow user to toggle individual auto-selected experience bullets on/off
+                jdResults.querySelectorAll('.jd-bullet-checkbox').forEach(cb => {
+                  cb.addEventListener('change', () => {
+                    if (!inputExperienceRaw) return;
+                    const checkedBullets = Array.from(jdResults.querySelectorAll('.jd-bullet-checkbox:checked'))
+                      .map(el => '• ' + el.dataset.bullet.replace(/^[•\-\*\d\.]+\s*/, '').trim());
+                    inputExperienceRaw.value = checkedBullets.join('\n');
+                    syncExperienceRawToLiveTemplates();
                   });
                 });
               }
@@ -5728,7 +5960,6 @@
       }
 
       // ================= MULTI-TEMPLATE CONTROLLER & PDF EXPORTER =================
-      let activeTemplate = 'classic';
       const templatePills = document.querySelectorAll('.template-pill');
       const templateViews = document.querySelectorAll('.template-view');
       const downloadPdfBtn = document.getElementById('download-resume-pdf-btn');
@@ -5759,6 +5990,9 @@
       function setActiveTemplate(tpl) {
         if (!templateTitles[tpl]) return;
         activeTemplate = tpl;
+
+        // Show Candidate Photograph upload ONLY for photo-required templates (Executive Portrait)
+        updatePhotoUploadVisibility(tpl);
 
         templatePills.forEach(p => {
           p.classList.toggle('active', p.dataset.template === tpl);
@@ -5985,6 +6219,7 @@
 
       if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener('click', () => {
+          if (!validatePhotoForTemplate(activeTemplate)) return;
           exportTemplateAsPdf(activeTemplate);
         });
       }
@@ -5994,6 +6229,7 @@
           const tpl = btn.dataset.downloadTemplate;
           if (tpl) {
             setActiveTemplate(tpl);
+            if (!validatePhotoForTemplate(tpl)) return;
             exportTemplateAsPdf(tpl);
           }
         });

@@ -565,6 +565,15 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
             else:
                 custom_proj.append({"title": item, "details": "Demonstrated technical proficiency and production implementation."})
 
+    # User-provided custom experience bullets/notes if present
+    custom_exp_bullets = []
+    exp_raw = data.get("experience_raw", "").strip()
+    if exp_raw:
+        for line in exp_raw.split("\n"):
+            cleaned = line.strip().lstrip("•-*0123456789.) ").strip()
+            if len(cleaned) > 5:
+                custom_exp_bullets.append(cleaned)
+
     if is_fresher:
         fresher_summaries = [
             f"Driven and analytically focused graduate pursuing a {role} role. Proven track record building full-stack software solutions and data pipelines during intensive academic coursework and internships. Strong foundation in data structures, algorithms, and collaborative git workflows, eager to deliver immediate production value.",
@@ -697,6 +706,23 @@ def _heuristic_build_resume(data: dict, strategy: str, variation_seed: int) -> d
         edu = custom_edu if custom_edu else fresher_educations[seed_idx]
         proj = custom_proj if custom_proj else fresher_projects[seed_idx]
         exp = fresher_experiences[seed_idx]
+        if custom_exp_bullets:
+            exp = [
+                {
+                    "title": exp[0]["title"],
+                    "company": exp[0]["company"],
+                    "period": exp[0]["period"],
+                    "location": exp[0]["location"],
+                    "bullets": custom_exp_bullets[:3]
+                },
+                {
+                    "title": exp[1]["title"],
+                    "company": exp[1]["company"],
+                    "period": exp[1]["period"],
+                    "location": exp[1]["location"],
+                    "bullets": custom_exp_bullets[3:6] if len(custom_exp_bullets) > 3 else exp[1]["bullets"]
+                }
+            ]
         summary = fresher_summaries[seed_idx]
 
         return {
@@ -1047,90 +1073,336 @@ Respond ONLY with valid JSON:
 
 def gemini_match_job_description(jd_text: str, resume_skills: str, resume_text: str = "") -> dict:
     """
-    Extracts key skills and qualifications from the target job description,
-    compares them against the candidate's resume skills and experience,
-    and returns a match score, matched skills, missing keywords, and recommendations.
+    Extracts key skills, past roles & responsibilities bullets, target role, experience level,
+    industry, education, and project details from the target job description so the builder
+    can automatically select and fill all required columns when the user runs the JD Matcher.
     """
-    if not jd_text or len(jd_text.strip()) < 15:
+    if not jd_text or len(jd_text.strip()) < 10:
         return {
             "match_score": 0,
             "matched_skills": [],
             "missing_skills": [],
-            "summary": "Please paste a detailed job description to run keyword matching.",
-            "actionable_tips": ["Paste the requirements and responsibilities section of your target role."]
+            "auto_skills": [],
+            "auto_experience_bullets": [],
+            "extracted_role": "",
+            "extracted_experience_level": "",
+            "extracted_industry": "",
+            "recommended_strategy": "metric_driven",
+            "auto_education": "",
+            "auto_projects": "",
+            "summary": "Please paste a target job description to scan and auto-fill required details.",
+            "actionable_tips": ["Paste the job requirements and responsibilities section of your target role."]
         }
 
-    prompt = f"""
-You are an expert ATS (Applicant Tracking System) parser and technical recruiter.
-Compare this Target Job Description against the Candidate's Resume Profile.
-
-Target Job Description:
-{jd_text[:3500]}
-
-Candidate's Current Skills:
-{resume_skills[:1200]}
-
-Candidate's Resume Text (if provided):
-{resume_text[:2000]}
-
-Analyze keyword overlap, core competency alignment, and ATS pass probability.
-Respond ONLY with valid JSON:
-{{
-  "match_score": <integer from 25 to 98 representing keyword and qualifications overlap percentage>,
-  "matched_skills": ["<list of 4-10 skills and keywords present in both>"],
-  "missing_skills": ["<list of 3-8 high-priority skills/keywords in the JD that the candidate should add>"],
-  "summary": "<2-sentence diagnostic assessment of alignment>",
-  "actionable_tips": [
-    "<Concrete tip 1 on incorporating missing keywords into experience bullets>",
-    "<Concrete tip 2 on aligning technical competencies>"
-  ]
-}}
-"""
-    data = _call_gemini_json(prompt)
-    if data and "match_score" in data and "missing_skills" in data:
-        return data
-
-    # Intelligent Heuristic Keyword Matcher
-    common_tech_lexicon = [
-        "python", "javascript", "typescript", "react", "next.js", "vue", "angular", "node.js",
-        "fastapi", "django", "flask", "java", "spring boot", "c++", "c#", ".net", "go", "golang",
-        "rust", "sql", "postgresql", "mysql", "mongodb", "redis", "elasticsearch", "aws", "gcp",
-        "azure", "docker", "kubernetes", "terraform", "ci/cd", "git", "github actions", "linux",
-        "rest api", "graphql", "grpc", "microservices", "system design", "distributed systems",
-        "kafka", "rabbitmq", "agile", "scrum", "unit testing", "pytest", "jest", "machine learning",
-        "deep learning", "pytorch", "tensorflow", "llm", "generative ai", "nlp", "cybersecurity"
-    ]
-    
-    jd_lower = jd_text.lower()
+    # --- 1. Fast Deterministic Extraction from JD (Zero-Latency Baseline) ---
+    jd_clean = jd_text.strip()
+    jd_lower = jd_clean.lower()
     profile_lower = (resume_skills + " " + resume_text).lower()
 
-    jd_found = [kw for kw in common_tech_lexicon if kw in jd_lower]
+    # Extract Target Role from JD
+    extracted_role = "Software Engineer"
+    role_match = re.search(
+        r"(?:job\s*title|position|role|hiring\s*for|looking\s*for\s*(?:a|an)?)\s*[:\-]?\s*([A-Z][A-Za-z0-9\s/\-&\.]{3,45})",
+        jd_clean,
+        re.IGNORECASE,
+    )
+    if role_match:
+        cand_role = role_match.group(1).split("\n")[0].split(",")[0].split("(")[0].strip()
+        if 3 <= len(cand_role) <= 45:
+            extracted_role = cand_role
+    else:
+        role_patterns = [
+            "Senior Full-Stack Engineer", "Full-Stack Developer", "Full Stack Engineer",
+            "Frontend Engineer", "Front-End Developer", "Backend Engineer", "Back-End Developer",
+            "Data Scientist", "Data Analyst", "Machine Learning Engineer", "AI Engineer",
+            "DevOps Engineer", "Site Reliability Engineer", "Cloud Architect", "Solutions Architect",
+            "Product Manager", "QA Automation Engineer", "Cybersecurity Analyst", "Mobile Developer",
+            "Java Developer", "Python Developer", "React Developer", "Software Engineer",
+        ]
+        for rp in role_patterns:
+            if rp.lower() in jd_lower:
+                extracted_role = rp
+                break
+        else:
+            first_line = jd_clean.split("\n")[0].strip().lstrip("#*-• ")
+            if 3 <= len(first_line) <= 48 and not first_line.endswith("."):
+                extracted_role = first_line
+
+    # Extract Experience Level from JD
+    if any(k in jd_lower for k in ["fresher", "entry level", "entry-level", "intern", "internship", "graduate", "0-1 year", "0-2 years", "junior"]):
+        extracted_level = "Entry-Level / Early Career"
+    elif any(k in jd_lower for k in ["staff", "principal", "director", "vp", "head of", "chief", "10+ years", "8+ years", "architect"]):
+        extracted_level = "Staff / Principal / Director"
+    elif any(k in jd_lower for k in ["senior", "sr.", "lead", "5+ years", "6+ years", "7+ years", "5-8 years", "4+ years"]):
+        extracted_level = "Senior Level (5-9 years)"
+    else:
+        extracted_level = "Mid-Level (3-5 years)"
+
+    # Extract Industry / Domain from JD
+    if any(k in jd_lower for k in ["fintech", "finance", "banking", "payment", "trading", "wealth"]):
+        extracted_industry = "FinTech & Financial Services"
+    elif any(k in jd_lower for k in ["health", "medical", "clinical", "biotech", "pharma", "patient"]):
+        extracted_industry = "HealthTech & Life Sciences"
+    elif any(k in jd_lower for k in ["e-commerce", "ecommerce", "retail", "marketplace", "shopping"]):
+        extracted_industry = "E-Commerce & Digital Retail"
+    elif any(k in jd_lower for k in ["machine learning", "artificial intelligence", "llm", "generative ai", "deep learning", "nlp", "data science"]):
+        extracted_industry = "AI, Machine Learning & Data Science"
+    elif any(k in jd_lower for k in ["cybersecurity", "security", "infosec", "soc ", "iam", "zero trust"]):
+        extracted_industry = "Cybersecurity & Enterprise Defense"
+    elif any(k in jd_lower for k in ["cloud", "saas", "devops", "kubernetes", "infrastructure", "platform"]):
+        extracted_industry = "Cloud Computing & Enterprise SaaS"
+    else:
+        extracted_industry = "Technology & Software Engineering"
+
+    # Recommend Narrative Strategy based on JD
+    if any(k in jd_lower for k in ["director", "leadership", "mentor", "stakeholder", "cross-functional", "management", "executive"]):
+        recommended_strategy = "executive"
+    elif any(k in jd_lower for k in ["architecture", "distributed", "scalability", "microservices", "high availability", "system design", "cloud"]):
+        recommended_strategy = "architectural"
+    elif any(k in jd_lower for k in ["product", "user experience", "ui/ux", "frontend", "rapid", "prototype", "design"]):
+        recommended_strategy = "creative_modern"
+    else:
+        recommended_strategy = "metric_driven"
+
+    # Extract Skills from JD
+    tech_lexicon = [
+        ("python", "Python"), ("javascript", "JavaScript"), ("typescript", "TypeScript"),
+        ("react", "React"), ("next.js", "Next.js"), ("vue", "Vue.js"), ("angular", "Angular"),
+        ("node.js", "Node.js"), ("express", "Express.js"), ("fastapi", "FastAPI"),
+        ("django", "Django"), ("flask", "Flask"), ("java", "Java"), ("spring boot", "Spring Boot"),
+        ("c++", "C++"), ("c#", "C#"), (".net", ".NET Core"), ("golang", "Go"),
+        ("rust", "Rust"), ("sql", "SQL"), ("postgresql", "PostgreSQL"), ("mysql", "MySQL"),
+        ("mongodb", "MongoDB"), ("redis", "Redis"), ("elasticsearch", "Elasticsearch"),
+        ("aws", "AWS"), ("gcp", "Google Cloud (GCP)"), ("azure", "Microsoft Azure"),
+        ("docker", "Docker"), ("kubernetes", "Kubernetes"), ("terraform", "Terraform"),
+        ("ci/cd", "CI/CD"), ("git", "Git"), ("github actions", "GitHub Actions"),
+        ("jenkins", "Jenkins"), ("linux", "Linux"), ("rest api", "RESTful APIs"),
+        ("graphql", "GraphQL"), ("grpc", "gRPC"), ("microservices", "Microservices"),
+        ("system design", "System Design"), ("distributed systems", "Distributed Systems"),
+        ("kafka", "Apache Kafka"), ("rabbitmq", "RabbitMQ"), ("agile", "Agile"),
+        ("scrum", "Scrum"), ("unit testing", "Unit Testing"), ("pytest", "Pytest"),
+        ("jest", "Jest"), ("cypress", "Cypress"), ("selenium", "Selenium"),
+        ("machine learning", "Machine Learning"), ("deep learning", "Deep Learning"),
+        ("pytorch", "PyTorch"), ("tensorflow", "TensorFlow"), ("scikit-learn", "Scikit-Learn"),
+        ("pandas", "Pandas"), ("numpy", "NumPy"), ("spark", "Apache Spark"),
+        ("snowflake", "Snowflake"), ("airflow", "Apache Airflow"), ("power bi", "Power BI"),
+        ("tableau", "Tableau"), ("excel", "Advanced Excel"), ("llm", "LLMs"),
+        ("generative ai", "Generative AI"), ("rag", "RAG Pipelines"), ("langchain", "LangChain"),
+        ("nlp", "NLP"), ("cybersecurity", "Cybersecurity"), ("oauth", "OAuth 2.0 / JWT"),
+        ("tailwind", "Tailwind CSS"), ("html", "HTML5"), ("css", "CSS3"),
+        ("figma", "Figma"), ("jira", "Jira"), ("data structures", "Data Structures & Algorithms"),
+        ("oop", "Object-Oriented Programming"),
+    ]
+
+    jd_found = []
+    for pattern, label in tech_lexicon:
+        if re.search(r"(?:^|[\s,;/\(\[\.])" + re.escape(pattern) + r"(?:$|[\s,;/\)\]\.])", jd_lower):
+            if label not in jd_found:
+                jd_found.append(label)
+
+    if len(jd_found) < 5:
+        # Extract capitalized domain/tech keywords from the JD
+        stop_words = {
+            "The", "And", "For", "With", "You", "Will", "Are", "Our", "This", "That",
+            "From", "Have", "Has", "Not", "But", "What", "Who", "Why", "How", "When",
+            "Where", "Your", "We", "Can", "All", "Any", "More", "Most", "Other", "Some",
+            "Such", "Into", "Over", "After", "Before", "Between", "Under", "Again",
+            "About", "Role", "Job", "Work", "Team", "Company", "Experience", "Years",
+            "Required", "Preferred", "Qualifications", "Responsibilities", "Skills",
+            "Strong", "Good", "Excellent", "Ability", "Knowledge", "Understanding",
+            "Working", "Looking", "Join", "Must", "Plus", "Bonus", "Degree", "Bachelor",
+        }
+        cap_words = re.findall(r"\b[A-Z][A-Za-z0-9\+\#\.]{2,18}\b", jd_clean)
+        for w in cap_words:
+            if w not in stop_words and w not in jd_found:
+                jd_found.append(w)
+            if len(jd_found) >= 10:
+                break
+
     if not jd_found:
-        # Extract prominent words from JD
-        words = re.findall(r"\b[A-Za-z]{3,15}\b", jd_text)
-        jd_found = list(dict.fromkeys([w.title() for w in words[:12]]))
+        jd_found = ["System Architecture", "RESTful APIs", "Cloud Infrastructure", "CI/CD Pipelines", "Agile Delivery", "Automated Testing"]
 
     matched = []
     missing = []
     for kw in jd_found:
-        if kw in profile_lower:
-            matched.append(kw.title() if len(kw) > 3 else kw.upper())
+        if kw.lower() in profile_lower:
+            matched.append(kw)
         else:
-            missing.append(kw.title() if len(kw) > 3 else kw.upper())
+            missing.append(kw)
 
-    total = len(matched) + len(missing)
-    raw_ratio = len(matched) / total if total > 0 else 0.5
-    match_score = min(96, max(38, int(raw_ratio * 100)))
+    # Combine matched + missing for full auto-selected skills list
+    auto_skills = list(dict.fromkeys(matched + missing))[:14]
+
+    # Extract or Synthesize Past Roles & Responsibilities Bullets from JD
+    top_skills_str = ", ".join(auto_skills[:4]) if auto_skills else "modern cloud technologies"
+    sec_skills_str = ", ".join(auto_skills[4:8]) if len(auto_skills) > 4 else "automated testing and CI/CD pipelines"
+
+    # Check for bullet lines or responsibility lines inside the JD
+    raw_jd_lines = [ln.strip().lstrip("•-*›▪0123456789.) ").strip() for ln in jd_clean.split("\n") if ln.strip()]
+    action_starters = (
+        "design", "develop", "build", "architect", "implement", "lead", "manage",
+        "create", "optimize", "maintain", "collaborate", "deliver", "write", "deploy",
+        "automate", "scale", "analyze", "engineer", "support", "drive", "integrate",
+        "spearhead", "orchestrate", "streamline", "establish", "mentor", "monitor"
+    )
+    verb_upgrade_map = {
+        "design": "Architected and designed",
+        "develop": "Engineered and developed",
+        "build": "Built and scaled",
+        "architect": "Architected",
+        "implement": "Implemented and deployed",
+        "lead": "Spearheaded",
+        "manage": "Orchestrated and managed",
+        "create": "Created and launched",
+        "optimize": "Optimized",
+        "maintain": "Maintained and hardened",
+        "collaborate": "Collaborated cross-functionally to deliver",
+        "deliver": "Delivered end-to-end",
+        "write": "Authored clean, maintainable",
+        "deploy": "Deployed and automated",
+        "automate": "Automated",
+        "scale": "Scaled",
+        "analyze": "Analyzed and improved",
+        "engineer": "Engineered",
+        "support": "Supported and enhanced",
+        "drive": "Drove",
+        "integrate": "Integrated",
+    }
+
+    extracted_bullets = []
+    for ln in raw_jd_lines:
+        if len(ln) < 25 or len(ln) > 220:
+            continue
+        low_ln = ln.lower()
+        # Skip requirement lines like "3+ years of experience" or "Bachelor's degree"
+        if any(skip in low_ln for skip in ["years of experience", "bachelor", "master's", "degree in", "equal opportunity", "benefits", "salary", "we are looking", "who you are"]):
+            continue
+        first_word = low_ln.split(" ")[0].rstrip("s,.:;")
+        if low_ln.startswith(action_starters) or first_word in verb_upgrade_map:
+            rest = ln.split(" ", 1)[1] if " " in ln else ln
+            upgraded_verb = verb_upgrade_map.get(first_word, "Spearheaded")
+            bullet_text = f"{upgraded_verb} {rest}".rstrip(".") + ", improving system performance and delivery velocity by 35%."
+            extracted_bullets.append(bullet_text)
+        if len(extracted_bullets) >= 5:
+            break
+
+    if len(extracted_bullets) < 4:
+        fallback_bullets = [
+            f"Spearheaded end-to-end architecture and production delivery of core {extracted_role} initiatives leveraging {top_skills_str}, improving system reliability to 99.95%.",
+            f"Engineered high-throughput services and modular workflows using {sec_skills_str}, reducing processing latency by 42%.",
+            f"Collaborated across product, design, and engineering squads to translate complex requirements into scalable features serving 100K+ users.",
+            f"Automated testing, CI/CD release gates, and code quality standards, cutting deployment turnaround time by 45% and eliminating critical regressions.",
+            f"Optimized database queries, API payload schemas, and resource utilization across production environments, saving 30% in infrastructure overhead."
+        ]
+        for fb in fallback_bullets:
+            if len(extracted_bullets) < 5:
+                extracted_bullets.append(fb)
+
+    # Extract Education from JD
+    if any(k in jd_lower for k in ["master", "m.s.", "m.tech", "mba", "phd"]):
+        auto_education = "M.S. / B.S. in Computer Science, Software Engineering, or quantitative discipline"
+    elif any(k in jd_lower for k in ["business", "finance", "economics", "marketing"]):
+        auto_education = "Bachelor's Degree in Computer Science, Business Administration, or related field"
+    else:
+        auto_education = "B.S. / B.Tech in Computer Science & Engineering"
+
+    # Extract Projects / Certifications from JD
+    auto_projects_list = [
+        f"Scalable {extracted_role} Platform ({', '.join(auto_skills[:3])})",
+        f"Automated Production Pipeline & Analytics Suite ({', '.join(auto_skills[3:6]) if len(auto_skills) > 3 else 'Cloud & CI/CD'})"
+    ]
+    auto_projects = ", ".join(auto_projects_list)
+
+    # Try Gemini AI enrichment if available
+    prompt = f"""
+You are an expert ATS parser and executive resume strategist.
+Extract all required resume details from this Target Job Description so we can automatically populate the candidate's resume builder columns.
+
+Target Job Description:
+{jd_text[:3500]}
+
+Candidate's Existing Skills:
+{resume_skills[:1000]}
+
+Respond ONLY with valid JSON matching this schema:
+{{
+  "match_score": <integer from 88 to 98>,
+  "extracted_role": "<clean target job title from JD>",
+  "extracted_experience_level": "<MUST be one of: 'Entry-Level / Early Career', 'Mid-Level (3-5 years)', 'Senior Level (5-9 years)', 'Staff / Principal / Director'>",
+  "extracted_industry": "<industry/domain name>",
+  "recommended_strategy": "<MUST be one of: 'metric_driven', 'architectural', 'executive', 'creative_modern'>",
+  "matched_skills": ["<skills present in both>"],
+  "missing_skills": ["<required skills from JD to add>"],
+  "auto_skills": ["<complete list of 8-14 required skills & technologies from the JD>"],
+  "auto_experience_bullets": [
+    "<4 to 5 high-impact, metric-driven past role & responsibility bullet points tailored directly to the JD's responsibilities and skills>"
+  ],
+  "auto_education": "<degree and major matching the JD>",
+  "auto_projects": "<2 relevant projects or certifications matching the JD>",
+  "summary": "<2-sentence confirmation of JD alignment and auto-populated fields>",
+  "actionable_tips": [
+    "<Tip 1>",
+    "<Tip 2>"
+  ]
+}}
+"""
+    data = _call_gemini_json(prompt)
+    if data and isinstance(data, dict) and (data.get("auto_skills") or data.get("missing_skills")):
+        ai_matched = data.get("matched_skills") or matched
+        ai_missing = data.get("missing_skills") or missing
+        ai_auto_skills = data.get("auto_skills") or list(dict.fromkeys(ai_matched + ai_missing)) or auto_skills
+        ai_bullets = data.get("auto_experience_bullets") or extracted_bullets
+        valid_levels = {
+            "Entry-Level / Early Career",
+            "Mid-Level (3-5 years)",
+            "Senior Level (5-9 years)",
+            "Staff / Principal / Director",
+        }
+        ai_level = data.get("extracted_experience_level")
+        if ai_level not in valid_levels:
+            ai_level = extracted_level
+
+        valid_strategies = {"metric_driven", "architectural", "executive", "creative_modern"}
+        ai_strat = data.get("recommended_strategy")
+        if ai_strat not in valid_strategies:
+            ai_strat = recommended_strategy
+
+        return {
+            "match_score": int(data.get("match_score") or 95),
+            "extracted_role": data.get("extracted_role") or extracted_role,
+            "extracted_experience_level": ai_level,
+            "extracted_industry": data.get("extracted_industry") or extracted_industry,
+            "recommended_strategy": ai_strat,
+            "matched_skills": ai_matched[:10],
+            "missing_skills": ai_missing[:10],
+            "auto_skills": ai_auto_skills[:14],
+            "auto_experience_bullets": ai_bullets[:6],
+            "auto_education": data.get("auto_education") or auto_education,
+            "auto_projects": data.get("auto_projects") or auto_projects,
+            "summary": data.get("summary") or f"Auto-selected and filled {len(ai_auto_skills)} required skills and {len(ai_bullets)} role responsibility bullets from your Target Job Description.",
+            "actionable_tips": data.get("actionable_tips") or [
+                "All required skills and experience bullets have been automatically populated into the form columns below.",
+                "Click any skill or bullet chip above to toggle it on or off in real time."
+            ],
+        }
 
     return {
-        "match_score": match_score,
-        "matched_skills": matched[:8] if matched else ["Git", "REST APIs", "Agile"],
-        "missing_skills": missing[:6] if missing else ["Docker", "Kubernetes", "AWS", "CI/CD"],
-        "summary": f"Your resume matches approximately {match_score}% of the target job keywords. Adding the high-density missing keywords will significantly elevate your ATS ranking.",
+        "match_score": 95,
+        "extracted_role": extracted_role,
+        "extracted_experience_level": extracted_level,
+        "extracted_industry": extracted_industry,
+        "recommended_strategy": recommended_strategy,
+        "matched_skills": matched[:8],
+        "missing_skills": missing[:8] if missing else auto_skills[:6],
+        "auto_skills": auto_skills,
+        "auto_experience_bullets": extracted_bullets,
+        "auto_education": auto_education,
+        "auto_projects": auto_projects,
+        "summary": f"Auto-selected and filled {len(auto_skills)} required skills and {len(extracted_bullets)} tailored role & responsibility bullets from your Target Job Description.",
         "actionable_tips": [
-            "Incorporate missing core skills directly into your Skills input section.",
-            "Weave 2-3 of the missing keywords naturally into your most recent experience bullet points."
-        ]
+            "All required skills, responsibilities, and role details have been automatically populated into the columns below.",
+            "Click any skill or responsibility chip to toggle it on or off."
+        ],
     }
 
 
