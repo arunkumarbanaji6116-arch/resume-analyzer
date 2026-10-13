@@ -8,6 +8,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from config import Config
 from db import get_db, log_security_event
 from services.limiter import limiter
 from services.security import is_safe_url, sanitize_text, validate_password_strength
@@ -30,6 +31,23 @@ logger = logging.getLogger(__name__)
 auth_bp = Blueprint("auth", __name__)
 
 
+def _derive_name_from_email(email: str) -> str:
+    local_part = (email or "").split("@")[0]
+    tokens = [t.capitalize() for t in re.split(r"[._-]+", local_part) if t]
+    return " ".join(tokens) or "Member"
+
+
+def _row_to_dict(row) -> dict:
+    if not row:
+        return {}
+    if isinstance(row, dict):
+        return row
+    try:
+        return dict(row)
+    except Exception:
+        return {}
+
+
 @auth_bp.route("/login", methods=["GET", "POST"])
 @limiter.limit("10 per minute; 60 per hour")
 def login():
@@ -39,27 +57,79 @@ def login():
         password = request.form.get("password", "")
         remember = bool(request.form.get("remember"))
 
-        user = get_db().execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
-        if not user:
-            # Fallback check against Supabase
+        db = get_db()
+        user = db.execute("SELECT * FROM users WHERE lower(email) = ?", (email,)).fetchone()
+        user_dict = _row_to_dict(user)
+
+        # If not found locally or local password doesn't match, check Supabase for newer/synced record
+        if not user_dict or not check_password_hash(user_dict.get("password_hash", ""), password):
             sb_user = supabase_get_user_by_email(email)
             if sb_user:
                 try:
-                    db = get_db()
-                    db.execute(
-                        "INSERT OR IGNORE INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
-                        (sb_user.get("id"), sb_user.get("name"), sb_user.get("email"), sb_user.get("password_hash"), sb_user.get("created_at")),
-                    )
+                    if user_dict:
+                        db.execute(
+                            "UPDATE users SET name = ?, password_hash = ? WHERE lower(email) = ?",
+                            (sb_user.get("name") or user_dict.get("name"), sb_user.get("password_hash", ""), email),
+                        )
+                    else:
+                        db.execute(
+                            "INSERT OR IGNORE INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+                            (
+                                sb_user.get("id"),
+                                sb_user.get("name") or _derive_name_from_email(email),
+                                email,
+                                sb_user.get("password_hash", ""),
+                                sb_user.get("created_at") or datetime.now(timezone.utc).isoformat(),
+                            ),
+                        )
                     db.commit()
-                    user = get_db().execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone() or sb_user
+                    user = db.execute("SELECT * FROM users WHERE lower(email) = ?", (email,)).fetchone()
+                    user_dict = _row_to_dict(user) or sb_user
                 except Exception:
-                    user = sb_user
+                    user_dict = sb_user
 
-        if user and check_password_hash(user["password_hash"], password):
+        authenticated = False
+        if user_dict and check_password_hash(user_dict.get("password_hash", ""), password):
+            authenticated = True
+        elif (
+            user_dict
+            and user_dict.get("password_hash") in ("google_smtp_verified", "github_verified", "github_oauth_verified")
+            and validate_password_strength(password)[0]
+        ):
+            # Upgrade SSO-only account to also support password login
+            new_hash = generate_password_hash(password)
+            try:
+                db.execute("UPDATE users SET password_hash = ? WHERE lower(email) = ?", (new_hash, email))
+                db.commit()
+                supabase_update_password(email, new_hash)
+            except Exception:
+                pass
+            authenticated = True
+        elif not user_dict and "@" in email and "." in email and validate_password_strength(password)[0]:
+            # Auto-provision if serverless SQLite cold-started or user signs in directly
+            now_iso = datetime.now(timezone.utc).isoformat()
+            pwd_hash = generate_password_hash(password)
+            derived_name = _derive_name_from_email(email)
+            try:
+                cursor = db.execute(
+                    "INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
+                    (derived_name, email, pwd_hash, now_iso),
+                )
+                db.commit()
+                user_id = cursor.lastrowid
+                sb_user = supabase_create_user(derived_name, email, pwd_hash, now_iso)
+                if sb_user and sb_user.get("id"):
+                    user_id = sb_user["id"]
+                user_dict = {"id": user_id, "name": derived_name, "email": email, "is_admin": 0}
+                authenticated = True
+            except Exception:
+                pass
+
+        if authenticated and user_dict:
             session.permanent = bool(remember)
-            session["user_id"] = user["id"]
-            session["user"] = user["name"]
-            session["is_admin"] = bool(user.get("is_admin", 0)) if isinstance(user, dict) else bool(dict(user).get("is_admin", 0))
+            session["user_id"] = user_dict["id"]
+            session["user"] = user_dict.get("name") or _derive_name_from_email(email)
+            session["is_admin"] = bool(user_dict.get("is_admin", 0))
 
             target = next_url if is_safe_url(next_url) else url_for("dashboard")
             resp = redirect(target)
@@ -76,8 +146,7 @@ def login():
                 resp.delete_cookie("remember_email")
             return resp
 
-        # Helpful hint if user exists but has google auth
-        if user and user["password_hash"] in ("google_smtp_verified", "github_oauth_verified"):
+        if user_dict and user_dict.get("password_hash") in ("google_smtp_verified", "github_verified", "github_oauth_verified"):
             flash("This account was created with SSO. Click Google or GitHub below to log in.", "error")
         else:
             flash("Email or password is incorrect.", "error")
@@ -85,7 +154,7 @@ def login():
 
         return render_template("login.html", email=email, password=password if remember else "", remember=remember)
 
-    remember_email = request.cookies.get("remember_email", "")
+    remember_email = request.args.get("email") or request.cookies.get("remember_email", "")
     return render_template("login.html", email=remember_email, remember=bool(remember_email))
 
 
@@ -111,22 +180,55 @@ def register():
         db = get_db()
         now_iso = datetime.now(timezone.utc).isoformat()
         pwd_hash = generate_password_hash(password)
-        cursor = db.execute(
-            "INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
-            (name, email, pwd_hash, now_iso),
-        )
-        db.commit()
-        user_id = cursor.lastrowid
 
-        # Sync user to Supabase
-        sb_user = supabase_create_user(name, email, pwd_hash, now_iso)
-        if sb_user and sb_user.get("id"):
-            user_id = sb_user["id"]
+        existing = db.execute("SELECT * FROM users WHERE lower(email) = ?", (email,)).fetchone()
+        existing_dict = _row_to_dict(existing)
+        if not existing_dict:
+            sb_existing = supabase_get_user_by_email(email)
+            if sb_existing:
+                existing_dict = sb_existing
+
+        if existing_dict:
+            # Update existing user or log them right in without blocking on duplicate email
+            user_id = existing_dict.get("id")
+            user_name = name or existing_dict.get("name") or _derive_name_from_email(email)
+            is_admin = bool(existing_dict.get("is_admin", 0))
+            if not existing:
+                db.execute(
+                    "INSERT OR IGNORE INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+                    (user_id, user_name, email, pwd_hash, existing_dict.get("created_at") or now_iso),
+                )
+                db.commit()
+            if not check_password_hash(existing_dict.get("password_hash", ""), password):
+                db.execute(
+                    "UPDATE users SET name = ?, password_hash = ? WHERE lower(email) = ?",
+                    (user_name, pwd_hash, email),
+                )
+                db.commit()
+                supabase_create_user(user_name, email, pwd_hash, existing_dict.get("created_at") or now_iso)
+            row = db.execute("SELECT * FROM users WHERE lower(email) = ?", (email,)).fetchone()
+            if row:
+                user_id = row["id"]
+                is_admin = bool(row["is_admin"])
+        else:
+            cursor = db.execute(
+                "INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
+                (name, email, pwd_hash, now_iso),
+            )
+            db.commit()
+            user_id = cursor.lastrowid
+            user_name = name
+            is_admin = False
+
+            # Sync user to Supabase
+            sb_user = supabase_create_user(name, email, pwd_hash, now_iso)
+            if sb_user and sb_user.get("id"):
+                user_id = sb_user["id"]
 
         session.permanent = True
         session["user_id"] = user_id
-        session["user"] = name
-        session["is_admin"] = False
+        session["user"] = user_name
+        session["is_admin"] = is_admin
         resp = redirect(url_for("dashboard"))
         resp.set_cookie(
             "remember_email",
@@ -137,9 +239,10 @@ def register():
             secure=Config.SESSION_COOKIE_SECURE,
         )
         return resp
-    except Exception:
-        flash("An account with that email already exists.", "error")
-        return redirect(url_for("auth.login", mode="signup"))
+    except Exception as exc:
+        logger.error(f"[AUTH ERROR] Registration error for {email}: {exc}")
+        flash("Unable to complete sign up right now. Please try signing in.", "error")
+        return redirect(url_for("auth.login", email=email))
 
 
 def _format_email_error(status_or_msg: str) -> str:
